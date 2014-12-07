@@ -15,6 +15,9 @@ public class DisplayMessageActivity extends ActionBarActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		
+        // I think I don't need this, it do it as default when this have a parent
+		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
 	    // Get the message from the intent
 	    Intent intent = getIntent();
@@ -49,6 +52,7 @@ public class DisplayMessageActivity extends ActionBarActivity {
 		public PlaceholderFragment() {
 		}
 
+		// Really, in this version of the app, it isn't necessary to use fragment.
 		@Override
 		public View onCreateView(LayoutInflater inflater, ViewGroup container,
 				Bundle savedInstanceState) {

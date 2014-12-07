@@ -1,11 +1,23 @@
 <resources>
 
+    <!-- My mobile is API level 11. If I rename this folder "values-v10" the code is applied
+		 and the action bar become transparent 
+	-->
+    
     <!--
         Base application theme for API 11+. This theme completely replaces
         AppBaseTheme from res/values/styles.xml on API 11+ devices.
     -->
     <style name="AppBaseTheme" parent="Theme.AppCompat.Light">
         <!-- API 11 theme customizations can go here. -->
+        <item name="windowActionBarOverlay">true</item>
+        <item name="android:actionBarStyle">@style/MyActionBar</item>	<!-- API 11+ -->
+        <item name="actionBarStyle">@style/MyActionBar</item>			<!-- API 10- -->
     </style>
 
+    <style name="MyActionBar" parent="Widget.AppCompat.Light.ActionBar.Solid.Inverse">
+        <item name="android:background">@drawable/actionbar_background</item>	<!-- API 11+ -->
+        <item name="background">@drawable/actionbar_background</item>			<!-- API 10- -->
+    </style>
+    
 </resources>
