@@ -249,8 +249,8 @@ int id action_context_bar 0x7f05001d
 int id action_menu_divider 0x7f050016
 int id action_menu_presenter 0x7f050017
 int id action_mode_close_button 0x7f050024
-int id action_search 0x7f05003c
-int id action_settings 0x7f05003d
+int id action_search 0x7f05003e
+int id action_settings 0x7f05003f
 int id activity_chooser_view_content 0x7f050025
 int id always 0x7f05000b
 int id beginning 0x7f050011
@@ -269,9 +269,11 @@ int id homeAsUp 0x7f050005
 int id icon 0x7f05002a
 int id ifRoom 0x7f05000a
 int id image 0x7f050027
+int id instructionTextView 0x7f05003c
 int id listMode 0x7f050001
 int id list_item 0x7f050029
 int id middle 0x7f050012
+int id myView1 0x7f05003d
 int id never 0x7f050009
 int id none 0x7f050010
 int id normal 0x7f050000
@@ -346,11 +348,12 @@ int string action_settings 0x7f0a000e
 int string app_name 0x7f0a000d
 int string button_send 0x7f0a0012
 int string edit_message 0x7f0a0011
-int string hello_world 0x7f0a0013
+int string mvc_instruction 0x7f0a0013
 int string title_activity_display_message 0x7f0a0010
 int style AppBaseTheme 0x7f0b008b
 int style AppTheme 0x7f0b008c
 int style MyActionBar 0x7f0b008d
+int style MyActionBarTitleText 0x7f0b008e
 int style TextAppearance_AppCompat_Base_CompactMenu_Dialog 0x7f0b0063
 int style TextAppearance_AppCompat_Base_SearchResult 0x7f0b006d
 int style TextAppearance_AppCompat_Base_SearchResult_Subtitle 0x7f0b006f

@@ -4,15 +4,23 @@ import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.TextView;
 
 
 public class MainActivity extends ActionBarActivity {
 
+	public void hideInstructionTextView(View view) {
+		TextView textView = (TextView) view;
+		//textView.setVisibility(android.view.View.INVISIBLE);
+		textView.setHeight(0);
+	}
+	
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //setContentView(R.layout.activity_main);
-        setContentView(new MyView(this));        
+        setContentView(R.layout.activity_main);
+        //setContentView(new MyView(this));        
     }
 
     @Override
@@ -30,6 +38,8 @@ public class MainActivity extends ActionBarActivity {
         switch (item.getItemId()) {
         case R.id.action_search:
         	//openSearch();
+    		TextView textView = (TextView) findViewById(R.id.instructionTextView);
+    		textView.setHeight(50);
         	return true;
         case R.id.action_settings:
         	//openSettings();

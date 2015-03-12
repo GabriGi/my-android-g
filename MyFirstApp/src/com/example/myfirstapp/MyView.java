@@ -6,6 +6,8 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.util.AttributeSet;
+import android.view.MotionEvent;
 import android.view.View;
 
 public class MyView extends View{
@@ -14,7 +16,7 @@ public class MyView extends View{
     private Paint p;
     private Random rand = new Random();
     
-    public MyView(Context context) {
+    public MyView(Context context, AttributeSet attrs) {
         super(context);
         p = new Paint();
         p.setAntiAlias(true);
@@ -32,4 +34,15 @@ public class MyView extends View{
             canvas.drawCircle(x, y, raggio, p);
         }
     }
+    
+    public boolean onTouchEvent(MotionEvent event){
+        switch( event.getAction() ){
+        case MotionEvent.ACTION_DOWN:
+//            float x = event.getX(); //Coordinata x del tocco
+//            float y = event.getY(); //Coordinata y del tocco
+            invalidate();
+        }
+        return true; //Evento gestito
+    }
 }
+

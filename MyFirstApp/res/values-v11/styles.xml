@@ -1,7 +1,9 @@
 <resources>
 
-    <!-- My mobile is API level 10. If I rename this folder "values-v10" the code is applied
-		 and the action bar become transparent 
+    <!-- My mobile is API level 10.
+		 If I rename this folder "values-v10" the code is applied
+		 and the action bar become transparent.
+		 <API 10-> instructions aren't necessary otherwise.
 	-->
     
     <!--
