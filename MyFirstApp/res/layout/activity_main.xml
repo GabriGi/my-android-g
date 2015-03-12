@@ -15,7 +15,7 @@
 	    android:layout_alignParentTop="true"
 	    android:layout_centerHorizontal="true"
 	    android:clickable="true"
-	    android:onClick="hideInstructionTextView"
+	    android:onClick="hideView"
 	    android:text="@string/mvc_instruction" />
 
 	<com.example.myfirstapp.MyView

@@ -8,7 +8,7 @@
     
     <string name="edit_message">Enter a message</string>
     <string name="button_send">Send</string>
-    <string name="mvc_instruction">This app draw 100 random circles in the view.\n(tap on this message to hide)</string>
+    <string name="mvc_instruction">This app draws 100 random circles in the view.\n(tap on this message to hide)</string>
     <color name="actionbar_text">#99CC00</color>
 
 </resources>

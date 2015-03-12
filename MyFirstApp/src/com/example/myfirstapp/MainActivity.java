@@ -10,9 +10,8 @@ import android.widget.TextView;
 
 public class MainActivity extends ActionBarActivity {
 
-	public void hideInstructionTextView(View view) {
+	public void hideView(View view) {
 		TextView textView = (TextView) view;
-		//textView.setVisibility(android.view.View.INVISIBLE);
 		textView.setHeight(0);
 	}
 	
@@ -39,7 +38,7 @@ public class MainActivity extends ActionBarActivity {
         case R.id.action_search:
         	//openSearch();
     		TextView textView = (TextView) findViewById(R.id.instructionTextView);
-    		textView.setHeight(50);
+    		textView.setHeight(50); //TODO wrap_content ???
         	return true;
         case R.id.action_settings:
         	//openSettings();
