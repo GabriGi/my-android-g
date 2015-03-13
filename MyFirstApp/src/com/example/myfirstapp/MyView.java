@@ -19,6 +19,9 @@ public class MyView extends View implements Observer{
     private Paint p;
     private Random rand = new Random();
     private Circle circle;
+    private Boolean dragging = false;
+	private int deltaX = 0;
+	private int deltaY = 0;
     
     public MyView(Context context, AttributeSet attrs) {
         super(context);
@@ -47,13 +50,13 @@ public class MyView extends View implements Observer{
          * TODO tenere fermo lo sfondo e spostare solo il cerchio
          */
 
-        for(int i=0;i<100;i++){			
-        	float x=rand.nextFloat()*canvas.getWidth();
-            float y=rand.nextFloat()*canvas.getHeight();
-            float raggio=rand.nextFloat()*50;
-            p.setColor(Color.argb(rand.nextInt(256), 0, 0, rand.nextInt(256)));
-            canvas.drawCircle(x, y, raggio, p);
-        }
+//        for(int i=0;i<100;i++){			
+//        	float x=rand.nextFloat()*canvas.getWidth();
+//            float y=rand.nextFloat()*canvas.getHeight();
+//            float raggio=rand.nextFloat()*50;
+//            p.setColor(Color.argb(rand.nextInt(256), 0, 0, rand.nextInt(256)));
+//            canvas.drawCircle(x, y, raggio, p);
+//        }
         
         //Istruzione che sposta il cerchio dell'utente
         if(circle != null){
@@ -64,13 +67,25 @@ public class MyView extends View implements Observer{
     
     @Override
     public boolean onTouchEvent(MotionEvent event){
+    	int x = (int) event.getX(); //Coordinata x del tocco
+    	int y = (int) event.getY(); //Coordinata y del tocco
+        
         switch( event.getAction() ){
         case MotionEvent.ACTION_DOWN:
+        	int xc=circle.getX();
+    		int yc=circle.getY();
+    		int rc=circle.getRadius();
+        	dragging = false;
+            if((x-xc)*(x-xc) + (y-yc)*(y-yc) < rc*rc){
+            	dragging=true;
+            	deltaX = x-xc;
+            	deltaY = y-yc;
+            }
         case MotionEvent.ACTION_MOVE:
-            int x = (int) event.getX(); //Coordinata x del tocco
-            int y = (int) event.getY(); //Coordinata y del tocco
-            circle.setX(x);
-            circle.setY(y);
+            if(dragging){
+	            circle.setX(x-deltaX);
+	            circle.setY(y-deltaY);
+            }
         }
         return true; //Evento gestito
     }

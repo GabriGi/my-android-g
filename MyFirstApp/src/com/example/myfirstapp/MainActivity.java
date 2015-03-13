@@ -9,9 +9,14 @@ import android.widget.TextView;
 
 
 public class MainActivity extends ActionBarActivity {
+	private int instructionViewDimension = 1;
+	
 
 	public void hideView(View view) {
 		TextView textView = (TextView) view;
+		if(instructionViewDimension!=0){
+			instructionViewDimension = textView.getHeight();
+		}
 		textView.setHeight(0);
 	}
 	
@@ -38,7 +43,7 @@ public class MainActivity extends ActionBarActivity {
         case R.id.action_search:
         	//openSearch();
     		TextView textView = (TextView) findViewById(R.id.instructionTextView);
-    		textView.setHeight(50); //TODO wrap_content ???
+    		textView.setHeight(instructionViewDimension); //TODO wrap_content ???
         	return true;
         case R.id.action_settings:
         	//openSettings();
