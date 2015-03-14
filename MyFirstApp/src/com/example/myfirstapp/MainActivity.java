@@ -9,15 +9,19 @@ import android.widget.TextView;
 
 
 public class MainActivity extends ActionBarActivity {
-	private int instructionViewDimension = 1;
+	private int instructionViewDimension = -1;
 	
-
 	public void hideView(View view) {
 		TextView textView = (TextView) view;
-		if(instructionViewDimension!=0){
+		if(textView.getHeight()!=0){
 			instructionViewDimension = textView.getHeight();
+			textView.setHeight(0);
+			//TODO far partire il gioco in automatico (non va)
+//			MyView myView = (MyView) findViewById(R.id.myView1);
+//			myView.startPlay();
+		}else{
+			textView.setHeight(instructionViewDimension); //TODO wrap_content ???
 		}
-		textView.setHeight(0);
 	}
 	
     @Override
@@ -41,9 +45,7 @@ public class MainActivity extends ActionBarActivity {
         // as you specify a parent activity in AndroidManifest.xml.
         switch (item.getItemId()) {
         case R.id.action_search:
-        	//openSearch();
-    		TextView textView = (TextView) findViewById(R.id.instructionTextView);
-    		textView.setHeight(instructionViewDimension); //TODO wrap_content ???
+        	hideView(findViewById(R.id.instructionTextView));
         	return true;
         case R.id.action_settings:
         	//openSettings();
