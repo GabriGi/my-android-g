@@ -4,14 +4,15 @@ import java.util.Observable;
 
 public class Circle extends Observable{
 
-	private int x,y;
-	private int radius;
+	private int x,y, radius;
+	private int color;
 	
-	public Circle(int x, int y, int radius) {
+	public Circle(int x, int y, int radius, int color) {
 		super();
 		this.x = x;
 		this.y = y;
 		this.radius = radius;
+		this.color = color;
 	}
 	
 	public void setX(int x) {
@@ -38,7 +39,7 @@ public class Circle extends Observable{
 		return radius;
 	}
 	
-	public void setRadius(int radius) {
-		this.radius = radius;
+	public int getColor() {
+		return color;
 	}
 }
