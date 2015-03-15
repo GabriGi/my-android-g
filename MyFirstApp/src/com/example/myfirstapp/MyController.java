@@ -9,7 +9,7 @@ import android.view.MotionEvent;
 public class MyController implements OnGestureListener, OnDoubleTapListener {
 
     private static final String DEBUG_TAG = "Gestures";
-    private Circle circle;
+    private Circle moveableCircle;
     private boolean dragging = false;
 	private int deltaX = 0;
 	private int deltaY = 0;
@@ -19,8 +19,8 @@ public class MyController implements OnGestureListener, OnDoubleTapListener {
     									//Potrei pensare di passare anche lui come parametro cosi' come moveableCircle,
     									//gestendolo come observable (quindi crearlo come nuova classe (struttura dati)
     
-    public void setCircle(Circle circle) {
-		this.circle = circle;
+    public void setmoveableCircle(Circle circle) {
+		this.moveableCircle = circle;
 	}
     
     public boolean isDragging() {
@@ -47,15 +47,16 @@ public class MyController implements OnGestureListener, OnDoubleTapListener {
 		numberOfTouch++;
     	dragging = false;
 		
-        if(circle!=null){ //Ovvero if(numberOfTouch == 1){
+        if(moveableCircle!=null){ //Ovvero if(numberOfTouch == 1){
         	int x = (int)event.getX();
         	int y = (int)event.getY();
         	
-        	int xc=circle.getX();
-    		int yc=circle.getY();
-    		int rc=circle.getRadius();
+        	int xc=moveableCircle.getX();
+    		int yc=moveableCircle.getY();
+    		int rc=moveableCircle.getRadius();
             if((x-xc)*(x-xc) + (y-yc)*(y-yc) < rc*rc){
             	dragging=true;
+            	moveableCircle.setX(xc); //this is to force the view update instead of use: toUpdate = true;
             	deltaX = x-xc;
             	deltaY = y-yc;
             }else{
@@ -65,7 +66,7 @@ public class MyController implements OnGestureListener, OnDoubleTapListener {
         	toUpdate = true;
     	}
         
-        Log.d(DEBUG_TAG,"onDown - end: numberOfTouch: " + numberOfTouch + " dragging: " + dragging + " toInvalidate" + toUpdate);
+        Log.d(DEBUG_TAG,"onDown - end: numberOfTouch: " + numberOfTouch + " - dragging: " + dragging + " - toUpdate: " + toUpdate);
         return true;
     }
 
@@ -80,12 +81,12 @@ public class MyController implements OnGestureListener, OnDoubleTapListener {
         Log.d(DEBUG_TAG, "onSingleTapUp");
         //Log.d(DEBUG_TAG, "onSingleTapUp: " + event.toString());
         
-        //TODO Non viene sempre chiamato....
+        //TODO Viene chiamato solo col tocco veloce..
         /*     Il risultato è un leggero bug grafico:
-         * 		Se trascino il cerchio (non tocco lo sfondo)
-         * 		e poi mostro/nascondo le istruzioni lo sfondo non cambia;
-         * 		se invece tocco lo sfondo (non trascino il cerchio)
+         * 		se  tocco o trascino lo sfondo oppure tocco il cerchio velocemente
          * 		e poi mostro/nascondo le istruzioni lo sfondo cambia;
+         * 		Se trascino il cerchio o lo tocco e tengo premuto
+         * 		e poi mostro/nascondo le istruzioni lo sfondo non cambia;
          */
     	dragging = false;
         return true;
@@ -93,14 +94,18 @@ public class MyController implements OnGestureListener, OnDoubleTapListener {
 
     @Override
     public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
-        Log.d(DEBUG_TAG, "onScroll");
-        //Log.d(DEBUG_TAG, "onScroll: " + e1.toString()+"   -|-   "+e2.toString());
-        
-        int x = (int)e2.getX();
-    	int y = (int)e2.getY();
+        //Log.d(DEBUG_TAG, "onScroll");
+        Log.d(DEBUG_TAG, "onScroll: " + e1.toString()+"   -|-   "+e2.toString()+"   -|-   "+" - "+distanceX+" - "+distanceY);
+
         if(dragging){
-            circle.setX(x-deltaX);
-            circle.setY(y-deltaY);
+            moveableCircle.setX((int)e2.getX()-deltaX);
+            moveableCircle.setY((int)e2.getY()-deltaY);
+            //Oppure potrei usare:
+            //  moveableCircle.setX(moveableCircle.getX()-(int)distanceX);
+            //  moveableCircle.setY(moveableCircle.getY()-(int)distanceY);
+            //Così posso evitare di istanziare deltaX e deltaY.
+            //Paradossalmente questa soluzione sarebbe però piu' lenta
+            //(Presumo per l'accesso a moveableCircle.getX()
         }
         return true;
     }
@@ -112,10 +117,9 @@ public class MyController implements OnGestureListener, OnDoubleTapListener {
     }
 
     @Override
-    public boolean onFling(MotionEvent event1, MotionEvent event2, 
-            float velocityX, float velocityY) {
+    public boolean onFling(MotionEvent event1, MotionEvent event2, float velocityX, float velocityY) {
         Log.d(DEBUG_TAG, "onFling");
-        //Log.d(DEBUG_TAG, "onFling: " + event1.toString()+event2.toString());
+        //Log.d(DEBUG_TAG, "onFling: " + event1.toString()+event2.toString() + " " + velocityX + " " + velocityY);
         return true;
     }
 

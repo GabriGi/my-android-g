@@ -21,7 +21,7 @@ public class MyView extends View implements Observer{
 	private Circle[] background = new Circle[NUMBER_OF_CIRCLE];
 	
     private Paint p;
-    private Random rand = new Random();
+    private Random rand = new Random(System.currentTimeMillis());
     
     private Circle moveableCircle;
     private int opacita = 200;	//255:Opaco->Banale, 0:Trasparente->Impossibile
@@ -43,7 +43,7 @@ public class MyView extends View implements Observer{
     	moveableCircle = new Circle(rand.nextInt(this.getWidth()), rand.nextInt(this.getHeight()), 
     						(RADIUS_OF_CIRCLE>>1)+rand.nextInt(1+(RADIUS_OF_CIRCLE>>1)), 
     						Color.argb(opacita+rand.nextInt(256-opacita), 0, 0, rand.nextInt(256)));
-    	myController.setCircle(moveableCircle);
+    	myController.setmoveableCircle(moveableCircle);
     	moveableCircle.addObserver(this);
     }
     

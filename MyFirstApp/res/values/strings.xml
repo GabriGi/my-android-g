@@ -3,16 +3,11 @@
 
     <string name="app_name">My First App</string>
     <string name="action_settings">Settings</string>
-    <string name="action_search">Search</string>
-    <string name="title_activity_display_message">MyMessage</string>
-    
-    <string name="edit_message">Enter a message</string>
-    <string name="button_send">Send</string>
-    <string name="mvc_instruction">	This app draws 100 random circles in the view, 
+    <string name="action_search">Display/Hide instruction</string>
+    <string name="mvc_instruction">	This app draws 64 random circles in the view, 
 									plus one that you can move simply touching and dragging it.
 									\nIf you touch anywhere else in the view, all the other circle move themselves instead the central one.
 									\n\nLet\'s play! Can you find the right circle at the first try?
 									\n\n(tap on this message to hide it, then click on the picture to start playing)\n</string>
     <color name="actionbar_text">#99CC00</color>
-
 </resources>
