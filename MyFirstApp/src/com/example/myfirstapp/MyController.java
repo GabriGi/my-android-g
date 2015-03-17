@@ -1,6 +1,5 @@
 package com.example.myfirstapp;
 
-import mvc.Circle;
 import android.util.Log;
 import android.view.GestureDetector.OnDoubleTapListener;
 import android.view.GestureDetector.OnGestureListener;

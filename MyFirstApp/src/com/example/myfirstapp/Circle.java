@@ -1,4 +1,4 @@
-package mvc;
+package com.example.myfirstapp;
 
 import java.util.Observable;
 

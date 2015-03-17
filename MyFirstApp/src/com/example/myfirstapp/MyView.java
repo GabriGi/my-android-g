@@ -4,7 +4,6 @@ import java.util.Observable;
 import java.util.Observer;
 import java.util.Random;
 
-import mvc.Circle;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;

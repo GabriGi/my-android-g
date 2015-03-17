@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<previews>
+
+    <preview
+        name="2.7&quot; QVGA (240 x 320 ldpi)"
+        config="layout-ldltr-sw320dp-w320dp-h426dp-small-notlong-port-notnight-ldpi-finger-keyssoft-nokeys-navhidden-nonav-320x240-v20"
+        device="2.7&quot; QVGA"
+        devicestate="Portrait"
+        target="Android L (Preview)"
+        theme="@style/AppTheme" >
+    </preview>
+    <preview
+        name="2.7&quot; QVGA slider (240 x 320 ldpi)"
+        config="layout-ldltr-sw320dp-w320dp-h426dp-small-notlong-port-notnight-ldpi-finger-keyssoft-qwerty-navhidden-nonav-320x240-v20"
+        device="2.7&quot; QVGA slider"
+        devicestate="Portrait"
+        target="Android L (Preview)"
+        theme="@style/AppTheme" >
+    </preview>
+
+</previews>
