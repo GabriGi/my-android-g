@@ -1,15 +1,27 @@
 package com.example.myfirstapp;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.TextView;
 
 
 public class MainActivity extends ActionBarActivity {
+	
+	public final static String EXTRA_MESSAGE = "com.example.myfirstapp.MESSAGE";
 	private int instructionViewDimension = -1;
+	
+	public void startPlaying(View view) {
+		Intent intent = new Intent(this, CircleViewGameActivity.class);
+		TextView textView = (TextView) findViewById(R.id.instructionTextView);
+	    	String message = textView.getText().toString();
+		intent.putExtra(EXTRA_MESSAGE, message);
+	    startActivity(intent);
+	}
 	
 	public void hideView(View view) {
 		TextView textView = (TextView) view;

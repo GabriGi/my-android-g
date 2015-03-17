@@ -29,7 +29,7 @@ public class MyView extends View implements Observer{
     private GestureDetectorCompat gestureDetector;
     private MyController myController; 
     
-    public MyView(Context context, AttributeSet attrs) {
+    public MyView(Context context) {
         super(context);
         p = new Paint();
         p.setAntiAlias(true);
