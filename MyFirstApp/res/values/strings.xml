@@ -9,10 +9,5 @@
 									\nIf you touch anywhere else in the view, all the other circle move themselves instead the central one.
 									\n\nLet\'s play! Can you find the right circle at the first try?
 									\n\n(tap on this message to hide it, then click on the picture to start playing)\n</string>
-
     <color name="actionbar_text">#99CC00</color>
-
-    <string name="title_activity_circle_view_game">CircleViewGameActivity</string>
-    <string name="hello_world">Hello world!</string>
-
 </resources>

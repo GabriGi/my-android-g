@@ -10,6 +10,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.support.v4.view.GestureDetectorCompat;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
@@ -31,17 +32,29 @@ public class MyView extends View implements Observer{
     
     public MyView(Context context) {
         super(context);
+        initialize(context);
+    }
+    
+    public MyView(Context context, AttributeSet attrs) {
+        super(context, attrs);
+        initialize(context);
+    }
+    
+    private void initialize(Context context){
         p = new Paint();
         p.setAntiAlias(true);
         myController = new MyController();
         gestureDetector = new GestureDetectorCompat(context, myController);
         gestureDetector.setOnDoubleTapListener(myController);
+
     }
 
     public void startPlay() {
-    	moveableCircle = new Circle(rand.nextInt(this.getWidth()), rand.nextInt(this.getHeight()), 
+    	Log.d(VIEW_LOG_TAG, this.getHeight()+", "+this.getWidth());
+    	moveableCircle = new Circle(rand.nextInt(this.getWidth()+1), rand.nextInt(this.getHeight()+1), 
     						(RADIUS_OF_CIRCLE>>1)+rand.nextInt(1+(RADIUS_OF_CIRCLE>>1)), 
-    						Color.argb(opacita+rand.nextInt(256-opacita), 0, 0, rand.nextInt(256)));
+    				//		Color.argb(opacita+rand.nextInt(256-opacita), 0, 0, rand.nextInt(256)));
+    						Color.YELLOW);
     	myController.setmoveableCircle(moveableCircle);
     	moveableCircle.addObserver(this);
     }
@@ -57,6 +70,7 @@ public class MyView extends View implements Observer{
     
     @Override
     protected void onDraw(Canvas canvas) {
+    	Log.d(VIEW_LOG_TAG, "ondraw: " + this.getHeight()+", "+this.getWidth());
         super.onDraw(canvas);
         int viewWidth = this.getWidth();
         int viewHeight = this.getHeight();

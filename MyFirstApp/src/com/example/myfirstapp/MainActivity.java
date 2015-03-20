@@ -1,27 +1,16 @@
 package com.example.myfirstapp;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.TextView;
 
 
 public class MainActivity extends ActionBarActivity {
-	
-	public final static String EXTRA_MESSAGE = "com.example.myfirstapp.MESSAGE";
 	private int instructionViewDimension = -1;
-	
-	public void startPlaying(View view) {
-		Intent intent = new Intent(this, CircleViewGameActivity.class);
-		TextView textView = (TextView) findViewById(R.id.instructionTextView);
-	    	String message = textView.getText().toString();
-		intent.putExtra(EXTRA_MESSAGE, message);
-	    startActivity(intent);
-	}
+//	private MyView myView;
 	
 	public void hideView(View view) {
 		TextView textView = (TextView) view;
@@ -29,8 +18,11 @@ public class MainActivity extends ActionBarActivity {
 			instructionViewDimension = textView.getHeight();
 			textView.setHeight(0);
 			//TODO far partire il gioco in automatico (non va)
-//			MyView myView = (MyView) findViewById(R.id.myView1);
+//			myView = (MyView) findViewById(R.id.myView1);
+//			myView = new MyView(this);
+//	        setContentView(myView);
 //			myView.startPlay();
+
 		}else{
 			textView.setHeight(instructionViewDimension); //TODO wrap_content ???
 		}
@@ -57,6 +49,7 @@ public class MainActivity extends ActionBarActivity {
         // as you specify a parent activity in AndroidManifest.xml.
         switch (item.getItemId()) {
         case R.id.action_search:
+            //setContentView(R.layout.activity_main);
         	hideView(findViewById(R.id.instructionTextView));
         	return true;
         case R.id.action_settings:
