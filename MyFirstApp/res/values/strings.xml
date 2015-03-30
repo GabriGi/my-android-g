@@ -2,7 +2,7 @@
 <resources>
 
     <string name="app_name">My First App</string>
-    <string name="action_settings">Settings</string>
+    <string name="action_settings">New Game</string>
     <string name="action_search">Display/Hide instruction</string>
     <string name="mvc_instruction">	This app draws 64 random circles in the view, 
 									plus one that you can move simply touching and dragging it.

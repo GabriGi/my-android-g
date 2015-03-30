@@ -26,9 +26,14 @@ public class MyView extends View implements Observer{
     private Circle moveableCircle;
     private int opacita = 200;	//255:Opaco->Banale, 0:Trasparente->Impossibile
     private int winnerTouch = 0;
+    private boolean startNewGame = false;
+    
+    //These boolean are necessary to solve some bugs on resizing the view and starting new game.
+    private boolean accessible = false;
+    private boolean randomizeBackground = true;
     
     private GestureDetectorCompat gestureDetector;
-    private MyController myController; 
+    private MyController myController;
     
     public MyView(Context context) {
         super(context);
@@ -40,7 +45,20 @@ public class MyView extends View implements Observer{
         initialize(context);
     }
     
-    private void initialize(Context context){
+    public MyView(Context context, AttributeSet attrs, int defStyleAttr) {
+		super(context, attrs, defStyleAttr);
+        initialize(context);
+	}
+    
+    public int getNumberOfTouch() {
+		return myController.getNumberOfTouch();
+	}
+    
+	public void setAccessible(boolean accessible) {
+		this.accessible = accessible;
+	}
+
+	private void initialize(Context context){
         p = new Paint();
         p.setAntiAlias(true);
         myController = new MyController();
@@ -48,14 +66,26 @@ public class MyView extends View implements Observer{
         gestureDetector.setOnDoubleTapListener(myController);
 
     }
+	
+	public void newGame(int difficolta){
+		Log.d(VIEW_LOG_TAG, "newGame");
+		opacita = difficolta;
+		winnerTouch = 0;
+		myController.setNumberOfTouch(0);
+		myController.setDragging(false);
+		moveableCircle = null;
+		startNewGame = true;
+		randomizeBackground = true;
+		invalidate();
+	}
 
     public void startPlay() {
-    	Log.d(VIEW_LOG_TAG, this.getHeight()+", "+this.getWidth());
+    	Log.d(VIEW_LOG_TAG, "startPlay: "+this.getHeight()+", "+this.getWidth());
     	moveableCircle = new Circle(rand.nextInt(this.getWidth()+1), rand.nextInt(this.getHeight()+1), 
     						(RADIUS_OF_CIRCLE>>1)+rand.nextInt(1+(RADIUS_OF_CIRCLE>>1)), 
-    				//		Color.argb(opacita+rand.nextInt(256-opacita), 0, 0, rand.nextInt(256)));
-    						Color.YELLOW);
-    	myController.setmoveableCircle(moveableCircle);
+    						Color.argb(opacita+rand.nextInt(256-opacita), 0, 0, rand.nextInt(256)));
+    					//	Color.YELLOW);	//DEBUG
+    	myController.setMoveableCircle(moveableCircle);
     	moveableCircle.addObserver(this);
     }
     
@@ -70,39 +100,44 @@ public class MyView extends View implements Observer{
     
     @Override
     protected void onDraw(Canvas canvas) {
-    	Log.d(VIEW_LOG_TAG, "ondraw: " + this.getHeight()+", "+this.getWidth());
         super.onDraw(canvas);
+        Log.d(VIEW_LOG_TAG, "onDraw: " + this.getHeight()+", "+this.getWidth());
+        
         int viewWidth = this.getWidth();
         int viewHeight = this.getHeight();
+        
         canvas.drawColor(Color.BLACK);	//Background color
         
-        if(!myController.isDragging()){	//Disegno 100 cerchi di sfumature di blu in posizioni casuali e di raggio casuale
-        	createNewCircleBackground(viewWidth,viewHeight, RADIUS_OF_CIRCLE);	//..che faranno da sfondo.
-        }
-        for(int i=0;i<NUMBER_OF_CIRCLE;i++){
-	        p.setColor(background[i].getColor());
-        	canvas.drawCircle(background[i].getX(), background[i].getY(), background[i].getRadius(), p);
-        }
-        
-        //Istruzioni che creano e disegnano il cerchio che può essere mosso dall'utente
-        if(myController.getNumberOfTouch()==1){	//TODO 216 : 70 241 (320)      35 167 (240) : 296
-    		startPlay();
-        }
-        if(moveableCircle!=null){
-    		p.setColor(moveableCircle.getColor());
-            if(!myController.isDragging() && winnerTouch==0){
-    	        canvas.drawCircle(moveableCircle.getX(), moveableCircle.getY(), moveableCircle.getRadius(), p);
-        	}else{
-    	        canvas.drawCircle(moveableCircle.getX(), moveableCircle.getY(), moveableCircle.getRadius(), p);
-    	        if(winnerTouch==0){
-    	        	//Ricordando che il primo tocco fa partire il gioco, e che quindi non lo conto:
-        	        winnerTouch = myController.getNumberOfTouch()-1;
-				}
-        		p.setColor(Color.RED);
-        		//TODO this.setTextAlignment(TEXT_ALIGNMENT_CENTER);
-        		//     canvas.drawText("WIN!\n"+winnerTouch, moveableCircle.getX(), moveableCircle.getY(), p);
-        		canvas.drawText("WIN! "+winnerTouch, moveableCircle.getX()-20, moveableCircle.getY()+5, p);
-        	}
+        if(accessible){
+	        if(!myController.isDragging() && randomizeBackground){
+	        	createNewCircleBackground(viewWidth,viewHeight, RADIUS_OF_CIRCLE);
+	        }
+        	randomizeBackground = true;
+	        for(int i=0;i<NUMBER_OF_CIRCLE;i++){
+		        p.setColor(background[i].getColor());
+	        	canvas.drawCircle(background[i].getX(), background[i].getY(), background[i].getRadius(), p);
+	        }
+	        
+	        //Istruzioni che creano e disegnano il cerchio che può essere mosso dall'utente
+	        if(startNewGame){
+	    		startPlay();
+	    		startNewGame = false;
+	        }
+	        if(moveableCircle!=null){
+	        	p.setColor(moveableCircle.getColor());
+	    		canvas.drawCircle(moveableCircle.getX(), moveableCircle.getY(), moveableCircle.getRadius(), p);
+	            if(myController.isDragging() || winnerTouch!=0){
+	            	if(winnerTouch==0){
+	        	        winnerTouch = myController.getNumberOfTouch();
+					}
+	        		p.setColor(Color.RED);
+	        		//TODO this.setTextAlignment(TEXT_ALIGNMENT_CENTER);
+	        		//     canvas.drawText("WIN!\n"+winnerTouch, moveableCircle.getX(), moveableCircle.getY(), p);
+	        		canvas.drawText("WIN! "+winnerTouch, moveableCircle.getX()-20, moveableCircle.getY()+4, p);
+	        	}
+	        }
+        }else{
+        	randomizeBackground = false;
         }
     }
 
@@ -113,12 +148,14 @@ public class MyView extends View implements Observer{
     
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-    	myController.setToInvalidate(false);
-        gestureDetector.onTouchEvent(event);
-        if(myController.isToInvalidate()){
-        	invalidate();
+        if(accessible){
+        	super.onTouchEvent(event);
+	    	myController.setToInvalidate(false);
+	        gestureDetector.onTouchEvent(event);
+	        if(myController.isToInvalidate()){
+	        	invalidate();
+	        }
         }
-        //return super.onTouchEvent(event);
         return true; //Evento gestito
     }
 }

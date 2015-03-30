@@ -19,7 +19,7 @@
 	    android:text="@string/mvc_instruction" />
 
 	<com.example.myfirstapp.MyView
-	    android:id="@+id/myView1"
+	    android:id="@+id/myView"
 	    android:layout_width="wrap_content"
 	    android:layout_height="300dp"
 	    android:layout_alignParentBottom="true"

@@ -13,12 +13,9 @@ public class MyController implements OnGestureListener, OnDoubleTapListener {
 	private int deltaX = 0;
 	private int deltaY = 0;
     private int numberOfTouch = 0;
-    private boolean toUpdate = false;	//Se c'è da cambiare il background.
-    									//?????:
-    									//Potrei pensare di passare anche lui come parametro cosi' come moveableCircle,
-    									//gestendolo come observable (quindi crearlo come nuova classe (struttura dati)
+    private boolean toInvalidate = false;	//Se c'è da cambiare il background.
     
-    public void setmoveableCircle(Circle circle) {
+    public void setMoveableCircle(Circle circle) {
 		this.moveableCircle = circle;
 	}
     
@@ -26,21 +23,29 @@ public class MyController implements OnGestureListener, OnDoubleTapListener {
 		return dragging;
 	}
     
-    public void setToInvalidate(boolean toInvalidate) {
-		this.toUpdate = toInvalidate;
+    public void setDragging(boolean dragging) {
+		this.dragging = dragging;
+	}
+
+	public void setToInvalidate(boolean toInvalidate) {
+		this.toInvalidate = toInvalidate;
 	}
     
     public boolean isToInvalidate() {
-		return toUpdate;
+		return toInvalidate;
 	}
-    
+
     public int getNumberOfTouch() {
 		return numberOfTouch;
 	}
     
+    public void setNumberOfTouch(int numberOfTouch) {
+		this.numberOfTouch = numberOfTouch;
+	}
+    
 	@Override
     public boolean onDown(MotionEvent event) {
-//        Log.d(DEBUG_TAG,"onDown");
+        Log.d(DEBUG_TAG,"onDown");
        //Log.d(DEBUG_TAG,"onDown: " + event.toString());
         
 		numberOfTouch++;
@@ -59,13 +64,13 @@ public class MyController implements OnGestureListener, OnDoubleTapListener {
             	deltaX = x-xc;
             	deltaY = y-yc;
             }else{
-            	toUpdate = true;
+            	toInvalidate = true;
             }
     	}else{
-        	toUpdate = true;
+        	toInvalidate = true;
     	}
         
-        Log.d(DEBUG_TAG,"onDown - end: numberOfTouch: " + numberOfTouch + " - dragging: " + dragging + " - toUpdate: " + toUpdate);
+        //Log.d(DEBUG_TAG,"onDown - end: numberOfTouch: " + numberOfTouch + " - dragging: " + dragging + " - toUpdate: " + toInvalidate);
         return true;
     }
 
@@ -93,8 +98,8 @@ public class MyController implements OnGestureListener, OnDoubleTapListener {
 
     @Override
     public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
-        //Log.d(DEBUG_TAG, "onScroll");
-        Log.d(DEBUG_TAG, "onScroll: " + e1.toString()+"   -|-   "+e2.toString()+"   -|-   "+" - "+distanceX+" - "+distanceY);
+        Log.d(DEBUG_TAG, "onScroll");
+        //Log.d(DEBUG_TAG, "onScroll: " + e1.toString()+"   -|-   "+e2.toString()+"   -|-   "+" - "+distanceX+" - "+distanceY);
 
         if(dragging){
             moveableCircle.setX((int)e2.getX()-deltaX);

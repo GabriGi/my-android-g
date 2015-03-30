@@ -10,29 +10,33 @@ import android.widget.TextView;
 
 public class MainActivity extends ActionBarActivity {
 	private int instructionViewDimension = -1;
-//	private MyView myView;
+	private MyView myView;
 	
 	public void hideView(View view) {
 		TextView textView = (TextView) view;
+		myView.setAccessible(false);
 		if(textView.getHeight()!=0){
+			int temp = instructionViewDimension;
 			instructionViewDimension = textView.getHeight();
 			textView.setHeight(0);
-			//TODO far partire il gioco in automatico (non va)
-//			myView = (MyView) findViewById(R.id.myView1);
-//			myView = new MyView(this);
-//	        setContentView(myView);
-//			myView.startPlay();
-
+			myView.setAccessible(true);
+			if(temp==-1){
+				myView.newGame(200);
+			}
 		}else{
 			textView.setHeight(instructionViewDimension); //TODO wrap_content ???
 		}
+		//TODO ?????????? myView.requestLayout();
 	}
 	
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        //setContentView(new MyView(this));        
+		myView = (MyView) findViewById(R.id.myView);
+		myView.setAccessible(false);
+//		myView = new MyView(this);
+        //setContentView(myView);
     }
 
     @Override
@@ -49,11 +53,13 @@ public class MainActivity extends ActionBarActivity {
         // as you specify a parent activity in AndroidManifest.xml.
         switch (item.getItemId()) {
         case R.id.action_search:
-            //setContentView(R.layout.activity_main);
         	hideView(findViewById(R.id.instructionTextView));
         	return true;
         case R.id.action_settings:
-        	//openSettings();
+        	if(findViewById(R.id.instructionTextView).getHeight()!=0){
+        		hideView(findViewById(R.id.instructionTextView));
+        	}
+        	myView.newGame(200);
         	return true;
         default:
         	return super.onOptionsItemSelected(item);
