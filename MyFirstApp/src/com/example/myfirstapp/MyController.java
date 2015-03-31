@@ -11,21 +11,33 @@ public class MyController implements OnGestureListener, OnDoubleTapListener {
 
     private static final String DEBUG_TAG = "Gestures";
     private Circle moveableCircle;
-    private int rc;
+    private int rc=0;
     private boolean dragging = false;
 	private int deltaX = 0;
 	private int deltaY = 0;
     private int numberOfTouch = 0;
     private boolean toInvalidate = false;	//Se c'è da cambiare il background.
     private Scroller myScroller;
+    private int drawableWidth;
+    private int drawableHeight;
     
     public MyController(Context context) {
 		myScroller = new Scroller(context);
 	}
     
+    public Scroller getMyScroller() {
+		return myScroller;
+	}
+    
     public void setMoveableCircle(Circle circle) {
 		this.moveableCircle = circle;
+		rc = moveableCircle.getRadius();
 	}
+    
+    public void setDrawableSize(int viewWidth, int viewHeight){
+		drawableWidth = viewWidth-(rc<<1);
+		drawableHeight = viewHeight-(rc<<1);
+    }
     
     public boolean isDragging() {
 		return dragging;
@@ -55,23 +67,22 @@ public class MyController implements OnGestureListener, OnDoubleTapListener {
 	public boolean flingCircle(int viewWidth, int viewHeight) {
 		boolean needsInvalidate = false;
 		if(myScroller.computeScrollOffset()){
-			int currX = myScroller.getCurrX()-deltaX;
-			int currY = myScroller.getCurrY()-deltaY;
+			int currX = myScroller.getCurrX()-deltaX-rc;
+			int currY = myScroller.getCurrY()-deltaY-rc;
 			
-			while(currX>(viewWidth-rc)){
-				currX = currX-viewWidth+2*rc;
+			int nx = (int)(currX / drawableWidth);
+			int x = currX % drawableWidth;
+			int ny = (int)(currY / drawableHeight);
+			int y = currY % drawableHeight;
+			
+			if((nx%2)!=0){
+				x = drawableWidth - Math.abs(x);
 			}
-			while(currX<rc){
-				currX = currX+viewWidth-2*rc;
+			if((ny%2)!=0){
+				y = drawableHeight - Math.abs(y);
 			}
-			while(currY>(viewHeight-rc)){
-				currY = currY-viewHeight+2*rc;
-			}
-			while(currY<rc){
-				currY = currY+viewHeight-2*rc;
-			}
-			moveableCircle.setX(currX);
-			moveableCircle.setY(currY);
+			moveableCircle.setX(Math.abs(x)+rc);
+			moveableCircle.setY(Math.abs(y)+rc);
 			needsInvalidate = true;
 		}
 		return needsInvalidate;
@@ -137,14 +148,20 @@ public class MyController implements OnGestureListener, OnDoubleTapListener {
         //Log.d(DEBUG_TAG, "onScroll: " + e1.toString()+"   -|-   "+e2.toString()+"   -|-   "+" - "+distanceX+" - "+distanceY);
 
         if(dragging){
-            moveableCircle.setX((int)e2.getX()-deltaX);
-            moveableCircle.setY((int)e2.getY()-deltaY);
-            //Oppure potrei usare:
-            //  moveableCircle.setX(moveableCircle.getX()-(int)distanceX);
-            //  moveableCircle.setY(moveableCircle.getY()-(int)distanceY);
-            //Così posso evitare di istanziare deltaX e deltaY.
-            //Paradossalmente questa soluzione sarebbe però piu' lenta
-            //(Presumo per l'accesso a moveableCircle.getX()
+        	int x = (int)e2.getX()-deltaX;
+        	int y = (int)e2.getY()-deltaY;
+        	if(x<rc){
+        		x = rc;
+        	}else if(x>drawableWidth+rc){
+        		x = drawableWidth+rc;
+        	}
+        	if(y<rc){
+        		y = rc;
+        	}else if(y>drawableHeight+rc){
+        		y = drawableHeight+rc;
+        	}
+            moveableCircle.setX(x);
+            moveableCircle.setY(y);
         }
         return true;
     }

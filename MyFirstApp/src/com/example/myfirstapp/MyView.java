@@ -17,7 +17,7 @@ import android.view.View;
 
 public class MyView extends View implements Observer{
 
-	static final private int RADIUS_OF_CIRCLE = 50;
+	static final private int MAX_RADIUS_OF_CIRCLE = 50;
 	static final private int NUMBER_OF_CIRCLE = 64;
 	private Circle[] background = new Circle[NUMBER_OF_CIRCLE];
 	
@@ -75,6 +75,7 @@ public class MyView extends View implements Observer{
 		winnerTouch = 0;
 		myController.setNumberOfTouch(0);
 		myController.setDragging(false);
+		myController.getMyScroller().forceFinished(true);
 		moveableCircle = null;
 		startNewGame = true;
 		randomizeBackground = true;
@@ -83,11 +84,20 @@ public class MyView extends View implements Observer{
 
     public void startPlay() {
     	Log.d(VIEW_LOG_TAG, "startPlay: "+this.getHeight()+", "+this.getWidth());
-    	moveableCircle = new Circle(rand.nextInt(this.getWidth()+1), rand.nextInt(this.getHeight()+1), 
-    						(RADIUS_OF_CIRCLE>>1)+rand.nextInt(1+(RADIUS_OF_CIRCLE>>1)), 
-    						Color.argb(opacita+rand.nextInt(256-opacita), 0, 0, rand.nextInt(256)));
-    					//	Color.YELLOW);	//DEBUG
+        viewWidth = this.getWidth();
+        viewHeight = this.getHeight();
+        
+        int radius = (MAX_RADIUS_OF_CIRCLE>>1)+rand.nextInt(1+(MAX_RADIUS_OF_CIRCLE>>1));
+		int x = rand.nextInt(viewWidth+1);
+    	int y = rand.nextInt(viewHeight+1);
+	//	int x = radius+rand.nextInt(viewWidth-(radius<<1)+1);	//Per collocarlo completamente all'interno dei bordi
+    //	int y = radius+rand.nextInt(viewHeight-(radius<<1)+1);	//	  "		  "		  "		  "		  "		  "
+        int color = Color.argb(opacita+rand.nextInt(256-opacita), 0, 0, rand.nextInt(256));
+	//	int color = Color.YELLOW;	//DEBUG
+    	moveableCircle = new Circle(x, y, radius, color);
+
     	myController.setMoveableCircle(moveableCircle);
+    	myController.setDrawableSize(viewWidth, viewHeight);
     	moveableCircle.addObserver(this);
     }
     
@@ -112,7 +122,7 @@ public class MyView extends View implements Observer{
         
         if(accessible){
 	        if(!myController.isDragging() && randomizeBackground){
-	        	createNewCircleBackground(viewWidth,viewHeight, RADIUS_OF_CIRCLE);
+	        	createNewCircleBackground(viewWidth,viewHeight, MAX_RADIUS_OF_CIRCLE);
 	        }
         	randomizeBackground = true;
 	        for(int i=0;i<NUMBER_OF_CIRCLE;i++){
@@ -142,12 +152,6 @@ public class MyView extends View implements Observer{
         	randomizeBackground = false;
         }
     }
-
-    @Override
-    public void update(Observable observable, Object data) {
-    	invalidate();	
-    }
-    
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         if(accessible){
@@ -162,6 +166,12 @@ public class MyView extends View implements Observer{
     }
     
     @Override
+    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+    	super.onSizeChanged(w, h, oldw, oldh);
+    	myController.setDrawableSize(w, h);
+    }
+    
+    @Override
     public void computeScroll() {
     	super.computeScroll();
     	Log.d(VIEW_LOG_TAG, "Scroll");
@@ -170,4 +180,10 @@ public class MyView extends View implements Observer{
     		ViewCompat.postInvalidateOnAnimation(this);
     	}
     }
+
+    @Override
+    public void update(Observable observable, Object data) {
+    	invalidate();	
+    }
+    
 }
