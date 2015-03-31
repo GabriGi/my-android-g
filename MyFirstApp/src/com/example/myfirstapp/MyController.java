@@ -1,19 +1,27 @@
 package com.example.myfirstapp;
 
+import android.content.Context;
 import android.util.Log;
 import android.view.GestureDetector.OnDoubleTapListener;
 import android.view.GestureDetector.OnGestureListener;
 import android.view.MotionEvent;
+import android.widget.Scroller;
 
 public class MyController implements OnGestureListener, OnDoubleTapListener {
 
     private static final String DEBUG_TAG = "Gestures";
     private Circle moveableCircle;
+    private int rc;
     private boolean dragging = false;
 	private int deltaX = 0;
 	private int deltaY = 0;
     private int numberOfTouch = 0;
     private boolean toInvalidate = false;	//Se c'è da cambiare il background.
+    private Scroller myScroller;
+    
+    public MyController(Context context) {
+		myScroller = new Scroller(context);
+	}
     
     public void setMoveableCircle(Circle circle) {
 		this.moveableCircle = circle;
@@ -43,11 +51,38 @@ public class MyController implements OnGestureListener, OnDoubleTapListener {
 		this.numberOfTouch = numberOfTouch;
 	}
     
+
+	public boolean flingCircle(int viewWidth, int viewHeight) {
+		boolean needsInvalidate = false;
+		if(myScroller.computeScrollOffset()){
+			int currX = myScroller.getCurrX()-deltaX;
+			int currY = myScroller.getCurrY()-deltaY;
+			
+			while(currX>(viewWidth-rc)){
+				currX = currX-viewWidth+2*rc;
+			}
+			while(currX<rc){
+				currX = currX+viewWidth-2*rc;
+			}
+			while(currY>(viewHeight-rc)){
+				currY = currY-viewHeight+2*rc;
+			}
+			while(currY<rc){
+				currY = currY+viewHeight-2*rc;
+			}
+			moveableCircle.setX(currX);
+			moveableCircle.setY(currY);
+			needsInvalidate = true;
+		}
+		return needsInvalidate;
+	}
+    
 	@Override
     public boolean onDown(MotionEvent event) {
         Log.d(DEBUG_TAG,"onDown");
        //Log.d(DEBUG_TAG,"onDown: " + event.toString());
         
+        myScroller.forceFinished(true);
 		numberOfTouch++;
     	dragging = false;
 		
@@ -57,7 +92,7 @@ public class MyController implements OnGestureListener, OnDoubleTapListener {
         	
         	int xc=moveableCircle.getX();
     		int yc=moveableCircle.getY();
-    		int rc=moveableCircle.getRadius();
+    		rc=moveableCircle.getRadius();
             if((x-xc)*(x-xc) + (y-yc)*(y-yc) < rc*rc){
             	dragging=true;
             	moveableCircle.setX(xc); //this is to force the view update instead of use: toUpdate = true;
@@ -70,7 +105,7 @@ public class MyController implements OnGestureListener, OnDoubleTapListener {
         	toInvalidate = true;
     	}
         
-        //Log.d(DEBUG_TAG,"onDown - end: numberOfTouch: " + numberOfTouch + " - dragging: " + dragging + " - toUpdate: " + toInvalidate);
+        Log.d(DEBUG_TAG,"onDown - end: numberOfTouch: " + numberOfTouch + " - dragging: " + dragging + " - toUpdate: " + toInvalidate);
         return true;
     }
 
@@ -124,6 +159,8 @@ public class MyController implements OnGestureListener, OnDoubleTapListener {
     public boolean onFling(MotionEvent event1, MotionEvent event2, float velocityX, float velocityY) {
         Log.d(DEBUG_TAG, "onFling");
         //Log.d(DEBUG_TAG, "onFling: " + event1.toString()+event2.toString() + " " + velocityX + " " + velocityY);
+        int tempo = 2000;
+        myScroller.startScroll((int)event2.getX(), (int)event2.getY(), (int)velocityX*tempo/4000, (int)velocityY*tempo/4000, tempo);
         return true;
     }
 

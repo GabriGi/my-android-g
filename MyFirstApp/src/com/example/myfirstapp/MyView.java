@@ -9,6 +9,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.support.v4.view.GestureDetectorCompat;
+import android.support.v4.view.ViewCompat;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -22,6 +23,8 @@ public class MyView extends View implements Observer{
 	
     private Paint p;
     private Random rand = new Random(System.currentTimeMillis());
+    private int viewWidth;
+    private int viewHeight;
     
     private Circle moveableCircle;
     private int opacita = 200;	//255:Opaco->Banale, 0:Trasparente->Impossibile
@@ -61,10 +64,9 @@ public class MyView extends View implements Observer{
 	private void initialize(Context context){
         p = new Paint();
         p.setAntiAlias(true);
-        myController = new MyController();
+        myController = new MyController(context);
         gestureDetector = new GestureDetectorCompat(context, myController);
         gestureDetector.setOnDoubleTapListener(myController);
-
     }
 	
 	public void newGame(int difficolta){
@@ -103,8 +105,8 @@ public class MyView extends View implements Observer{
         super.onDraw(canvas);
         Log.d(VIEW_LOG_TAG, "onDraw: " + this.getHeight()+", "+this.getWidth());
         
-        int viewWidth = this.getWidth();
-        int viewHeight = this.getHeight();
+        viewWidth = this.getWidth();
+        viewHeight = this.getHeight();
         
         canvas.drawColor(Color.BLACK);	//Background color
         
@@ -157,5 +159,15 @@ public class MyView extends View implements Observer{
 	        }
         }
         return true; //Evento gestito
+    }
+    
+    @Override
+    public void computeScroll() {
+    	super.computeScroll();
+    	Log.d(VIEW_LOG_TAG, "Scroll");
+    	
+    	if(myController.flingCircle(viewWidth, viewHeight)){
+    		ViewCompat.postInvalidateOnAnimation(this);
+    	}
     }
 }
