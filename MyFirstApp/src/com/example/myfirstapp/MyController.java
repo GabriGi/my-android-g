@@ -5,9 +5,11 @@ import android.util.Log;
 import android.view.GestureDetector.OnDoubleTapListener;
 import android.view.GestureDetector.OnGestureListener;
 import android.view.MotionEvent;
+import android.view.ScaleGestureDetector;
+import android.view.ScaleGestureDetector.OnScaleGestureListener;
 import android.widget.Scroller;
 
-public class MyController implements OnGestureListener, OnDoubleTapListener {
+public class MyController implements OnGestureListener, OnDoubleTapListener, OnScaleGestureListener {
 
     private static final String DEBUG_TAG = "Gestures";
     private Circle moveableCircle;
@@ -15,11 +17,12 @@ public class MyController implements OnGestureListener, OnDoubleTapListener {
     private boolean dragging = false;
 	private int deltaX = 0;
 	private int deltaY = 0;
-    private int numberOfTouch = 0;
     private boolean toInvalidate = false;	//Se c'è da cambiare il background.
     private Scroller myScroller;
     private int drawableWidth;
     private int drawableHeight;
+    
+    private boolean scaling = false;
     
     public MyController(Context context) {
 		myScroller = new Scroller(context);
@@ -55,17 +58,11 @@ public class MyController implements OnGestureListener, OnDoubleTapListener {
 		return toInvalidate;
 	}
 
-    public int getNumberOfTouch() {
-		return numberOfTouch;
-	}
-    
-    public void setNumberOfTouch(int numberOfTouch) {
-		this.numberOfTouch = numberOfTouch;
-	}
-    
-
+    /**
+     * 
+     * @return true if is still flinging, false if the scrolling is ended.
+     */
 	public boolean flingCircle(int viewWidth, int viewHeight) {
-		boolean needsInvalidate = false;
 		if(myScroller.computeScrollOffset()){
 			int currX = myScroller.getCurrX()-deltaX-rc;
 			int currY = myScroller.getCurrY()-deltaY-rc;
@@ -83,10 +80,15 @@ public class MyController implements OnGestureListener, OnDoubleTapListener {
 			}
 			moveableCircle.setX(Math.abs(x)+rc);
 			moveableCircle.setY(Math.abs(y)+rc);
-			needsInvalidate = true;
+			return true;
+		}else{
+			return false;
 		}
-		return needsInvalidate;
 	}
+	
+    /* ***************************************************************************** */
+    /* *************************     OnGestureListener     ************************* */
+    /* ***************************************************************************** */
     
 	@Override
     public boolean onDown(MotionEvent event) {
@@ -94,7 +96,6 @@ public class MyController implements OnGestureListener, OnDoubleTapListener {
        //Log.d(DEBUG_TAG,"onDown: " + event.toString());
         
         myScroller.forceFinished(true);
-		numberOfTouch++;
     	dragging = false;
 		
         if(moveableCircle!=null){ //Ovvero if(numberOfTouch == 1){
@@ -106,7 +107,7 @@ public class MyController implements OnGestureListener, OnDoubleTapListener {
     		rc=moveableCircle.getRadius();
             if((x-xc)*(x-xc) + (y-yc)*(y-yc) < rc*rc){
             	dragging=true;
-            	moveableCircle.setX(xc); //this is to force the view update instead of use: toUpdate = true;
+            	moveableCircle.setX(xc); //this is to force the view update instead of use: toInvalidate = true;
             	deltaX = x-xc;
             	deltaY = y-yc;
             }else{
@@ -116,29 +117,35 @@ public class MyController implements OnGestureListener, OnDoubleTapListener {
         	toInvalidate = true;
     	}
         
-        Log.d(DEBUG_TAG,"onDown - end: numberOfTouch: " + numberOfTouch + " - dragging: " + dragging + " - toUpdate: " + toInvalidate);
+//        Log.d(DEBUG_TAG,"onDown - end: numberOfTouch: " + numberOfTouch + " - dragging: " + dragging + " - toUpdate: " + toInvalidate);
         return true;
     }
 
     @Override
     public void onShowPress(MotionEvent event) {
-        Log.d(DEBUG_TAG, "onShowPress");
-        //Log.d(DEBUG_TAG, "onShowPress: " + event.toString());
+        if(!scaling){
+        	Log.d(DEBUG_TAG, "onShowPress");
+            //Log.d(DEBUG_TAG, "onShowPress: " + event.toString());
+        }else{
+        	Log.d(DEBUG_TAG, "onShowPress - scaling");
+        }
     }
 
     @Override
+    public void onLongPress(MotionEvent event) {
+    	if(!scaling){
+    		Log.d(DEBUG_TAG, "onLongPress"); 
+    		//Log.d(DEBUG_TAG, "onLongPress: " + event.toString()); 
+        }else{
+        	Log.d(DEBUG_TAG, "onLongPress - scaling");
+        }
+    }
+
+    @Override
+    /** N.B. Viene chiamato solo col tocco veloce.. */
     public boolean onSingleTapUp(MotionEvent event) {
         Log.d(DEBUG_TAG, "onSingleTapUp");
         //Log.d(DEBUG_TAG, "onSingleTapUp: " + event.toString());
-        
-        //TODO Viene chiamato solo col tocco veloce..
-        /*     Il risultato è un leggero bug grafico:
-         * 		se  tocco o trascino lo sfondo oppure tocco il cerchio velocemente
-         * 		e poi mostro/nascondo le istruzioni lo sfondo cambia;
-         * 		Se trascino il cerchio o lo tocco e tengo premuto
-         * 		e poi mostro/nascondo le istruzioni lo sfondo non cambia;
-         */
-    	dragging = false;
         return true;
     }
 
@@ -165,22 +172,23 @@ public class MyController implements OnGestureListener, OnDoubleTapListener {
         }
         return true;
     }
-
-    @Override
-    public void onLongPress(MotionEvent event) {
-        Log.d(DEBUG_TAG, "onLongPress"); 
-        //Log.d(DEBUG_TAG, "onLongPress: " + event.toString()); 
-    }
-
+    
     @Override
     public boolean onFling(MotionEvent event1, MotionEvent event2, float velocityX, float velocityY) {
-        Log.d(DEBUG_TAG, "onFling");
-        //Log.d(DEBUG_TAG, "onFling: " + event1.toString()+event2.toString() + " " + velocityX + " " + velocityY);
-        int tempo = 2000;
-        myScroller.startScroll((int)event2.getX(), (int)event2.getY(), (int)velocityX*tempo/4000, (int)velocityY*tempo/4000, tempo);
+    	if(dragging){
+	        Log.d(DEBUG_TAG, "onFling");
+	        //Log.d(DEBUG_TAG, "onFling: " + event1.toString()+event2.toString() + " " + velocityX + " " + velocityY);
+	        int tempo = 2000;
+	        myScroller.startScroll((int)event2.getX(), (int)event2.getY(), (int)velocityX*tempo/4000, (int)velocityY*tempo/4000, tempo);
+	        toInvalidate = true;
+    	}
         return true;
     }
 
+    /* ***************************************************************************** */
+    /* *************************    OnDoubleTapListener    ************************* */
+    /* ***************************************************************************** */
+    
     @Override
     public boolean onDoubleTap(MotionEvent event) {
         Log.d(DEBUG_TAG, "onDoubleTap");
@@ -200,5 +208,29 @@ public class MyController implements OnGestureListener, OnDoubleTapListener {
         Log.d(DEBUG_TAG, "onSingleTapConfirmed");
         //Log.d(DEBUG_TAG, "onSingleTapConfirmed: " + event.toString());
         return true;
+    }
+
+    /* *******************************************************************************/
+    /* *************************  OnScaleGestureListener   ************************* */
+    /* *******************************************************************************/
+    
+    @Override
+    public boolean onScaleBegin(ScaleGestureDetector detector) {
+        Log.d(DEBUG_TAG, "onScaleBegin");
+        scaling = true;
+    	return true;
+    }
+    
+    @Override
+    public boolean onScale(ScaleGestureDetector detector) {
+        Log.d(DEBUG_TAG, "onScale: " + detector.getScaleFactor());
+        
+    	return true;
+    }
+    
+    @Override
+    public void onScaleEnd(ScaleGestureDetector detector) {
+        Log.d(DEBUG_TAG, "onScaleEnd");
+        scaling = false;
     }
 }

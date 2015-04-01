@@ -8,18 +8,19 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.support.v4.view.GestureDetectorCompat;
-import android.support.v4.view.ViewCompat;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.GestureDetector;
 import android.view.MotionEvent;
+import android.view.ScaleGestureDetector;
 import android.view.View;
 
 public class MyView extends View implements Observer{
 
 	static final private int MAX_RADIUS_OF_CIRCLE = 50;
-	static final private int NUMBER_OF_CIRCLE = 64;
-	private Circle[] background = new Circle[NUMBER_OF_CIRCLE];
+	static final private int MAX_NUMBER_OF_CIRCLE = 64;
+	private float numberOfCircle = MAX_NUMBER_OF_CIRCLE;
+	private Circle[] background = new Circle[MAX_NUMBER_OF_CIRCLE];
 	
     private Paint p;
     private Random rand = new Random(System.currentTimeMillis());
@@ -28,6 +29,7 @@ public class MyView extends View implements Observer{
     
     private Circle moveableCircle;
     private int opacita = 200;	//255:Opaco->Banale, 0:Trasparente->Impossibile
+    private int numberOfTouch = 0;
     private int winnerTouch = 0;
     private boolean startNewGame = false;
     
@@ -35,7 +37,8 @@ public class MyView extends View implements Observer{
     private boolean accessible = false;
     private boolean randomizeBackground = true;
     
-    private GestureDetectorCompat gestureDetector;
+    private GestureDetector gestureDetector;
+    private ScaleGestureDetector scaleDetector;
     private MyController myController;
     
     public MyView(Context context) {
@@ -54,7 +57,7 @@ public class MyView extends View implements Observer{
 	}
     
     public int getNumberOfTouch() {
-		return myController.getNumberOfTouch();
+		return numberOfTouch;
 	}
     
 	public void setAccessible(boolean accessible) {
@@ -65,19 +68,21 @@ public class MyView extends View implements Observer{
         p = new Paint();
         p.setAntiAlias(true);
         myController = new MyController(context);
-        gestureDetector = new GestureDetectorCompat(context, myController);
+        gestureDetector = new GestureDetector(context, myController);
         gestureDetector.setOnDoubleTapListener(myController);
+        scaleDetector = new ScaleGestureDetector(context, myController);
     }
 	
 	public void newGame(int difficolta){
 		Log.d(VIEW_LOG_TAG, "newGame");
 		opacita = difficolta;
 		winnerTouch = 0;
-		myController.setNumberOfTouch(0);
+		numberOfTouch = 0;
 		myController.setDragging(false);
 		myController.getMyScroller().forceFinished(true);
 		moveableCircle = null;
 		startNewGame = true;
+		numberOfCircle = MAX_NUMBER_OF_CIRCLE;
 		randomizeBackground = true;
 		invalidate();
 	}
@@ -102,7 +107,7 @@ public class MyView extends View implements Observer{
     }
     
 	private Circle[] createNewCircleBackground(int maxX, int maxY, int maxRadious) {
-    	for(int i=0;i<NUMBER_OF_CIRCLE;i++){
+    	for(int i=0;i<MAX_NUMBER_OF_CIRCLE;i++){
     		background[i] = new Circle((int)(rand.nextFloat()*maxX), (int)(rand.nextFloat()*maxY), 
     								   (int)(rand.nextFloat()*maxRadious), 
     								   Color.argb(rand.nextInt(256), 0, 0, rand.nextInt(256)));
@@ -125,7 +130,7 @@ public class MyView extends View implements Observer{
 	        	createNewCircleBackground(viewWidth,viewHeight, MAX_RADIUS_OF_CIRCLE);
 	        }
         	randomizeBackground = true;
-	        for(int i=0;i<NUMBER_OF_CIRCLE;i++){
+	        for(int i=(MAX_NUMBER_OF_CIRCLE-(int)numberOfCircle);i<MAX_NUMBER_OF_CIRCLE;i++){
 		        p.setColor(background[i].getColor());
 	        	canvas.drawCircle(background[i].getX(), background[i].getY(), background[i].getRadius(), p);
 	        }
@@ -140,7 +145,7 @@ public class MyView extends View implements Observer{
 	    		canvas.drawCircle(moveableCircle.getX(), moveableCircle.getY(), moveableCircle.getRadius(), p);
 	            if(myController.isDragging() || winnerTouch!=0){
 	            	if(winnerTouch==0){
-	        	        winnerTouch = myController.getNumberOfTouch();
+	        	        winnerTouch = numberOfTouch;
 					}
 	        		p.setColor(Color.RED);
 	        		//TODO this.setTextAlignment(TEXT_ALIGNMENT_CENTER);
@@ -157,7 +162,24 @@ public class MyView extends View implements Observer{
         if(accessible){
         	super.onTouchEvent(event);
 	    	myController.setToInvalidate(false);
-	        gestureDetector.onTouchEvent(event);
+	    	scaleDetector.onTouchEvent(event);
+	    	if(!scaleDetector.isInProgress()){
+	    		if(event.getAction() == MotionEvent.ACTION_DOWN){
+	    			numberOfTouch++;
+	    		}
+	    		gestureDetector.onTouchEvent(event);
+	    	}else{
+	    		float prevNumberOfCircle = numberOfCircle;
+	    		numberOfCircle = scaleDetector.getScaleFactor() * numberOfCircle;
+	    		if(numberOfCircle > MAX_NUMBER_OF_CIRCLE){
+	    			numberOfCircle = MAX_NUMBER_OF_CIRCLE;
+	    		}else if(numberOfCircle <1){
+	    			numberOfCircle = 0.95f;
+	    		}
+	    		numberOfTouch = numberOfTouch + Math.max((int)prevNumberOfCircle-(int)numberOfCircle, 0);
+	        	randomizeBackground = false;
+	    		invalidate();
+	    	}
 	        if(myController.isToInvalidate()){
 	        	invalidate();
 	        }
@@ -175,9 +197,9 @@ public class MyView extends View implements Observer{
     public void computeScroll() {
     	super.computeScroll();
     	Log.d(VIEW_LOG_TAG, "Scroll");
-    	
     	if(myController.flingCircle(viewWidth, viewHeight)){
-    		ViewCompat.postInvalidateOnAnimation(this);
+    		//ViewCompat.postInvalidateOnAnimation(this);
+    		invalidate();	//funziona comunque..
     	}
     }
 
