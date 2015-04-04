@@ -22,7 +22,14 @@ import android.content.Context;
 import android.graphics.BitmapFactory;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
+import android.util.Log;
+import android.view.GestureDetector;
 import android.view.MotionEvent;
+import android.view.ScaleGestureDetector;
+
+import com.example.computergraphics.controls.ActionSet;
+import com.example.computergraphics.controls.BasicController;
+import com.example.computergraphics.controls.ProxyController;
 
 /**
  * Created by Alessandro on 13/03/15.
@@ -31,6 +38,10 @@ import android.view.MotionEvent;
 public class GraphicsView extends GLSurfaceView{
 
     private Context context;
+    private ActionSet actionSet;
+    private GestureDetector gestureDetector;
+    private ScaleGestureDetector scaleDetector;
+    private ProxyController controller;
 
     private float t=0;
     private float add = 0.01f;
@@ -41,31 +52,111 @@ public class GraphicsView extends GLSurfaceView{
         this.context=context;
         //super.setEGLConfigChooser(8,8,8,8,16,0);
         setRenderer(new GraphicsRenderer());
+        
+        controller = new ProxyController(new BasicController(BasicController.ABSOLUTE_MODE));
+        gestureDetector = new GestureDetector(context, controller);
+        gestureDetector.setOnDoubleTapListener(controller);
+        scaleDetector = new ScaleGestureDetector(context, controller);
     }
     
     @Override
     public boolean onTouchEvent(MotionEvent event) {
     	super.onTouchEvent(event);
-    	// TODO Auto-generated method stub
-    	//TODO lavorare su add, t ecc..
+    	scaleDetector.onTouchEvent(event);
+    	if(!scaleDetector.isInProgress()){
+    		if(event.getAction() == MotionEvent.ACTION_DOWN){
+    		}
+    		gestureDetector.onTouchEvent(event);
+    	}
     	return true;
     }
+    
+    @Override
+    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+    	super.onSizeChanged(w, h, oldw, oldh);
+    	controller.setViewSize(w,h);
+    }
+    
+//    @Override
+//    public void computeScroll() {
+//    	super.computeScroll();
+//    	if(actionSet!= null){
+//	    	if(actionSet.flingCircle()){
+//	    		//ViewCompat.postInvalidateOnAnimation(this);
+//	    		invalidate();	//funziona comunque..
+//	    	}
+//    	}
+//    }
+
 
     public class GraphicsRenderer implements Renderer{
 
     	private Node node;
-    	private Node avatarNode;
-    	private Node backgroundNode;
-    	private Node obstaclesNode;
-    	
-    	static final private int MAX_NUMBER_OF_OSTACLE = 10;
-        static final private float LUNGH_MURO = 3.00f;	//for each side
-        static final private float SPESS_MURO = 0.05f;	//for each side
-        static final private float ALTEZ_MURO = 0.25f;	//for each side
-        static final private float LUNGH_OBST = 0.25f;	//for each side
+
+        static final private float NODE_SCALE = 0.3f;
+        static final private float AVAT_SCALE = 1;			//Must be 1
+        static final private float AVAT_BODY = 0.25f;	//Avatar's body height and width for each side
+        static final private float LUNGH_MURO = 3.00f;		//for each side
+        static final private float SPESS_MURO = 0.05f;		//for each side
+        static final private float ALTEZ_MURO = AVAT_BODY;	//for each side
+        static final private float LUNGH_OBST = 0.25f;		//for each side (max = 1.374)
+    	static final private int NUMBER_OF_OSTACLE = 10;
 
 
         private ShadingProgram program;
+
+		private Node createAvatarNode(Model model) {
+			Node avatarNode = new Node();
+            
+            Node bodyNode =new Node(model);
+            bodyNode.getRelativeTransform().setPosition(0.0f, AVAT_BODY, 0.0f);
+            bodyNode.getRelativeTransform().setMatrix(SFMatrix3f.getScale(AVAT_BODY,AVAT_BODY,AVAT_BODY));
+            avatarNode.getSonNodes().add(bodyNode);
+			Log.d(VIEW_LOG_TAG, "ar="+bodyNode.getRelativeTransform());
+
+            Node neckNode = new Node(model);
+            neckNode.getRelativeTransform().setPosition(0.0f, 0.55f, 0.0f);
+            neckNode.getRelativeTransform().setMatrix(SFMatrix3f.getScale(0.15f,0.05f,0.15f));
+            avatarNode.getSonNodes().add(neckNode);
+            
+            Node headNode = new Node(model);
+            headNode.getRelativeTransform().setPosition(0.0f, 0.8f, 0.0f);
+            headNode.getRelativeTransform().setMatrix(SFMatrix3f.getScale(0.2f,0.2f,0.2f));
+            avatarNode.getSonNodes().add(headNode);
+            
+			return avatarNode;
+		}
+		
+		private Node createBackgroundNode(Model model) {
+			Node backgroundNode = new Node();
+            
+//			Node floorNode=new Node(model);
+//	        floorNode.getRelativeTransform().setPosition(0.0f, -SPESS_MURO, 0.0f);
+//	        floorNode.getRelativeTransform().setMatrix(SFMatrix3f.getScale(LUNGH_MURO,SPESS_MURO,LUNGH_MURO));
+//	        backgroundNode.getSonNodes().add(floorNode);
+	        
+	        Node wall1Node=new Node(model);
+	        wall1Node.getRelativeTransform().setPosition(LUNGH_MURO-SPESS_MURO, ALTEZ_MURO, 0.0f);
+	        wall1Node.getRelativeTransform().setMatrix(SFMatrix3f.getScale(SPESS_MURO,ALTEZ_MURO,LUNGH_MURO));
+	        backgroundNode.getSonNodes().add(wall1Node);
+	        
+	        Node wall2Node=new Node(model);
+	        wall2Node.getRelativeTransform().setPosition(0.0f, ALTEZ_MURO, LUNGH_MURO-SPESS_MURO);
+	        wall2Node.getRelativeTransform().setMatrix(SFMatrix3f.getScale(LUNGH_MURO,ALTEZ_MURO,SPESS_MURO));
+	        backgroundNode.getSonNodes().add(wall2Node);
+	        
+	        Node wall3Node=new Node(model);
+	        wall3Node.getRelativeTransform().setPosition(-LUNGH_MURO+SPESS_MURO, ALTEZ_MURO, 0.0f);
+	        wall3Node.getRelativeTransform().setMatrix(SFMatrix3f.getScale(SPESS_MURO,ALTEZ_MURO,LUNGH_MURO));
+	        backgroundNode.getSonNodes().add(wall3Node);
+	        
+	        Node wall4Node=new Node(model);
+	        wall4Node.getRelativeTransform().setPosition(0.0f, ALTEZ_MURO, -LUNGH_MURO+SPESS_MURO);
+	        wall4Node.getRelativeTransform().setMatrix(SFMatrix3f.getScale(LUNGH_MURO,ALTEZ_MURO,SPESS_MURO));
+	        backgroundNode.getSonNodes().add(wall4Node);
+	        
+	        return backgroundNode;
+		}
 
         @Override
         public void onSurfaceCreated(GL10 gl, EGLConfig config) {
@@ -117,82 +208,45 @@ public class GraphicsView extends GLSurfaceView{
             model2.setMaterialComponent(material2);
             
             /* *************************************************************** */
-            
-            avatarNode=new Node();
-            avatarNode.getRelativeTransform().setPosition(0, 0, 0);
-            node.getSonNodes().add(avatarNode);
-            
-            Node bodyNode=new Node();
-            bodyNode.setModel(model2);
-            bodyNode.getRelativeTransform().setPosition(0.0f, 0.25f, 0.0f);
-            bodyNode.getRelativeTransform().setMatrix(SFMatrix3f.getScale(0.25f,0.25f,0.25f));
-            avatarNode.getSonNodes().add(bodyNode);
 
-            Node neckNode=new Node();
-            neckNode.setModel(model2);
-            neckNode.getRelativeTransform().setPosition(0.0f, 0.55f, 0.0f);
-            neckNode.getRelativeTransform().setMatrix(SFMatrix3f.getScale(0.15f,0.05f,0.15f));
-            avatarNode.getSonNodes().add(neckNode);
-            
-            Node headNode=new Node();
-            headNode.setModel(model2);
-            headNode.getRelativeTransform().setPosition(0.0f, 0.8f, 0.0f);
-            headNode.getRelativeTransform().setMatrix(SFMatrix3f.getScale(0.2f,0.2f,0.2f));
-            avatarNode.getSonNodes().add(headNode);
+            Node avatarNode = createAvatarNode(model2);
+            avatarNode.getRelativeTransform().setPosition(0, 0, 0);
+            avatarNode.getRelativeTransform().setMatrix(SFMatrix3f.getScale(AVAT_SCALE,AVAT_SCALE,AVAT_SCALE));
+            node.getSonNodes().add(avatarNode);
 
             /* *************************************************************** */
             
-            backgroundNode=new Node();
+            Node cameraNode = new Node();
+            cameraNode.getRelativeTransform().setPosition(0, 0, 0);
+            cameraNode.getRelativeTransform().setMatrix(SFMatrix3f.getScale(0,0,0));
+            node.getSonNodes().add(cameraNode);
+            
+            /* *************************************************************** */
+            Node backgroundNode = createBackgroundNode(model1);
             backgroundNode.getRelativeTransform().setPosition(0, 0, 0);
+            backgroundNode.getRelativeTransform().setMatrix(SFMatrix3f.getScale(AVAT_SCALE,AVAT_SCALE,AVAT_SCALE));
             node.getSonNodes().add(backgroundNode);
             
-            Node floorNode=new Node();
-            floorNode.setModel(model1);
-            floorNode.getRelativeTransform().setPosition(0.0f, -SPESS_MURO, 0.0f);
-            floorNode.getRelativeTransform().setMatrix(SFMatrix3f.getScale(LUNGH_MURO,SPESS_MURO,LUNGH_MURO));
-            backgroundNode.getSonNodes().add(floorNode);
-            
-            Node wall1Node=new Node();
-            wall1Node.setModel(model1);
-            wall1Node.getRelativeTransform().setPosition(LUNGH_MURO-SPESS_MURO, ALTEZ_MURO, 0.0f);
-            wall1Node.getRelativeTransform().setMatrix(SFMatrix3f.getScale(SPESS_MURO,ALTEZ_MURO,LUNGH_MURO));
-            backgroundNode.getSonNodes().add(wall1Node);
-            
-            Node wall2Node=new Node();
-            wall2Node.setModel(model1);
-            wall2Node.getRelativeTransform().setPosition(0.0f, ALTEZ_MURO, LUNGH_MURO-SPESS_MURO);
-            wall2Node.getRelativeTransform().setMatrix(SFMatrix3f.getScale(LUNGH_MURO,ALTEZ_MURO,SPESS_MURO));
-            backgroundNode.getSonNodes().add(wall2Node);
-            
-            Node wall3Node=new Node();
-            wall3Node.setModel(model1);
-            wall3Node.getRelativeTransform().setPosition(-LUNGH_MURO+SPESS_MURO, ALTEZ_MURO, 0.0f);
-            wall3Node.getRelativeTransform().setMatrix(SFMatrix3f.getScale(SPESS_MURO,ALTEZ_MURO,LUNGH_MURO));
-            backgroundNode.getSonNodes().add(wall3Node);
-            
-            Node wall4Node=new Node();
-            wall4Node.setModel(model1);
-            wall4Node.getRelativeTransform().setPosition(0.0f, ALTEZ_MURO, -LUNGH_MURO+SPESS_MURO);
-            wall4Node.getRelativeTransform().setMatrix(SFMatrix3f.getScale(LUNGH_MURO,ALTEZ_MURO,SPESS_MURO));
-            backgroundNode.getSonNodes().add(wall4Node);
-
-            /* *************************************************************** */
-            
-            obstaclesNode=new Node();
-            obstaclesNode.getRelativeTransform().setPosition(0, 0, 0);
-            node.getSonNodes().add(obstaclesNode);
+            Node innerObstaclesNode = new Node();
+            innerObstaclesNode.getRelativeTransform().setPosition(0, 0, 0);
+            innerObstaclesNode.getRelativeTransform().setMatrix(SFMatrix3f.getScale(AVAT_SCALE,AVAT_SCALE,AVAT_SCALE));
+            backgroundNode.getSonNodes().add(innerObstaclesNode);
             
             Random rand = new Random();
-            for (int i = 0; i < MAX_NUMBER_OF_OSTACLE; i++) {
-            	Node n = new Node();
-				n.setModel(model1);
-				float xp = rand.nextFloat()*(LUNGH_MURO-LUNGH_OBST)*2-LUNGH_MURO+LUNGH_OBST;
-				float zp = rand.nextFloat()*(LUNGH_MURO-LUNGH_OBST)*2-LUNGH_MURO+LUNGH_OBST;
-				n.getRelativeTransform().setPosition(xp, ALTEZ_MURO, zp);
-				n.getRelativeTransform().setMatrix(SFMatrix3f.getScale(LUNGH_OBST,ALTEZ_MURO,LUNGH_OBST));
-				obstaclesNode.getSonNodes().add(n);
+            for (int i = 0; i < NUMBER_OF_OSTACLE; i++) {
+            	Node n;
+				while(true){
+					n = new Node(model1);
+					float xp = rand.nextFloat()*(LUNGH_MURO-LUNGH_OBST)*2-LUNGH_MURO+LUNGH_OBST;
+					float zp = rand.nextFloat()*(LUNGH_MURO-LUNGH_OBST)*2-LUNGH_MURO+LUNGH_OBST;
+					n.getRelativeTransform().setPosition(xp, ALTEZ_MURO, zp);
+					n.getRelativeTransform().setMatrix(SFMatrix3f.getScale(LUNGH_OBST,ALTEZ_MURO,LUNGH_OBST));
+					if(!avatarNode.getSonNodes().get(0).coveredBy(n)) break;
+				}
+				innerObstaclesNode.getSonNodes().add(n);
 			}
-            
+            actionSet = new ActionSet(context, node, LUNGH_MURO, NODE_SCALE);
+            controller.setActionsSet(actionSet);
         }
 
         @Override
@@ -210,21 +264,20 @@ public class GraphicsView extends GLSurfaceView{
                     1,0,0,0,
                     0,1,0,0,
                     0,0,1,0,
-                    0,0,0,1,
+                    0,0,0,1
             };
             program.setupProjection(projection);
 
             //Change the Node transform
-            if(t>0.5||t<0){
-            	add = 0-add;
-            }
+//            if(t>0.5||t<0){
+//            	add = 0-add;
+//            }
             t+=add;
             float rotation=0.0f + t;
-            float scaling=0.3f;
             
-            SFMatrix3f matrix3f=SFMatrix3f.getScale(scaling,scaling,scaling);
-            matrix3f=matrix3f.MultMatrix(SFMatrix3f.getRotationX(0.5f));
-            matrix3f=matrix3f.MultMatrix(SFMatrix3f.getRotationY(rotation));
+            SFMatrix3f matrix3f=SFMatrix3f.getScale(NODE_SCALE,NODE_SCALE,NODE_SCALE);
+            matrix3f=matrix3f.MultMatrix(SFMatrix3f.getRotationX(0.9f));	//(float)(Math.PI/2)));		//0.9f));
+            matrix3f=matrix3f.MultMatrix(SFMatrix3f.getRotationY(0.1f));
             matrix3f=matrix3f.MultMatrix(SFMatrix3f.getRotationZ(0));
             node.getRelativeTransform().setMatrix(matrix3f);
             node.updateTree(new SFTransform3f());

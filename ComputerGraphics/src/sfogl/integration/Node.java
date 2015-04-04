@@ -2,6 +2,7 @@ package sfogl.integration;
 
 import java.util.ArrayList;
 
+import android.util.Log;
 import shadow.math.SFMatrix3f;
 import shadow.math.SFTransform3f;
 import shadow.math.SFVertex3f;
@@ -22,25 +23,19 @@ public class Node {
 	    enabled=true;
 	}
 	
-	
 	public Node(){
 	    setup();
+	}
+	
+	public Node(Model model){
+	    setup();
+	    this.model=model;
 	}
 	
 	public Node(SFTransform3f relativeTransform){
 	    setup();
 	    this.relativeTransform=relativeTransform;
 	}
-	
-	public Node clodeNode(){
-        SFTransform3f transform=new SFTransform3f();
-        transform.set(getRelativeTransform());
-        Node node=new Node(transform,getModel());
-        for (int i = 0; i < getSonNodes().size(); i++) {
-            node.getSonNodes().add(getSonNodes().get(i).clodeNode());
-        }
-        return node;
-    }
 	
 	public Node(SFTransform3f relativeTransform,Model model){
 	    setup();
@@ -83,6 +78,16 @@ public class Node {
 	public SFTransform3f getRelativeTransform() {
 		return relativeTransform;
 	}
+	
+	public Node clodeNode(){
+        SFTransform3f transform=new SFTransform3f();
+        transform.set(getRelativeTransform());
+        Node node=new Node(transform,getModel());
+        for (int i = 0; i < getSonNodes().size(); i++) {
+            node.getSonNodes().add(getSonNodes().get(i).clodeNode());
+        }
+        return node;
+    }
 	
 	public void updateTransform(SFTransform3f fatherTransform){
 	  
@@ -150,6 +155,70 @@ public class Node {
 	            sonNodes.get(i).draw();
 	        }
 	    }
+	}
+
+	int k = 0;
+	/**
+	 * @param anotherNode
+	 * @return true if the node is covered by anotherNode along the x and z axis.
+	 */
+	public boolean coveredBy(Node anotherNode){
+		if(anotherNode.getModel()!=null){
+			Log.d("task",k+"  "+"inside");
+			k++;
+			float[] position = new float[3];
+			position[0]= relativeTransform.getV()[9];
+			position[1]= relativeTransform.getV()[10];
+			position[2]= relativeTransform.getV()[11];
+			float[] scale = new float[3];
+			scale[0]= relativeTransform.getV()[0];
+			scale[1]= relativeTransform.getV()[4];
+			scale[2]= relativeTransform.getV()[8];
+	
+			float[] anotherPosition = new float[3];
+			anotherPosition[0]= anotherNode.getRelativeTransform().getV()[9];
+			anotherPosition[1]= anotherNode.getRelativeTransform().getV()[10];
+			anotherPosition[2]= anotherNode.getRelativeTransform().getV()[11];
+			float[] anotherScale = new float[3];
+			anotherScale[0]= anotherNode.getRelativeTransform().getV()[0];
+			anotherScale[1]= anotherNode.getRelativeTransform().getV()[4];
+			anotherScale[2]= anotherNode.getRelativeTransform().getV()[8];
+	
+			boolean coveredX= !(((position[0]-scale[0])<=(anotherPosition[0]-anotherScale[0]) &&
+								 (position[0]+scale[0])<=(anotherPosition[0]-anotherScale[0])) ||
+								((position[0]-scale[0])>=(anotherPosition[0]+anotherScale[0]) &&
+								 (position[0]+scale[0])>=(anotherPosition[0]+anotherScale[0])));
+			boolean coveredY= !(((position[1]-scale[1])<=(anotherPosition[1]-anotherScale[1]) &&
+								 (position[1]+scale[1])<=(anotherPosition[1]-anotherScale[1])) ||
+								((position[1]-scale[1])>=(anotherPosition[1]+anotherScale[1]) &&
+								 (position[1]+scale[1])>=(anotherPosition[1]+anotherScale[1])));
+			boolean coveredZ= !(((position[2]-scale[2])<=(anotherPosition[2]-anotherScale[2]) &&
+								 (position[2]+scale[2])<=(anotherPosition[2]-anotherScale[2])) ||
+								((position[2]-scale[2])>=(anotherPosition[2]+anotherScale[2]) &&
+								 (position[2]+scale[2])>=(anotherPosition[2]+anotherScale[2])));
+			if(coveredX&&coveredY&&coveredZ){
+				return true;
+			}else{
+				return false;
+			}
+		}else{
+			Log.d("task",k+"  "+"out");
+			k++;
+			return false;
+		}
+	}
+
+	int j = 0;
+	public boolean coveredBySonNodes(Node anotherNode){
+	    boolean covered = coveredBy(anotherNode);
+		Log.d("task", j+"  "+": "+covered);
+		j++;
+	    if(covered) return true;
+	    for(int i=0;i<anotherNode.getSonNodes().size();i++){
+    		covered = coveredBySonNodes(anotherNode.getSonNodes().get(i));
+    		if(covered) return true;
+        }
+		return false;
 	}
 }
 
