@@ -1,6 +1,5 @@
 package com.example.computergraphics.controls;
 
-import sfogl.integration.Node;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
@@ -9,6 +8,7 @@ public class ProxyController implements IController {
 	
     private static final String DEBUG_TAG = "Gestures";
     private boolean scaling = false;
+    private boolean doubling = false;
 
 	private IController controller;
 
@@ -42,21 +42,21 @@ public class ProxyController implements IController {
 
 	@Override
 	public void onShowPress(MotionEvent e) {
-        if(!scaling){
+        if(!(scaling || doubling)){
         	Log.d(DEBUG_TAG, "onShowPress");
     		controller.onShowPress(e);
         }else{
-        	Log.d(DEBUG_TAG, "onShowPress - scaling");
+        	Log.d(DEBUG_TAG, "onShowPress - scaling or doubling");
         }
 	}
 
 	@Override
 	public void onLongPress(MotionEvent e) {
-    	if(!scaling){
+    	if(!(scaling || doubling)){
     		Log.d(DEBUG_TAG, "onLongPress");
     		controller.onLongPress(e);
         }else{
-        	Log.d(DEBUG_TAG, "onLongPress - scaling");
+        	Log.d(DEBUG_TAG, "onLongPress - scaling or doubling");
         }
 	}
 
@@ -91,13 +91,16 @@ public class ProxyController implements IController {
 	@Override
 	public boolean onDoubleTap(MotionEvent e) {
         Log.d(DEBUG_TAG, "onDoubleTap");
+        doubling = true;
 		return controller.onDoubleTap(e);
 	}
 
 	@Override
 	public boolean onDoubleTapEvent(MotionEvent e) {
         Log.d(DEBUG_TAG, "onDoubleTapEvent");
-		return controller.onDoubleTapEvent(e);
+        boolean returnValue = controller.onDoubleTapEvent(e);
+        if(e.getAction() == MotionEvent.ACTION_UP) doubling = false;
+        return returnValue;
 	}
 
     /* *******************************************************************************/

@@ -1,5 +1,6 @@
 package com.example.computergraphics.controls;
 
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 
@@ -35,40 +36,40 @@ public class BasicController implements IController {
     
 	@Override
 	public boolean onDown(MotionEvent e) {
-		// TODO Auto-generated method stub
 		return true;
 	}
 
 	@Override
 	public void onShowPress(MotionEvent e) {
-		// TODO Auto-generated method stub
+		// TODO effetto molla
 	}
 
 	@Override
 	public void onLongPress(MotionEvent e) {
-		// TODO Auto-generated method stub
+		// TODO switch
+		actionSet.jumpAvatar();
 	}
 
 	@Override
 	public boolean onSingleTapUp(MotionEvent e) {
-		// TODO Auto-generated method stub
 		return true;
 	}
 
 	@Override
 	public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
-//		if(mode==ABSOLUTE_MODE){
-//			actionSet.moveAvatarWith((e2.getX()-(viewWidth>>1))/(viewWidth>>1), (e2.getY()-(viewHeight>>1))/(viewHeight>>1));
-//		}else if(mode==RELATIVE_MODE){
+		if(mode==ABSOLUTE_MODE){
+			actionSet.moveAvatarWith((e2.getX()-(viewWidth>>1))/(viewWidth>>1), 
+									 (e2.getY()-(viewHeight>>1))/(viewHeight>>1));
+		}else if(mode==RELATIVE_MODE){
 //			actionSet.moveAvatarWith(e2.getX()-e1.getX(), e2.getY()-e1.getY());
-//		}
+		}
 		return true;
 	}
 
 	@Override
-	public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX,
-			float velocityY) {
-		// TODO Auto-generated method stub
+	public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+		// TODO
+		actionSet.jumpAvatar();
 		return true;
 	}
 
@@ -78,19 +79,23 @@ public class BasicController implements IController {
     
 	@Override
 	public boolean onSingleTapConfirmed(MotionEvent e) {
-		actionSet.moveAvatarTo((e.getX()-(viewWidth>>1))/(viewWidth>>1), (e.getY()-(viewHeight>>1))/(viewHeight>>1));
+		actionSet.moveAvatarTo((e.getX()-(viewWidth>>1))/(viewWidth>>1), 
+							   (e.getY()-(viewHeight>>1))/(viewHeight>>1), 
+							   ActionSet.VELOCITY_WALK);
 		return true;
 	}
 
 	@Override
 	public boolean onDoubleTap(MotionEvent e) {
-		// TODO Auto-generated method stub
 		return true;
 	}
 
 	@Override
 	public boolean onDoubleTapEvent(MotionEvent e) {
-		// TODO Auto-generated method stub
+		// TODO switch (probabilmente non serve ed il metodo e' a posto cosi' :))
+		actionSet.moveAvatarTo((e.getX()-(viewWidth>>1))/(viewWidth>>1), 
+							   (e.getY()-(viewHeight>>1))/(viewHeight>>1), 
+							   ActionSet.VELOCITY_RUN);
 		return true;
 	}
 
@@ -100,19 +105,24 @@ public class BasicController implements IController {
 
 	@Override
 	public boolean onScaleBegin(ScaleGestureDetector detector) {
-		// TODO Auto-generated method stub
 		return true;
 	}
     
 	@Override
 	public boolean onScale(ScaleGestureDetector detector) {
-		// TODO Auto-generated method stub
+		// TODO non e' un buon metodo usare il getScaleFactor. Meglio forse i getX e getY.
+		if(Math.abs(detector.getScaleFactor()-1)<0.025){
+			Log.d("Gestures", "        - rotation: "+(Math.abs(detector.getScaleFactor()-1)));
+			actionSet.rotationCamera();
+		}else{
+			Log.d("Gestures", "        - zoom:     "+(Math.abs(detector.getScaleFactor()-1)));
+			actionSet.zoomCamera();
+		}
 		return true;
 	}
 
 	@Override
 	public void onScaleEnd(ScaleGestureDetector detector) {
-		// TODO Auto-generated method stub
 	}
 
 }

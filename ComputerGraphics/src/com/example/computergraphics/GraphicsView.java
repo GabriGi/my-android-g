@@ -43,7 +43,7 @@ public class GraphicsView extends GLSurfaceView{
     private ScaleGestureDetector scaleDetector;
     private ProxyController controller;
 
-    private float t=0;
+    private float t=0.0f;
     private float add = 0.01f;
     
     public GraphicsView(Context context) {
@@ -92,16 +92,20 @@ public class GraphicsView extends GLSurfaceView{
     public class GraphicsRenderer implements Renderer{
 
     	private Node node;
+    	private float rotX = 0.8f;	//Will not change. It represent the floor inclination.
+    								//If changed at runtime, isn't dangerous if it is set != 0 , *Math.PI...
+    	private float rotY = 0.4f;	//The user will change it at runtime
+    	static final private float rotZ = 0.0f;	//This must be 0.0f.
+
 
         static final private float NODE_SCALE = 0.3f;
         static final private float AVAT_SCALE = 1;			//Must be 1
         static final private float AVAT_BODY = 0.25f;	//Avatar's body height and width for each side
         static final private float LUNGH_MURO = 3.00f;		//for each side
-        static final private float SPESS_MURO = 0.05f;		//for each side
+        static final private float SPESS_MURO = 0.05f;		//for each side (is good also with 0f)
         static final private float ALTEZ_MURO = AVAT_BODY;	//for each side
         static final private float LUNGH_OBST = 0.25f;		//for each side (max = 1.374)
     	static final private int NUMBER_OF_OSTACLE = 10;
-
 
         private ShadingProgram program;
 
@@ -130,10 +134,10 @@ public class GraphicsView extends GLSurfaceView{
 		private Node createBackgroundNode(Model model) {
 			Node backgroundNode = new Node();
             
-//			Node floorNode=new Node(model);
-//	        floorNode.getRelativeTransform().setPosition(0.0f, -SPESS_MURO, 0.0f);
-//	        floorNode.getRelativeTransform().setMatrix(SFMatrix3f.getScale(LUNGH_MURO,SPESS_MURO,LUNGH_MURO));
-//	        backgroundNode.getSonNodes().add(floorNode);
+			Node floorNode=new Node(model);
+	        floorNode.getRelativeTransform().setPosition(0.0f, -SPESS_MURO, 0.0f);
+	        floorNode.getRelativeTransform().setMatrix(SFMatrix3f.getScale(LUNGH_MURO,SPESS_MURO,LUNGH_MURO));
+	        backgroundNode.getSonNodes().add(floorNode);
 	        
 	        Node wall1Node=new Node(model);
 	        wall1Node.getRelativeTransform().setPosition(LUNGH_MURO-SPESS_MURO, ALTEZ_MURO, 0.0f);
@@ -245,7 +249,7 @@ public class GraphicsView extends GLSurfaceView{
 				}
 				innerObstaclesNode.getSonNodes().add(n);
 			}
-            actionSet = new ActionSet(context, node, LUNGH_MURO, NODE_SCALE);
+            actionSet = new ActionSet(context, node, NODE_SCALE, rotX, rotY);
             controller.setActionsSet(actionSet);
         }
 
@@ -273,12 +277,12 @@ public class GraphicsView extends GLSurfaceView{
 //            	add = 0-add;
 //            }
             t+=add;
-            float rotation=0.0f + t;
+            float rotation = rotY + t;
             
             SFMatrix3f matrix3f=SFMatrix3f.getScale(NODE_SCALE,NODE_SCALE,NODE_SCALE);
-            matrix3f=matrix3f.MultMatrix(SFMatrix3f.getRotationX(0.9f));	//(float)(Math.PI/2)));		//0.9f));
-            matrix3f=matrix3f.MultMatrix(SFMatrix3f.getRotationY(0.1f));
-            matrix3f=matrix3f.MultMatrix(SFMatrix3f.getRotationZ(0));
+            matrix3f=matrix3f.MultMatrix(SFMatrix3f.getRotationX(rotX));	//(float)(Math.PI/2)));	//For 2D
+            matrix3f=matrix3f.MultMatrix(SFMatrix3f.getRotationY(rotY));	//rotation));
+            matrix3f=matrix3f.MultMatrix(SFMatrix3f.getRotationZ(rotZ));
             node.getRelativeTransform().setMatrix(matrix3f);
             node.updateTree(new SFTransform3f());
 

@@ -2,7 +2,6 @@ package sfogl.integration;
 
 import java.util.ArrayList;
 
-import android.util.Log;
 import shadow.math.SFMatrix3f;
 import shadow.math.SFTransform3f;
 import shadow.math.SFVertex3f;
@@ -164,8 +163,6 @@ public class Node {
 	 */
 	public boolean coveredBy(Node anotherNode){
 		if(anotherNode.getModel()!=null){
-			Log.d("task",k+"  "+"inside");
-			k++;
 			float[] position = new float[3];
 			position[0]= relativeTransform.getV()[9];
 			position[1]= relativeTransform.getV()[10];
@@ -202,17 +199,12 @@ public class Node {
 				return false;
 			}
 		}else{
-			Log.d("task",k+"  "+"out");
-			k++;
 			return false;
 		}
 	}
 
-	int j = 0;
 	public boolean coveredBySonNodes(Node anotherNode){
 	    boolean covered = coveredBy(anotherNode);
-		Log.d("task", j+"  "+": "+covered);
-		j++;
 	    if(covered) return true;
 	    for(int i=0;i<anotherNode.getSonNodes().size();i++){
     		covered = coveredBySonNodes(anotherNode.getSonNodes().get(i));

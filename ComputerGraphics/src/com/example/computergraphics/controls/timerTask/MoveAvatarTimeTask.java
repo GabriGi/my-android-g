@@ -2,11 +2,10 @@ package com.example.computergraphics.controls.timerTask;
 
 import java.util.TimerTask;
 
-import android.util.Log;
 import sfogl.integration.Node;
 import shadow.math.SFMatrix3f;
-import shadow.math.SFTransform3f;
 import shadow.math.SFVertex3f;
+import android.util.Log;
 
 /**
  * Questo e' il task che il timer in playlistManager deve eseguire.
@@ -14,7 +13,7 @@ import shadow.math.SFVertex3f;
 public class MoveAvatarTimeTask extends TimerTask{
 
 	private Node avatar, similAvatarBody, all;
-	private float startX, startZ, currX, currZ, finalX, finalZ, velocityX, velocityZ, scale;
+	private float startX, startZ, currX, currZ, finalX, finalZ, velocityX, velocityZ;
 	private float avatarBodyY;
 	
 	/**
@@ -23,18 +22,17 @@ public class MoveAvatarTimeTask extends TimerTask{
 	 * @param videoManager Il gestore dei video
 	 * @param playlistManager Il gestore della playlist
 	 */
-	public MoveAvatarTimeTask(Node avatar, float finalX, float finalZ, float velocityX, float velocityZ, Node all, float scale) {
+	public MoveAvatarTimeTask(Node avatar, SFVertex3f destination, float velocityX, float velocityZ, Node all) {
 		this.avatar = avatar;
 		this.similAvatarBody = avatar.getSonNodes().get(0).clodeNode();
 		startX = avatar.getRelativeTransform().getV()[9];
 		avatarBodyY = similAvatarBody.getRelativeTransform().getV()[10];
 		startZ = avatar.getRelativeTransform().getV()[11];
-		this.finalX = finalX;
-		this.finalZ = finalZ;
+		this.finalX = destination.getX();
+		this.finalZ = destination.getZ();
 		this.velocityX = velocityX;
 		this.velocityZ = velocityZ;
 		this.all = all;
-		this.scale = scale;
 	}
 
 	/**
@@ -60,8 +58,6 @@ public class MoveAvatarTimeTask extends TimerTask{
 		}else{
 			cancel();
 		}
-
-//		Log.d("task", velocityX+" "+velocityZ+" "+finalX+" "+finalZ+" "+currX+" "+currZ);
 		
 		SFMatrix3f matrix = new SFMatrix3f();
 		all.getRelativeTransform().getMatrix(matrix);

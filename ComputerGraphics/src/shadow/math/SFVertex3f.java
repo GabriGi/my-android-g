@@ -70,6 +70,7 @@ public class SFVertex3f extends SFValue{
 	 */
 	public SFVertex3f(float[] values) {
 		//super(values);
+		set3f(values[0],values[1],values[2]);
 	}
 
 	/**
