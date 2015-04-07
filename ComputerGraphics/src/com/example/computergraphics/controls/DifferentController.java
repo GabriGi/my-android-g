@@ -21,6 +21,11 @@ public class DifferentController implements IController {
 		this.viewHeight = height;
 	}
 	
+	@Override
+	public void stopScrolling() {
+		// TODO Auto-generated method stub
+	}
+	
     /* ***************************************************************************** */
     /* *************************     OnGestureListener     ************************* */
     /* ***************************************************************************** */

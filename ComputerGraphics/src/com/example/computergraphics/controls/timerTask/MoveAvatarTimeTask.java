@@ -52,13 +52,11 @@ public class MoveAvatarTimeTask extends TimerTask{
 		if((currZ>finalZ&&finalZ>startZ)||(currZ<finalZ&&finalZ<startZ)) currZ=finalZ;
 		similAvatarBody.getRelativeTransform().setPosition(currX, avatarBodyY, currZ);
 		boolean touchObstacle = similAvatarBody.coveredBySonNodes(all.getSonNodes().get(2));
-		Log.d("task", "msg");
 		if(!touchObstacle){
 			avatar.getRelativeTransform().setPosition(currX, 0, currZ);
 		}else{
 			cancel();
 		}
-		
 		SFMatrix3f matrix = new SFMatrix3f();
 		all.getRelativeTransform().getMatrix(matrix);
 		SFVertex3f position = matrix.Mult(new SFVertex3f(-currX, 0, -currZ));

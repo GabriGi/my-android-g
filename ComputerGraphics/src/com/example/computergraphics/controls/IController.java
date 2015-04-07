@@ -10,4 +10,6 @@ public interface IController extends OnGestureListener, OnDoubleTapListener, OnS
 	
 	public void setViewSize(int width, int height);
 	
+	public void stopScrolling();
+	
 }

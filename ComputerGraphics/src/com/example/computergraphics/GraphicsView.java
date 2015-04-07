@@ -1,5 +1,6 @@
 package com.example.computergraphics;
 
+import java.util.Observer;
 import java.util.Random;
 
 import javax.microedition.khronos.egl.EGLConfig;
@@ -22,7 +23,6 @@ import android.content.Context;
 import android.graphics.BitmapFactory;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
-import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
@@ -42,9 +42,6 @@ public class GraphicsView extends GLSurfaceView{
     private GestureDetector gestureDetector;
     private ScaleGestureDetector scaleDetector;
     private ProxyController controller;
-
-    private float t=0.0f;
-    private float add = 0.01f;
     
     public GraphicsView(Context context) {
         super(context);
@@ -55,7 +52,8 @@ public class GraphicsView extends GLSurfaceView{
         
         controller = new ProxyController(new BasicController(BasicController.ABSOLUTE_MODE));
         gestureDetector = new GestureDetector(context, controller);
-        gestureDetector.setOnDoubleTapListener(controller);
+        gestureDetector.setOnDoubleTapListener(controller);		//Solo se sto usando il BasicController!!!
+        gestureDetector.setIsLongpressEnabled(false);
         scaleDetector = new ScaleGestureDetector(context, controller);
     }
     
@@ -64,9 +62,10 @@ public class GraphicsView extends GLSurfaceView{
     	super.onTouchEvent(event);
     	scaleDetector.onTouchEvent(event);
     	if(!scaleDetector.isInProgress()){
-    		if(event.getAction() == MotionEvent.ACTION_DOWN){
-    		}
     		gestureDetector.onTouchEvent(event);
+    		if((event.getAction() == MotionEvent.ACTION_UP) && controller.isScrolling()){
+    			controller.stopScrolling();
+    		}
     	}
     	return true;
     }
@@ -87,17 +86,9 @@ public class GraphicsView extends GLSurfaceView{
 //	    	}
 //    	}
 //    }
-
-
+    
     public class GraphicsRenderer implements Renderer{
-
-    	private Node node;
-    	private float rotX = 0.8f;	//Will not change. It represent the floor inclination.
-    								//If changed at runtime, isn't dangerous if it is set != 0 , *Math.PI...
-    	private float rotY = 0.4f;	//The user will change it at runtime
-    	static final private float rotZ = 0.0f;	//This must be 0.0f.
-
-
+    	
         static final private float NODE_SCALE = 0.3f;
         static final private float AVAT_SCALE = 1;			//Must be 1
         static final private float AVAT_BODY = 0.25f;	//Avatar's body height and width for each side
@@ -106,6 +97,14 @@ public class GraphicsView extends GLSurfaceView{
         static final private float ALTEZ_MURO = AVAT_BODY;	//for each side
         static final private float LUNGH_OBST = 0.25f;		//for each side (max = 1.374)
     	static final private int NUMBER_OF_OSTACLE = 10;
+
+    	private Node node;
+    	
+    	private float scale = NODE_SCALE;
+    	private float rotX = 0.8f;	//Will not change. It represent the floor inclination.
+    								//If changed at runtime, isn't dangerous if it is set != 0 , *Math.PI...
+    	private float rotY = 0.4f;	//The user will change it at runtime
+    	static final private float rotZ = 0.0f;	//This must be 0.0f.
 
         private ShadingProgram program;
 
@@ -116,7 +115,6 @@ public class GraphicsView extends GLSurfaceView{
             bodyNode.getRelativeTransform().setPosition(0.0f, AVAT_BODY, 0.0f);
             bodyNode.getRelativeTransform().setMatrix(SFMatrix3f.getScale(AVAT_BODY,AVAT_BODY,AVAT_BODY));
             avatarNode.getSonNodes().add(bodyNode);
-			Log.d(VIEW_LOG_TAG, "ar="+bodyNode.getRelativeTransform());
 
             Node neckNode = new Node(model);
             neckNode.getRelativeTransform().setPosition(0.0f, 0.55f, 0.0f);
@@ -249,7 +247,7 @@ public class GraphicsView extends GLSurfaceView{
 				}
 				innerObstaclesNode.getSonNodes().add(n);
 			}
-            actionSet = new ActionSet(context, node, NODE_SCALE, rotX, rotY);
+            actionSet = new ActionSet(context, node, scale, rotX, rotY);
             controller.setActionsSet(actionSet);
         }
 
@@ -276,12 +274,14 @@ public class GraphicsView extends GLSurfaceView{
 //            if(t>0.5||t<0){
 //            	add = 0-add;
 //            }
-            t+=add;
-            float rotation = rotY + t;
             
-            SFMatrix3f matrix3f=SFMatrix3f.getScale(NODE_SCALE,NODE_SCALE,NODE_SCALE);
+            scale = actionSet.getScale();
+        	rotX = actionSet.getRotX();
+        	rotY = actionSet.getRotY();
+            
+            SFMatrix3f matrix3f=SFMatrix3f.getScale(scale,scale,scale);
             matrix3f=matrix3f.MultMatrix(SFMatrix3f.getRotationX(rotX));	//(float)(Math.PI/2)));	//For 2D
-            matrix3f=matrix3f.MultMatrix(SFMatrix3f.getRotationY(rotY));	//rotation));
+            matrix3f=matrix3f.MultMatrix(SFMatrix3f.getRotationY(rotY));
             matrix3f=matrix3f.MultMatrix(SFMatrix3f.getRotationZ(rotZ));
             node.getRelativeTransform().setMatrix(matrix3f);
             node.updateTree(new SFTransform3f());

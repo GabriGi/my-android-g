@@ -4,7 +4,7 @@
   <class id="1" language="java" name="com.example.computergraphics.controls.BasicController" project="ComputerGraphics" 
     file="/ComputerGraphics/src/com/example/computergraphics/controls/BasicController.java" binary="false" 
     corner="BOTTOM_RIGHT">    
-    <position height="-1" width="-1" x="809" y="195"/>    
+    <position height="-1" width="-1" x="768" y="158"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
       visibility="true">      
       <attributes public="false" package="false" protected="false" private="false" static="false"/>      
@@ -14,7 +14,7 @@
   <interface id="2" language="java" name="com.example.computergraphics.controls.IController" project="ComputerGraphics" 
     file="/ComputerGraphics/src/com/example/computergraphics/controls/IController.java" binary="false" 
     corner="BOTTOM_RIGHT">    
-    <position height="-1" width="-1" x="590" y="72"/>    
+    <position height="-1" width="-1" x="549" y="35"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
       visibility="true">      
       <attributes public="false" package="false" protected="false" private="false" static="false"/>      
@@ -24,7 +24,7 @@
   <class id="3" language="java" name="com.example.computergraphics.controls.ActionSet" project="ComputerGraphics" 
     file="/ComputerGraphics/src/com/example/computergraphics/controls/ActionSet.java" binary="false" 
     corner="BOTTOM_RIGHT">    
-    <position height="-1" width="-1" x="590" y="288"/>    
+    <position height="-1" width="-1" x="549" y="251"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
       visibility="true">      
       <attributes public="false" package="false" protected="false" private="false" static="false"/>      
@@ -34,7 +34,7 @@
   <class id="4" language="java" name="com.example.computergraphics.controls.ProxyController" project="ComputerGraphics" 
     file="/ComputerGraphics/src/com/example/computergraphics/controls/ProxyController.java" binary="false" 
     corner="BOTTOM_RIGHT">    
-    <position height="-1" width="-1" x="152" y="195"/>    
+    <position height="-1" width="-1" x="111" y="158"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
       visibility="true">      
       <attributes public="false" package="false" protected="false" private="false" static="false"/>      
@@ -45,7 +45,7 @@
     project="ComputerGraphics" 
     file="/ComputerGraphics/src/com/example/computergraphics/controls/DifferentController.java" binary="false" 
     corner="BOTTOM_RIGHT">    
-    <position height="-1" width="-1" x="371" y="195"/>    
+    <position height="-1" width="-1" x="330" y="158"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
       visibility="true">      
       <attributes public="false" package="false" protected="false" private="false" static="false"/>      
@@ -56,7 +56,7 @@
     project="ComputerGraphics" 
     file="/ComputerGraphics/src/com/example/computergraphics/controls/AlternativeController.java" binary="false" 
     corner="BOTTOM_RIGHT">    
-    <position height="-1" width="-1" x="590" y="195"/>    
+    <position height="-1" width="-1" x="549" y="158"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
       visibility="true">      
       <attributes public="false" package="false" protected="false" private="false" static="false"/>      
@@ -65,7 +65,7 @@
   </class>  
   <class id="7" language="java" name="com.example.computergraphics.GraphicsView" project="ComputerGraphics" 
     file="/ComputerGraphics/src/com/example/computergraphics/GraphicsView.java" binary="false" corner="BOTTOM_RIGHT">    
-    <position height="-1" width="-1" x="151" y="385"/>    
+    <position height="-1" width="-1" x="110" y="348"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
       visibility="true">      
       <attributes public="false" package="false" protected="false" private="false" static="false"/>      
@@ -75,7 +75,7 @@
   <class id="8" language="java" name="com.example.computergraphics.GraphicsView.GraphicsRenderer" 
     project="ComputerGraphics" file="/ComputerGraphics/src/com/example/computergraphics/GraphicsView.java" 
     binary="false" corner="BOTTOM_RIGHT">    
-    <position height="-1" width="-1" x="151" y="478"/>    
+    <position height="-1" width="-1" x="110" y="441"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
       visibility="true">      
       <attributes public="false" package="false" protected="false" private="false" static="false"/>      
@@ -86,77 +86,69 @@
     project="ComputerGraphics" 
     file="/ComputerGraphics/src/com/example/computergraphics/controls/timerTask/MoveAvatarTimeTask.java" binary="false" 
     corner="BOTTOM_RIGHT">    
-    <position height="-1" width="-1" x="456" y="476"/>    
+    <position height="-1" width="-1" x="373" y="378"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
       visibility="true">      
       <attributes public="false" package="false" protected="false" private="false" static="false"/>      
       <operations public="false" package="false" protected="false" private="false" static="false"/>    
     </display>  
   </class>  
-  <association id="10">    
+  <class id="10" language="java" name="sfogl.integration.Node" project="ComputerGraphics" 
+    file="/ComputerGraphics/src/sfogl/integration/Node.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="549" y="519"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="false"/>      
+      <operations public="false" package="false" protected="false" private="false" static="false"/>    
+    </display>  
+  </class>  
+  <association id="11">    
     <end type="SOURCE" refId="7" navigable="false">      
-      <attribute id="11" name="actionSet">        
-        <position height="18" width="53" x="413" y="293"/>      
+      <attribute id="12" name="actionSet">        
+        <position height="18" width="53" x="372" y="256"/>      
       </attribute>      
-      <multiplicity id="12" minimum="0" maximum="1">        
-        <position height="16" width="23" x="466" y="294"/>      
+      <multiplicity id="13" minimum="0" maximum="1">        
+        <position height="16" width="23" x="425" y="257"/>      
       </multiplicity>    
     </end>    
     <end type="TARGET" refId="3" navigable="true"/>    
     <display labels="true" multiplicity="true"/>  
   </association>  
-  <realization id="13">    
+  <association id="14">    
+    <end type="SOURCE" refId="3" navigable="false">      
+      <attribute id="15" name="avatar"/>      
+      <multiplicity id="16" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="10" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="17">    
+    <end type="SOURCE" refId="10" navigable="false">      
+      <attribute id="18" name="sonNodes"/>      
+      <multiplicity id="19" minimum="0" maximum="2147483647"/>    
+    </end>    
+    <end type="TARGET" refId="10" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <realization id="20">    
     <end type="SOURCE" refId="1"/>    
     <end type="TARGET" refId="2"/>  
   </realization>  
-  <association id="14">    
-    <end type="SOURCE" refId="3" navigable="false">      
-      <attribute id="15" name="moveAvatarTask">        
-        <position height="18" width="89" x="395" y="422"/>      
-      </attribute>      
-      <multiplicity id="16" minimum="0" maximum="1">        
-        <position height="16" width="23" x="490" y="424"/>      
-      </multiplicity>    
-    </end>    
-    <end type="TARGET" refId="9" navigable="true"/>    
-    <display labels="true" multiplicity="true"/>  
-  </association>  
-  <realization id="17">    
-    <end type="SOURCE" refId="5"/>    
-    <end type="TARGET" refId="2"/>  
-  </realization>  
-  <association id="18">    
-    <bendpoint x="345" y="115"/>    
-    <end type="SOURCE" refId="4" navigable="false">      
-      <attribute id="19" name="controller">        
-        <position height="18" width="53" x="407" y="72"/>      
-      </attribute>      
-      <multiplicity id="20" minimum="0" maximum="1">        
-        <position height="16" width="23" x="459" y="73"/>      
-      </multiplicity>    
-    </end>    
-    <end type="TARGET" refId="2" navigable="true"/>    
-    <display labels="true" multiplicity="true"/>  
-  </association>  
   <association id="21">    
-    <end type="SOURCE" refId="1" navigable="false">      
-      <attribute id="22" name="actionSet">        
-        <position height="18" width="53" x="697" y="245"/>      
-      </attribute>      
-      <multiplicity id="23" minimum="0" maximum="1">        
-        <position height="16" width="23" x="752" y="247"/>      
-      </multiplicity>    
+    <end type="SOURCE" refId="9" navigable="false">      
+      <attribute id="22" name="similAvatarBody"/>      
+      <multiplicity id="23" minimum="0" maximum="1"/>    
     </end>    
-    <end type="TARGET" refId="3" navigable="true"/>    
+    <end type="TARGET" refId="10" navigable="true"/>    
     <display labels="true" multiplicity="true"/>  
   </association>  
   <association id="24">    
     <end type="SOURCE" refId="6" navigable="false">      
       <attribute id="25" name="actionSet">        
-        <position height="18" width="53" x="537" y="235"/>      
+        <position height="18" width="53" x="496" y="198"/>      
       </attribute>      
       <multiplicity id="26" minimum="0" maximum="1">        
-        <position height="16" width="23" x="592" y="236"/>      
+        <position height="16" width="23" x="551" y="199"/>      
       </multiplicity>    
     </end>    
     <end type="TARGET" refId="3" navigable="true"/>    
@@ -166,33 +158,106 @@
     <end type="SOURCE" refId="4"/>    
     <end type="TARGET" refId="2"/>  
   </realization>  
-  <nesting id="28">    
-    <end type="SOURCE" refId="7"/>    
-    <end type="TARGET" refId="8"/>  
-  </nesting>  
-  <realization id="29">    
+  <association id="28">    
+    <end type="SOURCE" refId="9" navigable="false">      
+      <attribute id="29" name="avatar"/>      
+      <multiplicity id="30" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="10" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <realization id="31">    
     <end type="SOURCE" refId="6"/>    
     <end type="TARGET" refId="2"/>  
   </realization>  
-  <association id="30">    
+  <association id="32">    
     <end type="SOURCE" refId="5" navigable="false">      
-      <attribute id="31" name="actionSet">        
-        <position height="18" width="53" x="414" y="245"/>      
+      <attribute id="33" name="actionSet">        
+        <position height="18" width="53" x="373" y="208"/>      
       </attribute>      
-      <multiplicity id="32" minimum="0" maximum="1">        
-        <position height="16" width="23" x="467" y="247"/>      
+      <multiplicity id="34" minimum="0" maximum="1">        
+        <position height="16" width="23" x="426" y="210"/>      
       </multiplicity>    
     </end>    
     <end type="TARGET" refId="3" navigable="true"/>    
     <display labels="true" multiplicity="true"/>  
   </association>  
-  <association id="33">    
-    <end type="SOURCE" refId="7" navigable="false">      
-      <attribute id="34" name="controller">        
-        <position height="18" width="53" x="97" y="233"/>      
+  <association id="35">    
+    <end type="SOURCE" refId="8" navigable="false">      
+      <attribute id="36" name="node"/>      
+      <multiplicity id="37" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="10" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="38">    
+    <end type="SOURCE" refId="9" navigable="false">      
+      <attribute id="39" name="all"/>      
+      <multiplicity id="40" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="10" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="41">    
+    <end type="SOURCE" refId="3" navigable="false">      
+      <attribute id="42" name="moveAvatarTask">        
+        <position height="18" width="89" x="312" y="324"/>      
       </attribute>      
-      <multiplicity id="35" minimum="0" maximum="1">        
-        <position height="16" width="23" x="153" y="234"/>      
+      <multiplicity id="43" minimum="0" maximum="1">        
+        <position height="16" width="23" x="407" y="326"/>      
+      </multiplicity>    
+    </end>    
+    <end type="TARGET" refId="9" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <realization id="44">    
+    <end type="SOURCE" refId="5"/>    
+    <end type="TARGET" refId="2"/>  
+  </realization>  
+  <association id="45">    
+    <end type="SOURCE" refId="3" navigable="false">      
+      <attribute id="46" name="all"/>      
+      <multiplicity id="47" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="10" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="48">    
+    <bendpoint x="304" y="78"/>    
+    <end type="SOURCE" refId="4" navigable="false">      
+      <attribute id="49" name="controller">        
+        <position height="18" width="53" x="366" y="35"/>      
+      </attribute>      
+      <multiplicity id="50" minimum="0" maximum="1">        
+        <position height="16" width="23" x="418" y="36"/>      
+      </multiplicity>    
+    </end>    
+    <end type="TARGET" refId="2" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="51">    
+    <end type="SOURCE" refId="1" navigable="false">      
+      <attribute id="52" name="actionSet">        
+        <position height="18" width="53" x="656" y="208"/>      
+      </attribute>      
+      <multiplicity id="53" minimum="0" maximum="1">        
+        <position height="16" width="23" x="711" y="210"/>      
+      </multiplicity>    
+    </end>    
+    <end type="TARGET" refId="3" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <nesting id="54">    
+    <end type="SOURCE" refId="7"/>    
+    <end type="TARGET" refId="8"/>  
+  </nesting>  
+  <association id="55">    
+    <end type="SOURCE" refId="7" navigable="false">      
+      <attribute id="56" name="controller">        
+        <position height="18" width="53" x="56" y="196"/>      
+      </attribute>      
+      <multiplicity id="57" minimum="0" maximum="1">        
+        <position height="16" width="23" x="112" y="197"/>      
       </multiplicity>    
     </end>    
     <end type="TARGET" refId="4" navigable="true"/>    

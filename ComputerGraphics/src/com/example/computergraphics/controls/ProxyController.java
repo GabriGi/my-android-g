@@ -9,6 +9,7 @@ public class ProxyController implements IController {
     private static final String DEBUG_TAG = "Gestures";
     private boolean scaling = false;
     private boolean doubling = false;
+    private boolean scrolling = false;
 
 	private IController controller;
 
@@ -18,6 +19,16 @@ public class ProxyController implements IController {
 
 	public void setController(IController control) {
 		this.controller = control;
+	}
+	
+	public boolean isScrolling() {
+		return scrolling;
+	}
+	
+	@Override
+	public void stopScrolling() {
+		controller.stopScrolling();
+		scrolling = false;
 	}
 	
 	@Override
@@ -69,6 +80,7 @@ public class ProxyController implements IController {
 	@Override
 	public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
 		Log.d(DEBUG_TAG, "onScroll");
+		scrolling = true;
 		return controller.onScroll(e1, e2, distanceX, distanceY);
 	}
 
