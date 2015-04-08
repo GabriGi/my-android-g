@@ -87,6 +87,7 @@ public class ProxyController implements IController {
 	@Override
 	public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
         Log.d(DEBUG_TAG, "onFling");
+		scrolling = false;
 		return controller.onFling(e1, e2, velocityX, velocityY);
 	}
 

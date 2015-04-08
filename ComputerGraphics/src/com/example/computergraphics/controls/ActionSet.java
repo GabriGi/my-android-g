@@ -2,13 +2,13 @@ package com.example.computergraphics.controls;
 
 import java.util.Timer;
 
-import com.example.computergraphics.controls.timerTask.MoveAvatarTimeTask;
-
-import android.content.Context;
-import android.util.Log;
 import sfogl.integration.Node;
 import shadow.math.SFMatrix3f;
 import shadow.math.SFVertex3f;
+import android.content.Context;
+
+import com.example.computergraphics.controls.timerTask.JumpAvatarTimeTask;
+import com.example.computergraphics.controls.timerTask.MoveAvatarTimeTask;
 
 public class ActionSet{
 
@@ -20,6 +20,7 @@ public class ActionSet{
 	private Timer timer = new Timer();
 	private static final int TIMER_PERIOD = 25;
 	private MoveAvatarTimeTask moveAvatarTask;
+	private JumpAvatarTimeTask jumpAvatarTask;
 //	private Scroller scroller;
 	
 	private float scale;
@@ -54,10 +55,6 @@ public class ActionSet{
 	
 	public void stopMoving() {
 		if(moveAvatarTask!=null) moveAvatarTask.cancel();
-	}
-	
-	private void cancelAllActiveTask() {
-		stopMoving();
 		timer.purge();
 	}
 	
@@ -74,14 +71,14 @@ public class ActionSet{
 	 */
 	public void moveAvatarTo(float destU, float destV, float velocity){
 		SFVertex3f start = new SFVertex3f(); avatar.getRelativeTransform().getPosition(start);
-		SFVertex3f dest = getXYZFromUV(destU, destV); dest.add3f(start);
-		SFVertex3f space = new SFVertex3f(dest.getV()); space.subtract3f(start);
+		SFVertex3f space = getXYZFromUV(destU, destV); 
+		SFVertex3f dest = new SFVertex3f(start.getV()); dest.add3f(space);
 		float velX = (float)(velocity/Math.sqrt(1+(space.getZ()/space.getX())*(space.getZ()/space.getX())));
 		float velZ = (float)(velocity/Math.sqrt(1+(space.getX()/space.getZ())*(space.getX()/space.getZ())));
 		if(space.getX()<0) velX=0-velX;
 		if(space.getZ()<0) velZ=0-velZ;
 		
-		cancelAllActiveTask();
+		stopMoving();
 		moveAvatarTask = new MoveAvatarTimeTask(avatar, dest, velX, velZ, all);
 		timer.schedule(moveAvatarTask, 0, TIMER_PERIOD);
 		
@@ -105,7 +102,6 @@ public class ActionSet{
 	 * con velocita' costante (valori compresi tra -1 e 1)
 	 */
 	public void moveAvatarWith(float velocityU , float velocityV){
-		cancelAllActiveTask();
 		float velocity = (float)Math.max(Math.abs(velocityU), Math.abs(velocityV)) * VELOCITY_RUN;
 		moveAvatarTo(velocityU, velocityV, velocity);
 	}
@@ -114,29 +110,38 @@ public class ActionSet{
 	 * Permette all'avatar di saltare (sistema di riferimento dello schermo):
 	 * movimento verticale sull'asse Y + eventuale spinta in avanti (moveAvatar)
 	 */
-	public void jumpAvatar(){		//TODO ABS/REL, direzione
-		cancelAllActiveTask();
+	public void jumpAvatar(float directionU , float directionV){
+		moveAvatarWith(directionU, directionV);
+		if(jumpAvatarTask != null){
+			if (!jumpAvatarTask.isJumping()) {
+				jumpAvatarTask = new JumpAvatarTimeTask(avatar, JumpAvatarTimeTask.START_VELOCITY, all, TIMER_PERIOD);
+				timer.schedule(jumpAvatarTask, TIMER_PERIOD / 2, TIMER_PERIOD);
+			}
+		}else{
+			jumpAvatarTask = new JumpAvatarTimeTask(avatar, JumpAvatarTimeTask.START_VELOCITY, all, TIMER_PERIOD);
+			timer.schedule(jumpAvatarTask, TIMER_PERIOD / 2, TIMER_PERIOD);
+		}
 	}
 	
 	/**
 	 * Muove (ruota) la telecamera, spostando quindi la visuale
 	 * (asse X) (sistema di riferimento dello schermo)
 	 */
-	public void rotationCamera(float yFactor, float xFactor){		//TODO Da sistemare (Graphic bug)
-		cancelAllActiveTask();
+	public void rotationCamera(float uFactor, float vFactor){		//TODO Da sistemare (Graphic bug)
+		stopMoving();
 		
 		SFMatrix3f matrix = new SFMatrix3f();
 		all.getRelativeTransform().getMatrix(matrix);
-		
-		rotY += yFactor;
-		rotX += xFactor;
+
+		rotX += vFactor;
+		rotY += uFactor;
 		if(rotX<0.1f) rotX=0.2f;	//Cant't be 0!!
 		if(rotX>1.5f) rotX=1.5f;	//Little less of (float)Math.PI/2;
 		
 		SFVertex3f allDest = new SFVertex3f(); avatar.getRelativeTransform().getPosition(allDest); allDest.mult(-1);
 
-		matrix.MultMatrix(SFMatrix3f.getRotationY(xFactor));
-		matrix.MultMatrix(SFMatrix3f.getRotationY(yFactor));
+		matrix.MultMatrix(SFMatrix3f.getRotationY(vFactor));
+		matrix.MultMatrix(SFMatrix3f.getRotationY(uFactor));
 		SFVertex3f position = matrix.Mult(allDest);
 		all.getRelativeTransform().setPosition(position);
 	}
@@ -146,7 +151,7 @@ public class ActionSet{
 	 * (asse Z) (sistema di riferimento dello schermo)
 	 */
 	public void zoomCamera(float zoomFactor){		//TODO Da sistemare (Graphic bug)
-		cancelAllActiveTask();
+		stopMoving();
 		
 		SFMatrix3f matrix = new SFMatrix3f();
 		all.getRelativeTransform().getMatrix(matrix);

@@ -1,6 +1,5 @@
 package com.example.computergraphics;
 
-import java.util.Observer;
 import java.util.Random;
 
 import javax.microedition.khronos.egl.EGLConfig;
@@ -90,12 +89,15 @@ public class GraphicsView extends GLSurfaceView{
     public class GraphicsRenderer implements Renderer{
     	
         static final private float NODE_SCALE = 0.3f;
-        static final private float AVAT_SCALE = 1;			//Must be 1
-        static final private float AVAT_BODY = 0.25f;	//Avatar's body height and width for each side
-        static final private float LUNGH_MURO = 3.00f;		//for each side
-        static final private float SPESS_MURO = 0.05f;		//for each side (is good also with 0f)
-        static final private float ALTEZ_MURO = AVAT_BODY;	//for each side
-        static final private float LUNGH_OBST = 0.25f;		//for each side (max = 1.374)
+        static final private float AVAT_SCALE = 1;				//Must be 1
+        static final private float AVAT_BODY = 0.25f;			//Avatar's body height and width for each side
+        
+        static final private float LUNGH_MURO = 3.00f;			//for each side
+        static final private float SPESS_MURO = 0.05f;			//for each side (is good also with 0f)
+        static final private float ALTEZ_MURO = AVAT_BODY*2.5f;	//for each side 
+        
+        static final private float ALTEZ_OBST = AVAT_BODY;		//for each side
+        static final private float LUNGH_OBST = 0.25f;			//for each side (max = 1.374)
     	static final private int NUMBER_OF_OSTACLE = 10;
 
     	private Node node;
@@ -241,8 +243,8 @@ public class GraphicsView extends GLSurfaceView{
 					n = new Node(model1);
 					float xp = rand.nextFloat()*(LUNGH_MURO-LUNGH_OBST)*2-LUNGH_MURO+LUNGH_OBST;
 					float zp = rand.nextFloat()*(LUNGH_MURO-LUNGH_OBST)*2-LUNGH_MURO+LUNGH_OBST;
-					n.getRelativeTransform().setPosition(xp, ALTEZ_MURO, zp);
-					n.getRelativeTransform().setMatrix(SFMatrix3f.getScale(LUNGH_OBST,ALTEZ_MURO,LUNGH_OBST));
+					n.getRelativeTransform().setPosition(xp, ALTEZ_OBST, zp);
+					n.getRelativeTransform().setMatrix(SFMatrix3f.getScale(LUNGH_OBST,ALTEZ_OBST,LUNGH_OBST));
 					if(!avatarNode.getSonNodes().get(0).coveredBy(n)) break;
 				}
 				innerObstaclesNode.getSonNodes().add(n);
