@@ -12,6 +12,7 @@ import sfogl.integration.Material;
 import sfogl.integration.Mesh;
 import sfogl.integration.Model;
 import sfogl.integration.Node;
+import sfogl.integration.SFCamera;
 import sfogl.integration.ShadingProgram;
 import sfogl2.SFOGLSystemState;
 import sfogl2.SFOGLTextureModel;
@@ -44,8 +45,9 @@ public class GraphicsView extends GLSurfaceView{
     private ScaleGestureDetector scaleDetector;
     private ProxyController controller;
     
-//    private float widthRatio;
-//    private float heightRatio;
+    private float widthRatio;
+    private float heightRatio;
+	
     
     public GraphicsView(Context context) {
         super(context);
@@ -84,8 +86,8 @@ public class GraphicsView extends GLSurfaceView{
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
     	super.onSizeChanged(w, h, oldw, oldh);
-//    	widthRatio = w/(float)Math.max(w, h);
-//    	heightRatio = h/(float)Math.max(w, h);
+    	widthRatio = w/(float)Math.max(w, h);
+    	heightRatio = h/(float)Math.max(w, h);
     	controller.setViewSize(w,h);
     }
     
@@ -232,7 +234,6 @@ public class GraphicsView extends GLSurfaceView{
             node.getSonNodes().add(avatarNode);
             
             /* *************************************************************** */
-            
             Node backgroundNode = createBackgroundNode(model1);
             backgroundNode.getRelativeTransform().setPosition(0, 0, 0);
             backgroundNode.getRelativeTransform().setMatrix(SFMatrix3f.getScale(AVAT_SCALE,AVAT_SCALE,AVAT_SCALE));
@@ -271,26 +272,26 @@ public class GraphicsView extends GLSurfaceView{
             SFOGLSystemState.cleanupColorAndDepth(1, 1, 0, 1);
 
             //setup the View Projection
-//            float distAvatarCam = ALTEZ_OBST;	// = AVATAR_BODY = 0.25f
-//            SFVertex3f focus = new SFVertex3f(0, ALTEZ_OBST, -1f-AVAT_BODY-distAvatarCam);
-//            SFVertex3f dir = new SFVertex3f(0, 0, 1);
-//            SFVertex3f left = new SFVertex3f(1, 0, 0);
-//            SFVertex3f up = new SFVertex3f(0, 1, 0);
-//            scale = 1f;
-//            float leftL = widthRatio/scale;		// = 1
-//            float upL = heightRatio/scale;		// = 0.624
-//            Log.d("task", leftL + " " + upL);
-//            SFCamera cam = new SFCamera(focus, dir, left, up, leftL, upL, 10f);
-//            cam.setDelta(1f);
-//            cam.setPerspective(true);
-//            program.setupProjection(cam.extractTransform());
+            float distAvatarCam = ALTEZ_OBST;	// = AVATAR_BODY = 0.25f
+            SFVertex3f focus = new SFVertex3f(0, ALTEZ_OBST, -1f-AVAT_BODY-distAvatarCam);
+            SFVertex3f dir = new SFVertex3f(0, 0, 1);
+            SFVertex3f left = new SFVertex3f(1, 0, 0);
+            SFVertex3f up = new SFVertex3f(0, 1, 0);
+            scale = 1f;
+            float leftL = widthRatio/scale;		// = 1
+            float upL = heightRatio/scale;		// = 0.624
+            //Log.d("task", leftL + " " + upL);
+            SFCamera cam = new SFCamera(focus, dir, left, up, leftL, upL, 10f);
+            cam.setDelta(1f);
+            cam.setPerspective(true);
+            program.setupProjection(cam.extractTransform());
 
-            SFTransform3f transform3f = new SFTransform3f();
-            	transform3f.setPosition(new SFVertex3f(0,0,0));
-            	transform3f.setMatrix(SFMatrix3f.getRotationX(0f));
-            float[] projection = new float[16];
-            transform3f.getOpenGLMatrix(projection);
-//
+//            SFTransform3f transform3f = new SFTransform3f();
+//            	transform3f.setPosition(new SFVertex3f(0,0,0));
+//            	transform3f.setMatrix(SFMatrix3f.getRotationX(0f));
+//            float[] projection = new float[16];
+//            transform3f.getOpenGLMatrix(projection);
+            
 //            float a = 1.02f;
 //            float b = 0.02f;
 //            float d = 1;
@@ -310,7 +311,8 @@ public class GraphicsView extends GLSurfaceView{
 //            SFMatrix4f.mult(resultMatrix, perspectiveMatrix, parallelMatrix);
 //
 //            program.setupProjection(SFMatrix4f.getTransposed(resultMatrix).getV());
-            program.setupProjection(projection);
+            
+//            program.setupProjection(projection);
             
 //            SFVertex3f position = new SFVertex3f();
 //            actionSet.getNodePosition(position);
@@ -326,9 +328,9 @@ public class GraphicsView extends GLSurfaceView{
             matrix3f=matrix3f.MultMatrix(SFMatrix3f.getRotationY(rotY));
             matrix3f=matrix3f.MultMatrix(SFMatrix3f.getRotationZ(rotZ));
 
-//        	cam.setLeft(matrix3f.Mult(dir));
+        	cam.setLeft(matrix3f.Mult(dir));
         	
-            node.getRelativeTransform().setMatrix(matrix3f);
+//            node.getRelativeTransform().setMatrix(matrix3f);
             node.updateTree(new SFTransform3f());
 
             //Draw the node
