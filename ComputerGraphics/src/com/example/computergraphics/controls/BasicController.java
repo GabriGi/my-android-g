@@ -6,8 +6,8 @@ import android.view.ScaleGestureDetector;
 
 public class BasicController implements IController {
 
-	public static final int ABSOLUTE_MODE = 0;
-	public static final int RELATIVE_MODE = 0;
+	public static final int ABSOLUTE_MODE = 1;
+	public static final int RELATIVE_MODE = 2;
 	
 	private int mode;
 	private ActionSet actionSet;
@@ -41,8 +41,6 @@ public class BasicController implements IController {
     
 	@Override
 	public boolean onDown(MotionEvent e) {
-		startX = e.getX();
-		startY = e.getY();
 		return true;
 	}
 
@@ -57,22 +55,20 @@ public class BasicController implements IController {
 		return true;
 	}
 
-	private float startX;
-	private float startY;
 	@Override
 	public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
 		if(mode==ABSOLUTE_MODE){
 			actionSet.moveAvatarWith((e2.getX()-(viewWidth>>1))/(viewWidth>>1), 
 									 (e2.getY()-(viewHeight>>1))/(viewHeight>>1));
 		}else if(mode==RELATIVE_MODE){
-			actionSet.moveAvatarWith((e2.getX()-startX)/viewWidth, (e2.getY()-startY)/viewHeight);
+			actionSet.moveAvatarWith((e2.getX()-e1.getX())/viewWidth, 
+									 (e2.getY()-e1.getY())/viewHeight);
 		}
 		return true;
 	}
 
 	@Override
 	public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-		// TODO
 		actionSet.jumpAvatar((e2.getX()-e1.getX())/viewWidth, (e2.getY()-e1.getY())/viewHeight);
 		return true;
 	}
@@ -91,16 +87,20 @@ public class BasicController implements IController {
 
 	@Override
 	public boolean onDoubleTap(MotionEvent e) {
+		startX = e.getX();
+		startY = e.getY();
 		return true;
 	}
 
 	private int doubleTapCounter = 0;
+	private static final int MIN_DTC_FOR_SCROLL = 5;	// min2, max 5.
+	private float startX, startY;
 	@Override
 	public boolean onDoubleTapEvent(MotionEvent e) {
 		if(e.getAction()==MotionEvent.ACTION_DOWN) doubleTapCounter=0;
 		doubleTapCounter++;
 		Log.d("Gestures", "                 - count: "+doubleTapCounter);
-		if(mode==ABSOLUTE_MODE){
+		if(mode==ABSOLUTE_MODE || doubleTapCounter<=MIN_DTC_FOR_SCROLL){
 			actionSet.moveAvatarTo((e.getX()-(viewWidth>>1))/(viewWidth>>1), 
 								   (e.getY()-(viewHeight>>1))/(viewHeight>>1), 
 								   ActionSet.VELOCITY_RUN);
@@ -108,8 +108,8 @@ public class BasicController implements IController {
 			actionSet.moveAvatarTo((e.getX()-startX)/viewWidth, 
 								   (e.getY()-startY)/viewHeight, 
 					   			   ActionSet.VELOCITY_RUN);
-		}													// min2, max 5.
-        if(e.getAction()==MotionEvent.ACTION_UP && doubleTapCounter>5) stopScrolling();
+		}
+        if(e.getAction()==MotionEvent.ACTION_UP && doubleTapCounter>MIN_DTC_FOR_SCROLL) stopScrolling();
 		return true;
 	}
 

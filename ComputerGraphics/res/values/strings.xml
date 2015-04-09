@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <string name="hello_world">hello_world></string>
     <string name="app_name">ComputerGraphics</string>
-    <string name="hello_world">Hello world!</string>
-    <string name="action_settings">Settings</string>
-
+    <string name="action_absolute">Absolute Controller</string>
+    <string name="action_relative">Relative Controller</string>
+    <string name="action_alternative">Alternative Controller</string>
+    <string name="action_different">Different Controller</string>
+    
 </resources>

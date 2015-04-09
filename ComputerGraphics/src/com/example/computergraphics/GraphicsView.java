@@ -18,6 +18,7 @@ import sfogl2.SFOGLTextureModel;
 import shadow.graphics.SFImageFormat;
 import shadow.math.SFMatrix3f;
 import shadow.math.SFTransform3f;
+import shadow.math.SFVertex3f;
 import android.content.Context;
 import android.graphics.BitmapFactory;
 import android.opengl.GLES20;
@@ -28,6 +29,7 @@ import android.view.ScaleGestureDetector;
 
 import com.example.computergraphics.controls.ActionSet;
 import com.example.computergraphics.controls.BasicController;
+import com.example.computergraphics.controls.IController;
 import com.example.computergraphics.controls.ProxyController;
 
 /**
@@ -42,6 +44,9 @@ public class GraphicsView extends GLSurfaceView{
     private ScaleGestureDetector scaleDetector;
     private ProxyController controller;
     
+//    private float widthRatio;
+//    private float heightRatio;
+    
     public GraphicsView(Context context) {
         super(context);
         setEGLContextClientVersion(2);
@@ -51,10 +56,17 @@ public class GraphicsView extends GLSurfaceView{
         
         controller = new ProxyController(new BasicController(BasicController.ABSOLUTE_MODE));
         gestureDetector = new GestureDetector(context, controller);
-        gestureDetector.setOnDoubleTapListener(controller);		//Solo se sto usando il BasicController!!!
-        gestureDetector.setIsLongpressEnabled(false);
+        gestureDetector.setOnDoubleTapListener(controller);
+        gestureDetector.setIsLongpressEnabled(false);		//Solo se sto usando il BasicController!!!
         scaleDetector = new ScaleGestureDetector(context, controller);
     }
+    
+    public void setController(IController controller, boolean isLongpressEnabled) {
+		this.controller.setController(controller);
+        gestureDetector.setIsLongpressEnabled(isLongpressEnabled);
+        this.controller.setViewSize(this.getWidth(), this.getHeight());
+        this.controller.setActionsSet(actionSet);
+	}
     
     @Override
     public boolean onTouchEvent(MotionEvent event) {
@@ -72,6 +84,8 @@ public class GraphicsView extends GLSurfaceView{
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
     	super.onSizeChanged(w, h, oldw, oldh);
+//    	widthRatio = w/(float)Math.max(w, h);
+//    	heightRatio = h/(float)Math.max(w, h);
     	controller.setViewSize(w,h);
     }
     
@@ -193,7 +207,6 @@ public class GraphicsView extends GLSurfaceView{
 
             //Step 6: create a Node, that is a reference system where you can place your Model
             node=new Node();
-            //node.getRelativeTransform().setPosition(0, -0.5f, 0);
             node.getRelativeTransform().setPosition(0, 0, 0);
             
             //Step 2-5bis: do the same for the background
@@ -217,15 +230,9 @@ public class GraphicsView extends GLSurfaceView{
             avatarNode.getRelativeTransform().setPosition(0, 0, 0);
             avatarNode.getRelativeTransform().setMatrix(SFMatrix3f.getScale(AVAT_SCALE,AVAT_SCALE,AVAT_SCALE));
             node.getSonNodes().add(avatarNode);
-
-            /* *************************************************************** */
-            
-            Node cameraNode = new Node();
-            cameraNode.getRelativeTransform().setPosition(0, 0, 0);
-            cameraNode.getRelativeTransform().setMatrix(SFMatrix3f.getScale(0,0,0));
-            node.getSonNodes().add(cameraNode);
             
             /* *************************************************************** */
+            
             Node backgroundNode = createBackgroundNode(model1);
             backgroundNode.getRelativeTransform().setPosition(0, 0, 0);
             backgroundNode.getRelativeTransform().setMatrix(SFMatrix3f.getScale(AVAT_SCALE,AVAT_SCALE,AVAT_SCALE));
@@ -264,27 +271,63 @@ public class GraphicsView extends GLSurfaceView{
             SFOGLSystemState.cleanupColorAndDepth(1, 1, 0, 1);
 
             //setup the View Projection
-            float[] projection={
-                    1,0,0,0,
-                    0,1,0,0,
-                    0,0,1,0,
-                    0,0,0,1
-            };
-            program.setupProjection(projection);
+//            float distAvatarCam = ALTEZ_OBST;	// = AVATAR_BODY = 0.25f
+//            SFVertex3f focus = new SFVertex3f(0, ALTEZ_OBST, -1f-AVAT_BODY-distAvatarCam);
+//            SFVertex3f dir = new SFVertex3f(0, 0, 1);
+//            SFVertex3f left = new SFVertex3f(1, 0, 0);
+//            SFVertex3f up = new SFVertex3f(0, 1, 0);
+//            scale = 1f;
+//            float leftL = widthRatio/scale;		// = 1
+//            float upL = heightRatio/scale;		// = 0.624
+//            Log.d("task", leftL + " " + upL);
+//            SFCamera cam = new SFCamera(focus, dir, left, up, leftL, upL, 10f);
+//            cam.setDelta(1f);
+//            cam.setPerspective(true);
+//            program.setupProjection(cam.extractTransform());
 
-            //Change the Node transform
-//            if(t>0.5||t<0){
-//            	add = 0-add;
-//            }
+            SFTransform3f transform3f = new SFTransform3f();
+            	transform3f.setPosition(new SFVertex3f(0,0,0));
+            	transform3f.setMatrix(SFMatrix3f.getRotationX(0f));
+            float[] projection = new float[16];
+            transform3f.getOpenGLMatrix(projection);
+//
+//            float a = 1.02f;
+//            float b = 0.02f;
+//            float d = 1;
+//            float[] prProjection={
+//		          d,0,0,0,
+//		          0,d,0,0,
+//		          0,0,a,b,
+//		          0,0,1,0
+//           	};
+//            
+//            SFMatrix4f parallelMatrix = new SFMatrix4f();
+//            SFMatrix4f perspectiveMatrix = new SFMatrix4f();
+//            SFMatrix4f resultMatrix = new SFMatrix4f();
+//            
+//            parallelMatrix.setArray(projection);
+//            perspectiveMatrix.setArray(prProjection);
+//            SFMatrix4f.mult(resultMatrix, perspectiveMatrix, parallelMatrix);
+//
+//            program.setupProjection(SFMatrix4f.getTransposed(resultMatrix).getV());
+            program.setupProjection(projection);
+            
+//            SFVertex3f position = new SFVertex3f();
+//            actionSet.getNodePosition(position);
+//            position.add3f(new SFVertex3f(0,-3*ALTEZ_OBST,0));
+//            node.getRelativeTransform().setPosition(position);
             
             scale = actionSet.getScale();
         	rotX = actionSet.getRotX();
         	rotY = actionSet.getRotY();
-            
+        	
             SFMatrix3f matrix3f=SFMatrix3f.getScale(scale,scale,scale);
             matrix3f=matrix3f.MultMatrix(SFMatrix3f.getRotationX(rotX));	//(float)(Math.PI/2)));	//For 2D
             matrix3f=matrix3f.MultMatrix(SFMatrix3f.getRotationY(rotY));
             matrix3f=matrix3f.MultMatrix(SFMatrix3f.getRotationZ(rotZ));
+
+//        	cam.setLeft(matrix3f.Mult(dir));
+        	
             node.getRelativeTransform().setMatrix(matrix3f);
             node.updateTree(new SFTransform3f());
 

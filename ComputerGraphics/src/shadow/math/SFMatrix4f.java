@@ -136,4 +136,16 @@ public class SFMatrix4f extends SFValue{
 		v[14]=v1[2]*v2[9]+v1[6]*v2[10]+v1[10]*v2[11]+v1[14];
 		v[15]=v1[3]*v2[9]+v1[7]*v2[10]+v1[11]*v2[11]+v1[15];
 	}
+	
+	public static SFMatrix4f getTransposed(SFMatrix4f m){
+		SFMatrix4f n=new SFMatrix4f();
+
+		n.getV()[0]=m.getV()[0];n.getV()[4]=m.getV()[1];n.getV()[8]=m.getV()[2];n.getV()[12]=m.getV()[3];
+		n.getV()[1]=m.getV()[4];n.getV()[5]=m.getV()[5];n.getV()[9]=m.getV()[6];n.getV()[13]=m.getV()[7];
+		n.getV()[2]=m.getV()[8];n.getV()[6]=m.getV()[9];n.getV()[10]=m.getV()[10];n.getV()[14]=m.getV()[11];
+		n.getV()[3]=m.getV()[12];n.getV()[7]=m.getV()[13];n.getV()[11]=m.getV()[14];n.getV()[15]=m.getV()[15];
+
+		return n;
+	}
+
 }

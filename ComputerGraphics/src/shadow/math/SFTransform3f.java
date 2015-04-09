@@ -120,4 +120,32 @@ public class SFTransform3f extends SFValue {
 		}
 	}
 	
+	public void getOpenGLMatrix(float[] matrix){
+
+        SFMatrix3f m=new SFMatrix3f();
+        SFVertex3f vertex=new SFVertex3f();
+        getPosition(vertex);
+        getMatrix(m);
+
+        matrix[0]=m.getA();
+        matrix[1]=m.getD();
+        matrix[2]=m.getG();
+        matrix[3]=0;
+
+        matrix[4]=m.getB();
+        matrix[5]=m.getE();
+        matrix[6]=m.getH();
+        matrix[7]=0;
+
+        matrix[8]=m.getC();
+        matrix[9]=m.getF();
+        matrix[10]=m.getI();
+        matrix[11]=0;
+
+        matrix[12]=vertex.getX();
+        matrix[13]=vertex.getY();
+        matrix[14]=vertex.getZ();
+        matrix[15]=1;
+    }
+	
 }

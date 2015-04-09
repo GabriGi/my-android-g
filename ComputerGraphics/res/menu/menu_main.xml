@@ -1,6 +1,22 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools" tools:context=".MainActivity">
-    <item android:id="@+id/action_settings" android:title="@string/action_settings"
-        android:orderInCategory="100" app:showAsAction="never" />
+    
+    <item android:id="@+id/action_basic_absolute"
+        android:icon="@drawable/ic_action_basic_absolute"
+        android:title="@string/action_absolute"
+        app:showAsAction="never" />
+    <item android:id="@+id/action_basic_relative"
+        android:icon="@drawable/ic_action_basic_relative"
+        android:title="@string/action_relative"
+        app:showAsAction="never" />
+
+    <item android:id="@+id/action_alternative"
+        android:icon="@drawable/ic_action_alternative"
+        android:title="@string/action_alternative"
+        app:showAsAction="never" />
+    <item android:id="@+id/action_different"
+        android:icon="@drawable/ic_action_different"
+        android:title="@string/action_different"
+        app:showAsAction="never" />
 </menu>

@@ -45,7 +45,7 @@ public class MoveAvatarTimeTask extends TimerTask{
 		if((currX>finalX&&finalX>startX)||(currX<finalX&&finalX<startX)) currX=finalX;
 		if((currZ>finalZ&&finalZ>startZ)||(currZ<finalZ&&finalZ<startZ)) currZ=finalZ;
 		similAvatarBody.getRelativeTransform().setPosition(currX, currY+avatarBodyY, currZ);
-		boolean touchObstacle = similAvatarBody.coveredBySonNodes(all.getSonNodes().get(2));
+		boolean touchObstacle = similAvatarBody.coveredBySonNodes(all.getSonNodes().get(1));
 		if(!touchObstacle){
 			avatar.getRelativeTransform().setPosition(currX, currY, currZ);
 		}else{

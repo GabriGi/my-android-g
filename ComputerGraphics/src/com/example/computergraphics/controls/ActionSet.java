@@ -29,13 +29,11 @@ public class ActionSet{
 	
 	private Node all;
 	private Node avatar;
-//	private Node camera;
 	
 	public ActionSet(Context context, Node node, float scaleOfAll, float rotX, float rotY) {
 //		this.scroller = new Scroller(context);
 		this.all = node;
 		this.avatar = node.getSonNodes().get(0);
-//		this.camera = node.getSonNodes().get(0);
 		this.scale = scaleOfAll;
 		this.rotX = rotX;
 		this.rotY = rotY;
@@ -67,7 +65,7 @@ public class ActionSet{
 	
 	/**
 	 * Permette di muovere l'avatar negli assi X e Z (sistema di riferimento dello schermo)
-	 * in una certa posizione (valori compresi tra -1 e 1)
+	 * in una certa posizione (valori compresi tra -1 e 1) con velocita' costante
 	 */
 	public void moveAvatarTo(float destU, float destV, float velocity){
 		SFVertex3f start = new SFVertex3f(); avatar.getRelativeTransform().getPosition(start);
@@ -99,10 +97,11 @@ public class ActionSet{
 	
 	/**
 	 * Permette di muovere l'avatar negli assi X e Z (sistema di riferimento dello schermo)
-	 * con velocita' costante (valori compresi tra -1 e 1)
+	 * passasndogli una velocita' compresa tra -1 e 1
 	 */
 	public void moveAvatarWith(float velocityU , float velocityV){
 		float velocity = (float)Math.max(Math.abs(velocityU), Math.abs(velocityV)) * VELOCITY_RUN;
+		if(velocity>VELOCITY_RUN) velocity = VELOCITY_RUN;		//Necessario solo in BasicController(RELATIVE_MODE) per prestazioni migliori
 		moveAvatarTo(velocityU, velocityV, velocity);
 	}
 	
@@ -114,6 +113,7 @@ public class ActionSet{
 		moveAvatarWith(directionU, directionV);
 		if(jumpAvatarTask != null){
 			if (!jumpAvatarTask.isJumping()) {
+				jumpAvatarTask.cancel();
 				jumpAvatarTask = new JumpAvatarTimeTask(avatar, JumpAvatarTimeTask.START_VELOCITY, all, TIMER_PERIOD);
 				timer.schedule(jumpAvatarTask, TIMER_PERIOD / 2, TIMER_PERIOD);
 			}
@@ -124,8 +124,7 @@ public class ActionSet{
 	}
 	
 	/**
-	 * Muove (ruota) la telecamera, spostando quindi la visuale
-	 * (asse X) (sistema di riferimento dello schermo)
+	 * Muove (ruota) la telecamera, spostando quindi la visuale (assi X e Y)
 	 */
 	public void rotationCamera(float uFactor, float vFactor){		//TODO Da sistemare (Graphic bug)
 		stopMoving();
@@ -147,8 +146,7 @@ public class ActionSet{
 	}
 	
 	/**
-	 * Avvicina/Allontana  la telecamera, ingrandendo/rimpicciolendo quindi la visuale
-	 * (asse Z) (sistema di riferimento dello schermo)
+	 * Avvicina/Allontana  la telecamera, ingrandendo/rimpicciolendo quindi la visuale (asse Z)
 	 */
 	public void zoomCamera(float zoomFactor){		//TODO Da sistemare (Graphic bug)
 		stopMoving();

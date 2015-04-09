@@ -54,7 +54,7 @@ public class JumpAvatarTimeTask extends TimerTask{
 		float tempCurrY = startY+startVelocityY*t-a*t*t;
 		if(tempCurrY<0) tempCurrY=0;
 		similAvatarBody.getRelativeTransform().setPosition(currX, tempCurrY+avatarBodyY, currZ);
-		boolean touchObstacle = similAvatarBody.coveredBySonNodes(all.getSonNodes().get(2));
+		boolean touchObstacle = similAvatarBody.coveredBySonNodes(all.getSonNodes().get(1));
 		if(!touchObstacle){
 			currY = tempCurrY;
 			lastUsefulT = t;
