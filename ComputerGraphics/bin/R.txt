@@ -242,6 +242,7 @@ int drawable ic_action_basic_relative 0x7f02005b
 int drawable ic_action_different 0x7f02005c
 int drawable ic_launcher 0x7f02005d
 int drawable paddedroomtexture01 0x7f02005e
+int drawable redpaddedroomtexture01 0x7f02005f
 int id action_alternative 0x7f05003e
 int id action_bar 0x7f05001c
 int id action_bar_activity_content 0x7f050015

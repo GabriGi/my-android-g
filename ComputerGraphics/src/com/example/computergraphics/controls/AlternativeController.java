@@ -1,5 +1,6 @@
 package com.example.computergraphics.controls;
 
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 
@@ -9,6 +10,8 @@ public class AlternativeController implements IController {
 
 	private int viewWidth;
 	private int viewHeight;
+	
+	private static final float CAMERA_SESIBILITY = -0.5f;
 	
 	@Override
 	public void setActionsSet(ActionSet actionSet) {
@@ -53,15 +56,16 @@ public class AlternativeController implements IController {
 	}
 
 	@Override
-	public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX,
-			float distanceY) {
-		// TODO Auto-generated method stub
+	public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
+			float xFactor = distanceX/viewWidth/CAMERA_SESIBILITY;
+			float yFactor = distanceY/viewHeight/CAMERA_SESIBILITY;
+			Log.d("Gestures", "         - rotation: "+xFactor+" "+yFactor);
+			actionSet.rotationCamera(xFactor, yFactor);
 		return false;
 	}
 
 	@Override
-	public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX,
-			float velocityY) {
+	public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
 		// TODO Auto-generated method stub
 		return false;
 	}
@@ -93,20 +97,15 @@ public class AlternativeController implements IController {
     /* *******************************************************************************/
 
 	@Override
-	public boolean onScaleBegin(ScaleGestureDetector detector) {
-		// TODO Auto-generated method stub
-		return false;
-	}
+	public boolean onScaleBegin(ScaleGestureDetector detector) { return true; }
     
 	@Override
 	public boolean onScale(ScaleGestureDetector detector) {
-		// TODO Auto-generated method stub
-		return false;
+		Log.d("Gestures", "        - zoom:     "+(detector.getScaleFactor()));
+		actionSet.zoomCamera((float)detector.getScaleFactor());
+		return true;
 	}
 
 	@Override
-	public void onScaleEnd(ScaleGestureDetector detector) {
-		// TODO Auto-generated method stub
-	}
-
+	public void onScaleEnd(ScaleGestureDetector detector) {  }
 }

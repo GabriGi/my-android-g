@@ -14,8 +14,12 @@ public class ActionSet{
 
 	public static final float VELOCITY_RUN = 0.05f;
 	public static final float VELOCITY_WALK = VELOCITY_RUN/2;
-	public static final float MAX_SCALE = 1.0f;
-	public static final float MIN_SCALE = 0.1f;
+	public static final float SCALE_MIN = 0.5f;
+	public static final float SCALE_DEF = 1.0f;
+	public static final float SCALE_MAX = 2.0f;
+	public static final float ROT_X_MIN = -0.8f;
+	public static final float ROT_X_DEF = 0.0f;
+	public static final float ROT_X_MAX = 0.8f;
 	
 	private Timer timer = new Timer();
 	private static final int TIMER_PERIOD = 25;
@@ -23,20 +27,17 @@ public class ActionSet{
 	private JumpAvatarTimeTask jumpAvatarTask;
 //	private Scroller scroller;
 	
-	private float scale;
-	private float rotX;
-	private float rotY;
+	private float scale = 1;
+	private float rotX = ROT_X_MIN;
+	private float rotY = 0;
 	
 	private Node all;
 	private Node avatar;
 	
-	public ActionSet(Context context, Node node, float scaleOfAll, float rotX, float rotY) {
+	public ActionSet(Context context, Node node) {
 //		this.scroller = new Scroller(context);
 		this.all = node;
 		this.avatar = node.getSonNodes().get(0);
-		this.scale = scaleOfAll;
-		this.rotX = rotX;
-		this.rotY = rotY;
 	}
 	
 	public float getScale() {
@@ -128,21 +129,10 @@ public class ActionSet{
 	 */
 	public void rotationCamera(float uFactor, float vFactor){		//TODO Da sistemare (Graphic bug)
 		stopMoving();
-		
-		SFMatrix3f matrix = new SFMatrix3f();
-		all.getRelativeTransform().getMatrix(matrix);
-
 		rotX += vFactor;
 		rotY += uFactor;
-		if(rotX<0.1f) rotX=0.2f;	//Cant't be 0!!
-		if(rotX>1.5f) rotX=1.5f;	//Little less of (float)Math.PI/2;
-		
-		SFVertex3f allDest = new SFVertex3f(); avatar.getRelativeTransform().getPosition(allDest); allDest.mult(-1);
-
-		matrix.MultMatrix(SFMatrix3f.getRotationY(vFactor));
-		matrix.MultMatrix(SFMatrix3f.getRotationY(uFactor));
-		SFVertex3f position = matrix.Mult(allDest);
-		all.getRelativeTransform().setPosition(position);
+		if(rotX<ROT_X_MIN) rotX=ROT_X_MIN;	//If less, the image is cut out.
+		else if(rotX>ROT_X_MAX) rotX=ROT_X_MAX;	//If more, the avatar is no longer visible.
 	}
 	
 	/**
@@ -150,18 +140,8 @@ public class ActionSet{
 	 */
 	public void zoomCamera(float zoomFactor){		//TODO Da sistemare (Graphic bug)
 		stopMoving();
-		
-		SFMatrix3f matrix = new SFMatrix3f();
-		all.getRelativeTransform().getMatrix(matrix);
-		
 		scale = scale*zoomFactor;
-		if(scale>MAX_SCALE) scale=MAX_SCALE;
-		else if(scale<MIN_SCALE) scale=MIN_SCALE;
-		
-		SFVertex3f allDest = new SFVertex3f(); avatar.getRelativeTransform().getPosition(allDest); allDest.mult(-1);
-		
-		matrix.MultMatrix(SFMatrix3f.getScale(scale, scale, scale));
-		SFVertex3f position = matrix.Mult(allDest);
-		all.getRelativeTransform().setPosition(position);
+		if(scale>SCALE_MAX) scale=SCALE_MAX;
+		else if(scale<SCALE_MIN) scale=SCALE_MIN;
 	}
 }
