@@ -53,9 +53,10 @@ public class DifferentController implements IController {
 	}
 
 	@Override
-	public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX,
-			float distanceY) {
+	public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
 		// TODO Auto-generated method stub
+//		actionSet.moveAvatarWith((e2.getX()-e1.getX())/viewWidth, 
+//				 				 (e1.getY()-e2.getY())/viewHeight);
 		return false;
 	}
 
@@ -75,16 +76,21 @@ public class DifferentController implements IController {
 		// TODO Auto-generated method stub
 		return false;
 	}
-
+	
+//	private float startX, startY;
+	
 	@Override
 	public boolean onDoubleTap(MotionEvent e) {
 		// TODO Auto-generated method stub
+//		startX = e.getX();
+//		startY = e.getY();
 		return false;
 	}
 
 	@Override
 	public boolean onDoubleTapEvent(MotionEvent e) {
 		// TODO Auto-generated method stub
+//		actionSet.moveAvatarTo((e.getX()-startX)/viewWidth, (startY-e.getY())/viewHeight, ActionSet.VELOCITY_RUN);
 		return false;
 	}
 

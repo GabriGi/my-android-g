@@ -33,8 +33,8 @@ public class MainActivity extends Activity {
         case R.id.action_basic_absolute:
         	myView.setController(new BasicController(BasicController.ABSOLUTE_MODE), false);
         	return true;
-        case R.id.action_basic_relative:
-        	myView.setController(new BasicController(BasicController.RELATIVE_MODE), false);
+        case R.id.action_basic_centered:
+        	myView.setController(new BasicController(BasicController.CENTERED_MODE), false);
         	return true;
         case R.id.action_alternative:
         	myView.setController(new AlternativeController(), true);

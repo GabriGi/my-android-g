@@ -6,8 +6,8 @@ import android.view.ScaleGestureDetector;
 
 public class BasicController implements IController {
 
-	public static final int ABSOLUTE_MODE = 1;
-	public static final int RELATIVE_MODE = 2;
+	public static final int CENTERED_MODE = 1;
+	public static final int ABSOLUTE_MODE = 2;
 	
 	private int mode;
 	private ActionSet actionSet;
@@ -57,19 +57,19 @@ public class BasicController implements IController {
 
 	@Override
 	public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
-		if(mode==ABSOLUTE_MODE){
+		if(mode==CENTERED_MODE){
 			actionSet.moveAvatarWith((e2.getX()-(viewWidth>>1))/(viewWidth>>1), 
-									 (e2.getY()-(viewHeight>>1))/(viewHeight>>1));
-		}else if(mode==RELATIVE_MODE){
-			actionSet.moveAvatarWith((e2.getX()-e1.getX())/viewWidth, 
-									 (e2.getY()-e1.getY())/viewHeight);
+									 ((viewHeight>>1)-e2.getY())/(viewHeight>>1));
+		}else if(mode==ABSOLUTE_MODE){
+			actionSet.moveAvatarWith((e2.getX()-(viewWidth>>1))/(viewWidth>>1), 
+		   			   (viewHeight-(viewHeight>>3)-e2.getY())/(viewHeight));
 		}
 		return true;
 	}
 
 	@Override
 	public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-		actionSet.jumpAvatar((e2.getX()-e1.getX())/viewWidth, (e2.getY()-e1.getY())/viewHeight);
+		actionSet.jumpAvatar((e2.getX()-e1.getX())/viewWidth, (e1.getY()-e2.getY())/viewHeight);
 		return true;
 	}
 
@@ -79,34 +79,36 @@ public class BasicController implements IController {
     
 	@Override
 	public boolean onSingleTapConfirmed(MotionEvent e) {
-		actionSet.moveAvatarTo((e.getX()-(viewWidth>>1))/(viewWidth>>1), 
-							   (e.getY()-(viewHeight>>1))/(viewHeight>>1), 
-							   ActionSet.VELOCITY_WALK);
+		if(mode==CENTERED_MODE){
+			actionSet.moveAvatarTo((e.getX()-(viewWidth>>1))/(viewWidth>>1), 
+								   ((viewHeight>>1)-e.getY())/(viewHeight>>1), 
+								   ActionSet.VELOCITY_WALK);
+		}else if(mode==ABSOLUTE_MODE){
+			actionSet.moveAvatarTo((e.getX()-(viewWidth>>1))/(viewWidth>>1), 
+					   			   (viewHeight-(viewHeight>>3)-e.getY())/(viewHeight), 
+								   ActionSet.VELOCITY_WALK);
+		}
 		return true;
 	}
 
 	@Override
-	public boolean onDoubleTap(MotionEvent e) {
-		startX = e.getX();
-		startY = e.getY();
-		return true;
-	}
+	public boolean onDoubleTap(MotionEvent e) { return true; }
 
 	private int doubleTapCounter = 0;
 	private static final int MIN_DTC_FOR_SCROLL = 5;	// min2, max 5.
-	private float startX, startY;
+	
 	@Override
 	public boolean onDoubleTapEvent(MotionEvent e) {
 		if(e.getAction()==MotionEvent.ACTION_DOWN) doubleTapCounter=0;
 		doubleTapCounter++;
 		Log.d("Gestures", "                 - count: "+doubleTapCounter);
-		if(mode==ABSOLUTE_MODE || doubleTapCounter<=MIN_DTC_FOR_SCROLL){
+		if(mode==CENTERED_MODE){
 			actionSet.moveAvatarTo((e.getX()-(viewWidth>>1))/(viewWidth>>1), 
-								   (e.getY()-(viewHeight>>1))/(viewHeight>>1), 
+								   ((viewHeight>>1)-e.getY())/(viewHeight>>1), 
 								   ActionSet.VELOCITY_RUN);
-		}else if(mode==RELATIVE_MODE){
-			actionSet.moveAvatarTo((e.getX()-startX)/viewWidth, 
-								   (e.getY()-startY)/viewHeight, 
+		}else if(mode==ABSOLUTE_MODE){
+			actionSet.moveAvatarTo((e.getX()-(viewWidth>>1))/(viewWidth>>1), 
+		   			   			   (viewHeight-(viewHeight>>3)-e.getY())/(viewHeight), 
 					   			   ActionSet.VELOCITY_RUN);
 		}
         if(e.getAction()==MotionEvent.ACTION_UP && doubleTapCounter>MIN_DTC_FOR_SCROLL) stopScrolling();

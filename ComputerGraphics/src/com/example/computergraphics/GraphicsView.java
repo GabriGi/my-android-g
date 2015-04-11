@@ -24,7 +24,6 @@ import android.content.Context;
 import android.graphics.BitmapFactory;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
-import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
@@ -121,7 +120,7 @@ public class GraphicsView extends GLSurfaceView{
     	private float rotY = 0.0f;					//The user will change it at runtime
     	//private float rotZ = 0.0f;				//This must be 0.0f.
         
-    	private Node node, guideLineX, guideLineY, guideLineZ, guidePlaneZ;
+    	private Node node;
         private SFCamera cam;
         private SFCamera startCam;
         
@@ -225,10 +224,10 @@ public class GraphicsView extends GLSurfaceView{
             model1.setMaterialComponent(material);
 
             //Step 6: create a Node, that is a reference system where you can place your Model
-            node=new Node();
+            node = new Node();
             node.getRelativeTransform().setPosition(0, 0, 0);
             
-          //Step 2-5bis: do the same for the background
+            //Step 2-5bis: do the same for the background
             BitmapTexture texture2 = BitmapTexture.loadBitmapTexture(BitmapFactory.decodeResource(context.getResources(),
                     R.drawable.bluepaddedroomtexture01), textureModel);
             texture2.init();
@@ -242,21 +241,6 @@ public class GraphicsView extends GLSurfaceView{
             Model model2=new Model();
             model2.setRootGeometry(mesh2);
             model2.setMaterialComponent(material2);
-            
-          //Step 2-5bis: do the same for the guideLines
-            BitmapTexture texture3 = BitmapTexture.loadBitmapTexture(BitmapFactory.decodeResource(context.getResources(),
-                    R.drawable.redpaddedroomtexture01), textureModel);
-            texture3.init();
-            
-            Material material3=new Material(program);
-            material3.getTextures().add(texture3);
-
-            Mesh mesh3=new Mesh(objects[0]);
-            mesh3.init();
-
-            Model model3=new Model();
-            model3.setRootGeometry(mesh3);
-            model3.setMaterialComponent(material3);
             
             /* *************************************************************** */
 
@@ -289,23 +273,10 @@ public class GraphicsView extends GLSurfaceView{
 				}
 				innerObstaclesNode.getSonNodes().add(n);
 			}
-            actionSet = new ActionSet(context, node);
-            controller.setActionsSet(actionSet);
         	startCam = setupCam();
         	cam = setupCam();
-            
-            guideLineX = new Node(model3);
-            guideLineX.getRelativeTransform().setPosition(0f,3*ALTEZ_OBST,0f);
-            guideLineX.getRelativeTransform().setMatrix(SFMatrix3f.getScale(1, 0.01f, 0.01f));
-            guideLineY = new Node(model3);
-            guideLineY.getRelativeTransform().setPosition(0f,3*ALTEZ_OBST,0f);
-            guideLineY.getRelativeTransform().setMatrix(SFMatrix3f.getScale(0.01f, 1, 0.01f));
-            guideLineZ = new Node(model3);
-            guideLineZ.getRelativeTransform().setPosition(0f,3*ALTEZ_OBST,0f);
-            guideLineZ.getRelativeTransform().setMatrix(SFMatrix3f.getScale(0.01f, 0.01f, 1));
-            guidePlaneZ = new Node(model3);
-            guidePlaneZ.getRelativeTransform().setPosition(0f,0f,0f);
-            guidePlaneZ.getRelativeTransform().setMatrix(SFMatrix3f.getScale(1f, 0.01f, 1));
+            actionSet = new ActionSet(context, node, cam);
+            controller.setActionsSet(actionSet);
         }
 
         @Override
@@ -317,15 +288,8 @@ public class GraphicsView extends GLSurfaceView{
         public void onDrawFrame(GL10 gl) {
 
             SFOGLSystemState.cleanupColorAndDepth(1, 1, 0, 1);
-
+            
             //setup the View Projection
-
-//          SFTransform3f transform3f = new SFTransform3f();
-//          	transform3f.setPosition(new SFVertex3f(0,0,0));
-//          	transform3f.setMatrix(SFMatrix3f.getRotationX(0f));
-//          float[] projection = new float[16];
-//          transform3f.getOpenGLMatrix(projection);
-//          program.setupProjection(projection);
         	
 			scale = actionSet.getScale();
 			rotX = actionSet.getRotX();
@@ -335,9 +299,10 @@ public class GraphicsView extends GLSurfaceView{
 			SFVertex3f focus = SFMatrix3f.getRotationX(-rotX).Mult(startCam.getF());
           	focus.add3f(new SFVertex3f(0, 3*ALTEZ_OBST, 0));
           	if(focus.getY()<upL+2*ALTEZ_OBST) focus.setY(upL+2*ALTEZ_OBST);	//Per non tagliare gli ostacoli
+//			SFVertex3f dir = SFMatrix3f.getRotationX(rotX).Mult(startCam.getDir());
           	
 			cam.set(SFMatrix3f.getRotationY(rotY).Mult(focus), 
-					SFMatrix3f.getRotationY(rotY).Mult(startCam.getDir()), 
+					SFMatrix3f.getRotationY(rotY).Mult(startCam.getDir()), 	//dir), 
 					SFMatrix3f.getRotationY(rotY).Mult(startCam.getLeft()), 
 					startCam.getUp(), 
 					widthRatio/scale, 
@@ -345,36 +310,38 @@ public class GraphicsView extends GLSurfaceView{
 					startCam.getDistance());
 //			cam.setDir(SFMatrix3f.getRotationX(-rotX).Mult(cam.getDir()));
 			
-			Log.d("task", "rotX "+rotX+"; scale "+scale);
+//			Log.d("task", "rotX "+rotX+"; scale "+scale);
             
         	cam.update();
             program.setupProjection(cam.extractTransform());
             
-//          SFMatrix3f matrix3f=SFMatrix3f.getScale(1,1,1);
-//          matrix3f=matrix3f.MultMatrix(SFMatrix3f.getRotationX(rotX));	//(float)(Math.PI/2)));	//For 2D
-//          matrix3f=matrix3f.MultMatrix(SFMatrix3f.getRotationY(rotY));
-//          matrix3f=matrix3f.MultMatrix(SFMatrix3f.getRotationZ(rotZ));
-//			node.getRelativeTransform().setMatrix(matrix3f);
+            if(cam.getDir().getZ()>Math.abs(cam.getDir().getX())){				//Se punto verso l'alto..
+            	node.getSonNodes().get(1).getSonNodes().get(1).setEnabled(true);
+            	node.getSonNodes().get(1).getSonNodes().get(2).setEnabled(true);
+            	node.getSonNodes().get(1).getSonNodes().get(3).setEnabled(true);
+            	node.getSonNodes().get(1).getSonNodes().get(4).setEnabled(false);	//..rimuovo il muro in basso
+            } else if(cam.getDir().getZ()<-Math.abs(cam.getDir().getX())){		//Se punto verso il basso..
+            	node.getSonNodes().get(1).getSonNodes().get(1).setEnabled(true);
+            	node.getSonNodes().get(1).getSonNodes().get(2).setEnabled(false);	//..rimuovo il muro in alto
+            	node.getSonNodes().get(1).getSonNodes().get(3).setEnabled(true);
+            	node.getSonNodes().get(1).getSonNodes().get(4).setEnabled(true);
+            } else if(cam.getDir().getX()>Math.abs(cam.getDir().getZ())){		//Se punto verso destra..
+            	node.getSonNodes().get(1).getSonNodes().get(1).setEnabled(true);
+            	node.getSonNodes().get(1).getSonNodes().get(2).setEnabled(true);
+            	node.getSonNodes().get(1).getSonNodes().get(3).setEnabled(false);	//..rimuovo il muro a sinistra
+            	node.getSonNodes().get(1).getSonNodes().get(4).setEnabled(true);
+            } else if(cam.getDir().getX()<-Math.abs(cam.getDir().getZ())){		//Se punto verso sinistra..
+            	node.getSonNodes().get(1).getSonNodes().get(1).setEnabled(false);	//..rimuovo il muro a destra
+            	node.getSonNodes().get(1).getSonNodes().get(2).setEnabled(true);
+            	node.getSonNodes().get(1).getSonNodes().get(3).setEnabled(true);
+            	node.getSonNodes().get(1).getSonNodes().get(4).setEnabled(true);
+            }
         	
             node.updateTree(new SFTransform3f());
 
             //Draw the node
             node.draw();
             
-//            guideLineX.getRelativeTransform().setPosition(0f,3*ALTEZ_OBST+(4*AVAT_BODY)*(float)Math.sin(rotX),0f);
-//            guideLineY.getRelativeTransform().setPosition(0f,3*ALTEZ_OBST+(4*AVAT_BODY)*(float)Math.sin(rotX),0f);
-//            guideLineZ.getRelativeTransform().setPosition(0f,3*ALTEZ_OBST+(4*AVAT_BODY)*(float)Math.sin(rotX),0f);
-                        
-            guideLineX.updateTree(new SFTransform3f());
-            guideLineY.updateTree(new SFTransform3f());
-            guideLineZ.updateTree(new SFTransform3f());
-            guidePlaneZ.updateTree(new SFTransform3f());
-            guideLineX.draw();
-            guideLineY.draw();
-            guideLineZ.draw();
-            guidePlaneZ.draw();
-            
-
             //int[] viewport=new int[4];
             //GLES20.glGetIntegerv(GLES20.GL_VIEWPORT,viewport,0);
             //Log.e("Graphics View Size", Arrays.toString(viewport));

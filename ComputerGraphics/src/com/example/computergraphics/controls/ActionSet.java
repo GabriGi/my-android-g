@@ -3,6 +3,7 @@ package com.example.computergraphics.controls;
 import java.util.Timer;
 
 import sfogl.integration.Node;
+import sfogl.integration.SFCamera;
 import shadow.math.SFMatrix3f;
 import shadow.math.SFVertex3f;
 import android.content.Context;
@@ -27,17 +28,20 @@ public class ActionSet{
 	private JumpAvatarTimeTask jumpAvatarTask;
 //	private Scroller scroller;
 	
-	private float scale = 1;
-	private float rotX = ROT_X_MIN;
+	private float scale = SCALE_DEF;
+	private float rotX = ROT_X_DEF;
 	private float rotY = 0;
 	
 	private Node all;
 	private Node avatar;
 	
-	public ActionSet(Context context, Node node) {
+	private SFCamera cam;
+	
+	public ActionSet(Context context, Node node, SFCamera cam) {
 //		this.scroller = new Scroller(context);
 		this.all = node;
 		this.avatar = node.getSonNodes().get(0);
+		this.cam = cam;
 	}
 	
 	public float getScale() {
@@ -58,15 +62,16 @@ public class ActionSet{
 	}
 	
 	private SFVertex3f getXYZFromUV(float destU, float destV) {
-		float destX = destU/scale;
-		float destZ = (0-destV/scale)/(float)Math.sin(rotX);
-		SFMatrix3f matrix = SFMatrix3f.getRotationY(-rotY);
-		return matrix.Mult(new SFVertex3f(destX, 0, destZ));
+		float destX = destU*2;		//Il fattore moltiplicativo non e' verificato, ma da prestazioni migliori
+		float destY = 0;
+		float destZ = destV*4;		//Il fattore moltiplicativo non e' verificato, ma da prestazioni migliori
+		SFVertex3f dest = cam.getWorldRotation(SFMatrix3f.getRotationY(rotY)).Mult(new SFVertex3f(destX, destY, destZ));
+		return dest;
 	}
 	
 	/**
-	 * Permette di muovere l'avatar negli assi X e Z (sistema di riferimento dello schermo)
-	 * in una certa posizione (valori compresi tra -1 e 1) con velocita' costante
+	 * Permette di muovere l'avatar in una certa posizione degli assi X e Z, 
+	 * prendendo come parametri le due componenti (u e v) dello schermo (con valori compresi tra -1 e 1)
 	 */
 	public void moveAvatarTo(float destU, float destV, float velocity){
 		SFVertex3f start = new SFVertex3f(); avatar.getRelativeTransform().getPosition(start);
@@ -81,10 +86,6 @@ public class ActionSet{
 		moveAvatarTask = new MoveAvatarTimeTask(avatar, dest, velX, velZ, all);
 		timer.schedule(moveAvatarTask, 0, TIMER_PERIOD);
 		
-//		Log.d("task", "start: "+start);
-//		Log.d("task", "dest: "+dest);
-//		Log.d("task", "space: "+space);
-		
 //	//DEBUG - TELETRASPORTO
 //		avatar.getRelativeTransform().setPosition(dest);
 //		SFVertex3f allDest = new SFVertex3f(); allDest.subtract3f(dest);
@@ -97,18 +98,18 @@ public class ActionSet{
 	}
 	
 	/**
-	 * Permette di muovere l'avatar negli assi X e Z (sistema di riferimento dello schermo)
-	 * passasndogli una velocita' compresa tra -1 e 1
+	 * Permette di muovere l'avatar lungo gli assi X e Z passasndogli una velocita' compresa tra -1 e 1 
+	 * (nelle due componenti (u e v) dello schermo)
 	 */
 	public void moveAvatarWith(float velocityU , float velocityV){
 		float velocity = (float)Math.max(Math.abs(velocityU), Math.abs(velocityV)) * VELOCITY_RUN;
-		if(velocity>VELOCITY_RUN) velocity = VELOCITY_RUN;		//Necessario solo in BasicController(RELATIVE_MODE) per prestazioni migliori
+		if(velocity>VELOCITY_RUN) velocity = VELOCITY_RUN;
 		moveAvatarTo(velocityU, velocityV, velocity);
 	}
 	
 	/**
-	 * Permette all'avatar di saltare (sistema di riferimento dello schermo):
-	 * movimento verticale sull'asse Y + eventuale spinta in avanti (moveAvatar)
+	 * Permette all'avatar di saltare: movimento verticale sull'asse Y
+	 *  + eventuale spinta in avanti (nelle due componenti (u e v) dello schermo)
 	 */
 	public void jumpAvatar(float directionU , float directionV){
 		moveAvatarWith(directionU, directionV);
@@ -127,7 +128,7 @@ public class ActionSet{
 	/**
 	 * Muove (ruota) la telecamera, spostando quindi la visuale (assi X e Y)
 	 */
-	public void rotationCamera(float uFactor, float vFactor){		//TODO Da sistemare (Graphic bug)
+	public void rotationCamera(float uFactor, float vFactor){		//TODO Si puo' migliorare
 		stopMoving();
 		rotX += vFactor;
 		rotY += uFactor;
@@ -138,7 +139,7 @@ public class ActionSet{
 	/**
 	 * Avvicina/Allontana  la telecamera, ingrandendo/rimpicciolendo quindi la visuale (asse Z)
 	 */
-	public void zoomCamera(float zoomFactor){		//TODO Da sistemare (Graphic bug)
+	public void zoomCamera(float zoomFactor){		//TODO  Si puo' migliorare
 		stopMoving();
 		scale = scale*zoomFactor;
 		if(scale>SCALE_MAX) scale=SCALE_MAX;
