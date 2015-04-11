@@ -7,6 +7,7 @@ import sfogl.integration.SFCamera;
 import shadow.math.SFMatrix3f;
 import shadow.math.SFVertex3f;
 import android.content.Context;
+import android.widget.Scroller;
 
 import com.example.computergraphics.controls.timerTask.JumpAvatarTimeTask;
 import com.example.computergraphics.controls.timerTask.MoveAvatarTimeTask;
@@ -26,8 +27,11 @@ public class ActionSet{
 	private static final int TIMER_PERIOD = 25;
 	private MoveAvatarTimeTask moveAvatarTask;
 	private JumpAvatarTimeTask jumpAvatarTask;
-//	private Scroller scroller;
 	
+	private Scroller myScroller;
+	private boolean flingEventInProgress = false;
+	
+	private float roomDimension;
 	private float scale = SCALE_DEF;
 	private float rotX = ROT_X_DEF;
 	private float rotY = 0;
@@ -38,10 +42,14 @@ public class ActionSet{
 	private SFCamera cam;
 	
 	public ActionSet(Context context, Node node, SFCamera cam) {
-//		this.scroller = new Scroller(context);
+		this.myScroller = new Scroller(context);
 		this.all = node;
 		this.avatar = node.getSonNodes().get(0);
 		this.cam = cam;
+	}
+	
+	public void setRoomDimension(float roomDimension) {
+		this.roomDimension = roomDimension;
 	}
 	
 	public float getScale() {
@@ -57,14 +65,36 @@ public class ActionSet{
 	}
 	
 	public void stopMoving() {
+		myScroller.forceFinished(true);
 		if(moveAvatarTask!=null) moveAvatarTask.cancel();
 		timer.purge();
 	}
 	
+	public boolean isFlingEvent() {
+		return flingEventInProgress;
+	}
+	
+	float startRotY;
+	public void startFlingCamera(int velocityY){
+		flingEventInProgress = true;
+		startRotY = rotY;
+        myScroller.startScroll(0, 0, 0, (int)(0.628*velocityY), 2000);
+    }
+	
+	public boolean flingCamera() {
+		if(myScroller.computeScrollOffset()){
+			rotY = startRotY + myScroller.getCurrY()/1000f;
+			return true;
+		}else{
+			flingEventInProgress = false;
+			return false;
+		}
+	}
+	
 	private SFVertex3f getXYZFromUV(float destU, float destV) {
-		float destX = destU*2;		//Il fattore moltiplicativo non e' verificato, ma da prestazioni migliori
+		float destX = destU*roomDimension;
 		float destY = 0;
-		float destZ = destV*4;		//Il fattore moltiplicativo non e' verificato, ma da prestazioni migliori
+		float destZ = destV*roomDimension*2;
 		SFVertex3f dest = cam.getWorldRotation(SFMatrix3f.getRotationY(rotY)).Mult(new SFVertex3f(destX, destY, destZ));
 		return dest;
 	}

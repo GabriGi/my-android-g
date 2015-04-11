@@ -40,9 +40,7 @@ public class BasicController implements IController {
     /* ***************************************************************************** */
     
 	@Override
-	public boolean onDown(MotionEvent e) {
-		return true;
-	}
+	public boolean onDown(MotionEvent e) { return true; }
 
 	@Override
 	public void onShowPress(MotionEvent e) { /*Nothing to do*/ }
@@ -51,9 +49,7 @@ public class BasicController implements IController {
 	public void onLongPress(MotionEvent e) { /*Nothing to do*/ }
 
 	@Override
-	public boolean onSingleTapUp(MotionEvent e) {
-		return true;
-	}
+	public boolean onSingleTapUp(MotionEvent e) { return true; }
 
 	@Override
 	public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
@@ -90,12 +86,12 @@ public class BasicController implements IController {
 		}
 		return true;
 	}
-
-	@Override
-	public boolean onDoubleTap(MotionEvent e) { return true; }
-
+	
 	private int doubleTapCounter = 0;
 	private static final int MIN_DTC_FOR_SCROLL = 5;	// min2, max 5.
+	
+	@Override
+	public boolean onDoubleTap(MotionEvent e) { return true; }
 	
 	@Override
 	public boolean onDoubleTapEvent(MotionEvent e) {
@@ -119,8 +115,7 @@ public class BasicController implements IController {
     /* *************************  OnScaleGestureListener   ************************* */
     /* *******************************************************************************/
 
-	private float previousX;
-	private float previousY;
+	private float previousX, previousY;
 	
 	@Override
 	public boolean onScaleBegin(ScaleGestureDetector detector) {
@@ -147,8 +142,5 @@ public class BasicController implements IController {
 	}
 
 	@Override
-	public void onScaleEnd(ScaleGestureDetector detector) {
-		actionSet.rotationCamera(0, 0);	//This is to force update and avoid graphics bug (Teleport in the next movement)
-	}
-
+	public void onScaleEnd(ScaleGestureDetector detector) { /*Nothing to do*/ }
 }

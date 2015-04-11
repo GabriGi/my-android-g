@@ -3,20 +3,20 @@
     xmlns:tools="http://schemas.android.com/tools" tools:context=".MainActivity">
     
     <item android:id="@+id/action_basic_absolute"
-        android:icon="@drawable/ic_action_basic_absolute"
+        android:icon="@drawable/ic_inverse_action_basic_absolute"
         android:title="@string/action_absolute"
         app:showAsAction="never" />
 	<item android:id="@+id/action_basic_centered"
-        android:icon="@drawable/ic_action_basic_centered"
+        android:icon="@drawable/ic_inverse_action_basic_centered"
         android:title="@string/action_centered"
         app:showAsAction="never" />
     
     <item android:id="@+id/action_alternative"
-        android:icon="@drawable/ic_action_alternative"
+        android:icon="@drawable/ic_inverse_action_alternative"
         android:title="@string/action_alternative"
         app:showAsAction="never" />
     <item android:id="@+id/action_different"
-        android:icon="@drawable/ic_action_different"
+        android:icon="@drawable/ic_inverse_action_different"
         android:title="@string/action_different"
         app:showAsAction="never" />
 </menu>

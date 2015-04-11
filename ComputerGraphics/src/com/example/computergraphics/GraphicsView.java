@@ -80,6 +80,7 @@ public class GraphicsView extends GLSurfaceView{
     			controller.stopScrolling();
     		}
     	}
+    	if(actionSet.isFlingEvent()) invalidate();
     	return true;
     }
     
@@ -91,16 +92,15 @@ public class GraphicsView extends GLSurfaceView{
     	controller.setViewSize(w,h);
     }
     
-//    @Override
-//    public void computeScroll() {
-//    	super.computeScroll();
-//    	if(actionSet!= null){
-//	    	if(actionSet.flingCircle()){
-//	    		//ViewCompat.postInvalidateOnAnimation(this);
-//	    		invalidate();	//funziona comunque..
-//	    	}
-//    	}
-//    }
+    @Override
+    public void computeScroll() {
+    	super.computeScroll();
+    	if(actionSet!= null){
+	    	if(actionSet.flingCamera()||actionSet.flingCamera()){
+	    		invalidate();
+	    	}
+    	}
+    }
     
     public class GraphicsRenderer implements Renderer{
     	
@@ -276,6 +276,7 @@ public class GraphicsView extends GLSurfaceView{
         	startCam = setupCam();
         	cam = setupCam();
             actionSet = new ActionSet(context, node, cam);
+            actionSet.setRoomDimension(LUNGH_MURO);
             controller.setActionsSet(actionSet);
         }
 

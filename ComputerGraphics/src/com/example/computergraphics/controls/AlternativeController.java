@@ -25,9 +25,7 @@ public class AlternativeController implements IController {
 	}
 	
 	@Override
-	public void stopScrolling() {
-		// TODO Auto-generated method stub
-	}
+	public void stopScrolling() { /*Nothing to do*/ }
 	
     /* ***************************************************************************** */
     /* *************************     OnGestureListener     ************************* */
@@ -35,25 +33,19 @@ public class AlternativeController implements IController {
     
 	@Override
 	public boolean onDown(MotionEvent e) {
-		// TODO Auto-generated method stub
-		return false;
-	}
+		actionSet.stopMoving();
+		return true; }
 
 	@Override
-	public void onShowPress(MotionEvent e) {
-		// TODO Auto-generated method stub
-	}
+	public void onShowPress(MotionEvent e) { /*Nothing to do*/ }
 
 	@Override
 	public void onLongPress(MotionEvent e) {
-		// TODO Auto-generated method stub
+		actionSet.jumpAvatar(0, 0.5f);
 	}
 
 	@Override
-	public boolean onSingleTapUp(MotionEvent e) {
-		// TODO Auto-generated method stub
-		return false;
-	}
+	public boolean onSingleTapUp(MotionEvent e) { return true; }
 
 	@Override
 	public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
@@ -61,13 +53,13 @@ public class AlternativeController implements IController {
 			float yFactor = distanceY/viewHeight/CAMERA_SESIBILITY;
 			Log.d("Gestures", "         - rotation: "+xFactor+" "+yFactor);
 			actionSet.rotationCamera(xFactor, yFactor);
-		return false;
+		return true;
 	}
 
 	@Override
 	public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-		// TODO Auto-generated method stub
-		return false;
+		actionSet.startFlingCamera((int)velocityX);
+		return true;
 	}
 
     /* ***************************************************************************** */
@@ -76,28 +68,44 @@ public class AlternativeController implements IController {
     
 	@Override
 	public boolean onSingleTapConfirmed(MotionEvent e) {
-		// TODO Auto-generated method stub
-		return false;
+		actionSet.moveAvatarTo(0, 1, ActionSet.VELOCITY_WALK);
+		return true;
 	}
 
+	private float previousY;
+	private int doubleTapCounter = 0;
+	private static final int MIN_DTC_FOR_SCROLL = 5;	// min2, max 5.
+	
 	@Override
 	public boolean onDoubleTap(MotionEvent e) {
-		// TODO Auto-generated method stub
-		return false;
+		previousY = e.getY();
+		return true;
 	}
-
+	
 	@Override
 	public boolean onDoubleTapEvent(MotionEvent e) {
-		// TODO Auto-generated method stub
-		return false;
+		if(e.getAction()==MotionEvent.ACTION_DOWN) doubleTapCounter=0;
+		doubleTapCounter++;
+		Log.d("Gestures", "                 - count: "+doubleTapCounter);
+        if(doubleTapCounter>MIN_DTC_FOR_SCROLL && e.getAction()!=MotionEvent.ACTION_UP){
+			float zoomFactor = e.getY()/previousY;
+			previousY = e.getY();
+    		actionSet.zoomCamera(zoomFactor);
+        }else if(e.getAction()==MotionEvent.ACTION_UP && doubleTapCounter<=MIN_DTC_FOR_SCROLL){
+    		actionSet.moveAvatarTo(0, 1, ActionSet.VELOCITY_RUN);
+        }
+		return true;
 	}
 
     /* *******************************************************************************/
     /* *************************  OnScaleGestureListener   ************************* */
     /* *******************************************************************************/
-
+	
+	/* In teoria secondo le istruzioni qui non deve fare niente, qindi return false.
+	 * Se volessi fare anche qui lo zoom, basta mettere return true.
+	 */
 	@Override
-	public boolean onScaleBegin(ScaleGestureDetector detector) { return true; }
+	public boolean onScaleBegin(ScaleGestureDetector detector) { return false; }	
     
 	@Override
 	public boolean onScale(ScaleGestureDetector detector) {
