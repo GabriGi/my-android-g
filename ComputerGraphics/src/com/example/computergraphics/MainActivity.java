@@ -48,6 +48,7 @@ public class MainActivity extends Activity {
 	        	return true;
 	        case R.id.action_next_scenary:
 	        	myView.setSceneryNumber(rand.nextInt(myView.getNumberOfScenery()));;
+//	        	myView.setSceneryNumber(1);;
 	        	return true;
 	        default:
 	        	return super.onOptionsItemSelected(item);

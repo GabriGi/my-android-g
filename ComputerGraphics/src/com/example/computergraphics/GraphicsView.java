@@ -35,6 +35,7 @@ import com.example.computergraphics.controls.IController;
 import com.example.computergraphics.controls.ProxyController;
 import com.example.computergraphics.scenery.Scenery;
 import com.example.computergraphics.scenery.Scenery00;
+import com.example.computergraphics.scenery.Scenery01;
 
 /**
  * Created by Alessandro on 13/03/15.
@@ -55,7 +56,7 @@ public class GraphicsView extends GLSurfaceView{
     private float widthRatio;
     private float heightRatio;
     
-    private ArrayList<Scenery> sceneryList = new ArrayList<Scenery>();
+    private ArrayList<Scenery> sceneryList;
 	private int sceneryNumber = 0;
 	private boolean changingScenary = true;
     
@@ -70,9 +71,11 @@ public class GraphicsView extends GLSurfaceView{
         gestureDetector.setOnDoubleTapListener(controller);
         gestureDetector.setIsLongpressEnabled(false);		//Solo se sto usando il BasicController!!!
         scaleDetector = new ScaleGestureDetector(context, controller);
-
+        
+        sceneryList = new ArrayList<Scenery>();
     	sceneryList.add(new Scenery00(AVAT_BODY));
-    	sceneryNumber = 0;
+    	sceneryList.add(new Scenery01(AVAT_BODY));
+    	sceneryNumber = 1;
     	
         setRenderer(new GraphicsRenderer());
     }
@@ -291,11 +294,11 @@ public class GraphicsView extends GLSurfaceView{
         			actionSet.stopMovingAndJumping();
         			node.removeAllSonNodes();
         			setupNodeStructure(models);
-        			actionSet.restoreDefaultValues();
         		}
-		        changingScenary = false;
+    			actionSet.setRoomDimension(sceneryList.get(sceneryNumber).getRoomDimension());
+    			actionSet.restoreDefaultValues();
+        		changingScenary = false;
         	}
-        	actionSet.setRoomDimension(Scenery.getSceneryDimension());
             enableTouching = true;
         }
 

@@ -18,7 +18,7 @@ public class Scenery {
 		altezzMuro = avatarBody*2.5f;
 	}
     
-    public static float getSceneryDimension() {
+    public float getRoomDimension() {
 		return LUNGH_MURO;
 	}
 	
@@ -26,42 +26,38 @@ public class Scenery {
 		return new SFVertex3f(0,0,0);
 	}
 	
+	public SFVertex3f getFinalPosition() {
+		return new SFVertex3f(0,0,0);
+	}
+	
 	public Node getSceneryNode(Model model) {
-		Node sceneryNode = createBackgroundNode(model);
+		Node sceneryNode = createBackgroundNode(model, LUNGH_MURO);
 		return sceneryNode;
 	}
     
-	private Node createBackgroundNode(Model model) {
+	protected Node createBackgroundNode(Model model, float sceneryDimension) {
 		Node backgroundNode = new Node();
         
 		Node floorNode=new Node(model);
         floorNode.getRelativeTransform().setPosition(0.0f, -SPESS_MURO, 0.0f);
-        floorNode.getRelativeTransform().setMatrix(SFMatrix3f.getScale(LUNGH_MURO,SPESS_MURO,LUNGH_MURO));
+        floorNode.getRelativeTransform().setMatrix(SFMatrix3f.getScale(sceneryDimension+SPESS_MURO,SPESS_MURO,sceneryDimension+SPESS_MURO));
         backgroundNode.getSonNodes().add(floorNode);
-        
-        Node wall1Node=new Node(model);
-        wall1Node.getRelativeTransform().setPosition(LUNGH_MURO-SPESS_MURO, altezzMuro, 0.0f);
-        wall1Node.getRelativeTransform().setMatrix(SFMatrix3f.getScale(SPESS_MURO,altezzMuro,LUNGH_MURO));
-        backgroundNode.getSonNodes().add(wall1Node);
-        
-        Node wall2Node=new Node(model);
-        wall2Node.getRelativeTransform().setPosition(0.0f, altezzMuro, LUNGH_MURO-SPESS_MURO);
-        wall2Node.getRelativeTransform().setMatrix(SFMatrix3f.getScale(LUNGH_MURO,altezzMuro,SPESS_MURO));
-        backgroundNode.getSonNodes().add(wall2Node);
-        
-        Node wall3Node=new Node(model);
-        wall3Node.getRelativeTransform().setPosition(-LUNGH_MURO+SPESS_MURO, altezzMuro, 0.0f);
-        wall3Node.getRelativeTransform().setMatrix(SFMatrix3f.getScale(SPESS_MURO,altezzMuro,LUNGH_MURO));
-        backgroundNode.getSonNodes().add(wall3Node);
-        
-        Node wall4Node=new Node(model);
-        wall4Node.getRelativeTransform().setPosition(0.0f, altezzMuro, -LUNGH_MURO+SPESS_MURO);
-        wall4Node.getRelativeTransform().setMatrix(SFMatrix3f.getScale(LUNGH_MURO,altezzMuro,SPESS_MURO));
-        backgroundNode.getSonNodes().add(wall4Node);
 
+        backgroundNode.getSonNodes().add(createWallNode(model, sceneryDimension, 0, 0, sceneryDimension, altezzMuro));
+        backgroundNode.getSonNodes().add(createWallNode(model, 0, sceneryDimension, sceneryDimension, 0, altezzMuro));
+        backgroundNode.getSonNodes().add(createWallNode(model, -sceneryDimension, 0, 0, sceneryDimension, altezzMuro));
+        backgroundNode.getSonNodes().add(createWallNode(model, 0, -sceneryDimension, sceneryDimension, 0, altezzMuro));
+		
 		backgroundNode.getRelativeTransform().setPosition(0,0,0);
 		backgroundNode.getRelativeTransform().setMatrix(SFMatrix3f.getScale(1,1,1));
         
         return backgroundNode;
+	}
+	
+	protected Node createWallNode(Model model, float x, float z, float sx, float sz, float h){
+		Node wall1Node=new Node(model);
+        wall1Node.getRelativeTransform().setPosition(x, h, z);
+        wall1Node.getRelativeTransform().setMatrix(SFMatrix3f.getScale(sx+SPESS_MURO, h, sz+SPESS_MURO));
+        return wall1Node;
 	}
 }

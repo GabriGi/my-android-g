@@ -90,6 +90,8 @@ public class ActionSet{
 		rotX = ROT_X_DEF;
 		rotY = 0;
 		this.avatar = all.getSonNodes().get(0);
+		SFVertex3f position = new SFVertex3f(); avatar.getRelativeTransform().getPosition(position);
+		all.getRelativeTransform().setPosition(-position.getX(),-position.getY(),-position.getZ());
 	}
 	
 	private SFVertex3f getXYZFromUV(float destU, float destV) {
