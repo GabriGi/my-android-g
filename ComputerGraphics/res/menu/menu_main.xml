@@ -19,4 +19,8 @@
         android:icon="@drawable/ic_inverse_action_different"
         android:title="@string/action_different"
         app:showAsAction="never" />
+    
+    <item android:id="@+id/action_next_scenary"
+        android:title="@string/action_next_scenary"
+        app:showAsAction="never" />
 </menu>

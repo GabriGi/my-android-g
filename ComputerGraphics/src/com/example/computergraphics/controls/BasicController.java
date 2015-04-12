@@ -129,8 +129,8 @@ public class BasicController implements IController {
 		actionSet.stopMoving();
 		
 		Log.d("Gestures", "        - rotation: "+(Math.abs(detector.getScaleFactor()-1)));
-		float xFactor = (float) ((detector.getFocusX() - previousX) / viewWidth);
-		float yFactor = (float) ((detector.getFocusY() - previousY) / viewHeight);
+		float xFactor = (float) ((detector.getFocusX() - previousX) / (viewWidth>>1));
+		float yFactor = (float) ((detector.getFocusY() - previousY) / (viewHeight>>1));
 		previousX = detector.getFocusX();
 		previousY = detector.getFocusY();
 		actionSet.rotationCamera(xFactor, yFactor);

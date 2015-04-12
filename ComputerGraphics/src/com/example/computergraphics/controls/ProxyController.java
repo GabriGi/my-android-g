@@ -136,8 +136,8 @@ public class ProxyController implements IController {
 	@Override
 	public void onScaleEnd(ScaleGestureDetector detector) {
 		Log.d(DEBUG_TAG, "onScaleEnd");
-        scaling = false;
 		controller.onScaleEnd(detector);
+        scaling = false;
 	}
 
 }

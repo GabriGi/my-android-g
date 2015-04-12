@@ -1,6 +1,6 @@
 package com.example.computergraphics;
 
-import java.util.Random;
+import java.util.ArrayList;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
@@ -24,6 +24,7 @@ import android.content.Context;
 import android.graphics.BitmapFactory;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
+import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
@@ -32,6 +33,8 @@ import com.example.computergraphics.controls.ActionSet;
 import com.example.computergraphics.controls.BasicController;
 import com.example.computergraphics.controls.IController;
 import com.example.computergraphics.controls.ProxyController;
+import com.example.computergraphics.scenery.Scenery;
+import com.example.computergraphics.scenery.Scenery00;
 
 /**
  * Created by Alessandro on 13/03/15.
@@ -39,6 +42,10 @@ import com.example.computergraphics.controls.ProxyController;
  */
 public class GraphicsView extends GLSurfaceView{
 
+    static final private float AVAT_BODY = 0.25f;			//Avatar's body height and width for each side
+    
+	private boolean enableTouching = false;
+	
     private Context context;
     private ActionSet actionSet;
     private GestureDetector gestureDetector;
@@ -47,41 +54,74 @@ public class GraphicsView extends GLSurfaceView{
     
     private float widthRatio;
     private float heightRatio;
-	
+    
+    private ArrayList<Scenery> sceneryList = new ArrayList<Scenery>();
+	private int sceneryNumber = 0;
+	private boolean changingScenary = true;
     
     public GraphicsView(Context context) {
         super(context);
         setEGLContextClientVersion(2);
         this.context=context;
         //super.setEGLConfigChooser(8,8,8,8,16,0);
-        setRenderer(new GraphicsRenderer());
         
         controller = new ProxyController(new BasicController(BasicController.ABSOLUTE_MODE));
         gestureDetector = new GestureDetector(context, controller);
         gestureDetector.setOnDoubleTapListener(controller);
         gestureDetector.setIsLongpressEnabled(false);		//Solo se sto usando il BasicController!!!
         scaleDetector = new ScaleGestureDetector(context, controller);
+
+    	sceneryList.add(new Scenery00(AVAT_BODY));
+    	sceneryNumber = 0;
+    	
+        setRenderer(new GraphicsRenderer());
+    }
+    
+    public boolean isEnableTouching() {
+		return enableTouching;
+	}
+    
+    public int getNumberOfScenery() {
+    	return sceneryList.size();
     }
     
     public void setController(IController controller, boolean isLongpressEnabled) {
+        actionSet.stopMoving();
 		this.controller.setController(controller);
         gestureDetector.setIsLongpressEnabled(isLongpressEnabled);
         this.controller.setViewSize(this.getWidth(), this.getHeight());
         this.controller.setActionsSet(actionSet);
-        actionSet.stopMoving();
+	}
+    
+    public boolean setSceneryNumber(int sceneryNumberSelected) {
+    	if(sceneryNumberSelected<sceneryList.size()){
+    		if(actionSet!=null) actionSet.stopMoving();
+			this.sceneryNumber = sceneryNumberSelected;
+			Log.d("task", "Change scenary");
+			enableTouching = false;
+			onPause();
+			changingScenary = true;
+			onResume();
+	    	return true;
+    	}else{
+    		//Out of bounds exception
+    		return false;
+    	}
 	}
     
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-    	super.onTouchEvent(event);
-    	scaleDetector.onTouchEvent(event);
-    	if(!scaleDetector.isInProgress()){
-    		gestureDetector.onTouchEvent(event);
-    		if((event.getAction() == MotionEvent.ACTION_UP) && controller.isScrolling()){
-    			controller.stopScrolling();
-    		}
+    	if(enableTouching){
+	    	super.onTouchEvent(event);
+	    	scaleDetector.onTouchEvent(event);
+	    	if(!scaleDetector.isInProgress()){
+	    		gestureDetector.onTouchEvent(event);
+	    		if((event.getAction() == MotionEvent.ACTION_UP) && controller.isScrolling()){
+	    			controller.stopScrolling();
+	    		}
+	    	}
+	    	if(actionSet.getFlingEvent()!=ActionSet.FLING_EVENT_NULL) invalidate();
     	}
-    	if(actionSet.getFlingEvent()!=ActionSet.FLING_EVENT_NULL) invalidate();
     	return true;
     }
     
@@ -106,17 +146,7 @@ public class GraphicsView extends GLSurfaceView{
     
     public class GraphicsRenderer implements Renderer{
     	
-        static final private float AVAT_SCALE = 1;				//Must be 1
-        static final private float AVAT_BODY = 0.25f;			//Avatar's body height and width for each side
         
-        static final private float LUNGH_MURO = 3.00f;			//for each side
-        static final private float SPESS_MURO = 0.05f;			//for each side (is good also with 0f)
-        static final private float ALTEZ_MURO = AVAT_BODY*2.5f;	//for each side 
-        
-        static final private float ALTEZ_OBST = AVAT_BODY;		//for each side
-        static final private float LUNGH_OBST = 0.25f;			//for each side (max = 1.374)
-    	static final private int NUMBER_OF_OSTACLE = 10;
-    	
     	private float scale = ActionSet.SCALE_DEF;
     	private float rotX = ActionSet.ROT_X_DEF;	//It represent the floor inclination.
     	private float rotY = 0.0f;					//The user will change it at runtime
@@ -125,11 +155,12 @@ public class GraphicsView extends GLSurfaceView{
     	private Node node;
         private SFCamera cam;
         private SFCamera startCam;
+    	private ArrayList<Model> models;
         
         private ShadingProgram program;
         
         private SFCamera setupCam(){
-        	float distAvatarCam = 3*ALTEZ_OBST;	// = AVATAR_BODY = 0.25f
+        	float distAvatarCam = 3*AVAT_BODY;	// = AVATAR_BODY = 0.25f
         	SFVertex3f focus = new SFVertex3f(0, 0, (-1f-AVAT_BODY-distAvatarCam));
 			SFVertex3f dir = new SFVertex3f(0, 0, 1);
 			SFVertex3f left = new SFVertex3f(1, 0, 0);
@@ -161,45 +192,42 @@ public class GraphicsView extends GLSurfaceView{
             headNode.getRelativeTransform().setPosition(0.0f, 0.8f, 0.0f);
             headNode.getRelativeTransform().setMatrix(SFMatrix3f.getScale(0.2f,0.2f,0.2f));
             avatarNode.getSonNodes().add(headNode);
+
+            avatarNode.getRelativeTransform().setPosition(0,0,0);
+            avatarNode.getRelativeTransform().setMatrix(SFMatrix3f.getScale(1,1,1));
             
 			return avatarNode;
 		}
-		
-		private Node createBackgroundNode(Model model) {
-			Node backgroundNode = new Node();
+
+		private void setupNodeStructure(ArrayList<Model> models) {
+			
+			node.getRelativeTransform().setPosition(0, 0, 0);
+			 
+			Node avatarNode, backgroundNode=null;
             
-			Node floorNode=new Node(model);
-	        floorNode.getRelativeTransform().setPosition(0.0f, -SPESS_MURO, 0.0f);
-	        floorNode.getRelativeTransform().setMatrix(SFMatrix3f.getScale(LUNGH_MURO,SPESS_MURO,LUNGH_MURO));
-	        backgroundNode.getSonNodes().add(floorNode);
-	        
-	        Node wall1Node=new Node(model);
-	        wall1Node.getRelativeTransform().setPosition(LUNGH_MURO-SPESS_MURO, ALTEZ_MURO, 0.0f);
-	        wall1Node.getRelativeTransform().setMatrix(SFMatrix3f.getScale(SPESS_MURO,ALTEZ_MURO,LUNGH_MURO));
-	        backgroundNode.getSonNodes().add(wall1Node);
-	        
-	        Node wall2Node=new Node(model);
-	        wall2Node.getRelativeTransform().setPosition(0.0f, ALTEZ_MURO, LUNGH_MURO-SPESS_MURO);
-	        wall2Node.getRelativeTransform().setMatrix(SFMatrix3f.getScale(LUNGH_MURO,ALTEZ_MURO,SPESS_MURO));
-	        backgroundNode.getSonNodes().add(wall2Node);
-	        
-	        Node wall3Node=new Node(model);
-	        wall3Node.getRelativeTransform().setPosition(-LUNGH_MURO+SPESS_MURO, ALTEZ_MURO, 0.0f);
-	        wall3Node.getRelativeTransform().setMatrix(SFMatrix3f.getScale(SPESS_MURO,ALTEZ_MURO,LUNGH_MURO));
-	        backgroundNode.getSonNodes().add(wall3Node);
-	        
-	        Node wall4Node=new Node(model);
-	        wall4Node.getRelativeTransform().setPosition(0.0f, ALTEZ_MURO, -LUNGH_MURO+SPESS_MURO);
-	        wall4Node.getRelativeTransform().setMatrix(SFMatrix3f.getScale(LUNGH_MURO,ALTEZ_MURO,SPESS_MURO));
-	        backgroundNode.getSonNodes().add(wall4Node);
-	        
-	        return backgroundNode;
+            if (sceneryNumber!=0) {
+            	backgroundNode = sceneryList.get(sceneryNumber).getSceneryNode(models.get(0));
+			}
+            
+            avatarNode = createAvatarNode(models.get(1));
+            avatarNode.getRelativeTransform().setPosition(sceneryList.get(sceneryNumber).getStartPosition());
+            node.getSonNodes().add(avatarNode);
+            
+            if(sceneryNumber!=0){
+            	if(avatarNode.getSonNodes().get(0).coveredBySonNodes(backgroundNode)){ 
+            		Log.d("ERRORE", "La posizione di partenza dell'Avatar è dentro un ostacolo!");
+				}
+            }else{
+	            do{ 
+	            	backgroundNode = sceneryList.get(0).getSceneryNode(models.get(0));
+				}while(avatarNode.getSonNodes().get(0).coveredBySonNodes(backgroundNode));
+            }
+			node.getSonNodes().add(backgroundNode);
 		}
 
-        @Override
-        public void onSurfaceCreated(GL10 gl, EGLConfig config) {
-
-            //Step 1 : load Shading effects
+		private ArrayList<Model> createModels() {
+        	ArrayList<Model> models = new ArrayList<Model>();
+			//Step 1 : load Shading effects
             ShadersKeeper.loadPipelineShaders(context);
             program= ShadersKeeper.getProgram(ShadersKeeper.STANDARD_TEXTURE_SHADER);
 
@@ -224,10 +252,7 @@ public class GraphicsView extends GLSurfaceView{
             Model model1=new Model();
             model1.setRootGeometry(mesh);
             model1.setMaterialComponent(material);
-
-            //Step 6: create a Node, that is a reference system where you can place your Model
-            node = new Node();
-            node.getRelativeTransform().setPosition(0, 0, 0);
+            models.add(model1);
             
             //Step 2-5bis: do the same for the background
             BitmapTexture texture2 = BitmapTexture.loadBitmapTexture(BitmapFactory.decodeResource(context.getResources(),
@@ -243,43 +268,35 @@ public class GraphicsView extends GLSurfaceView{
             Model model2=new Model();
             model2.setRootGeometry(mesh2);
             model2.setMaterialComponent(material2);
+            models.add(model2);
             
-            /* *************************************************************** */
+			return models;
+		}
 
-            Node avatarNode = createAvatarNode(model2);
-            avatarNode.getRelativeTransform().setPosition(0, 0, 0);
-            avatarNode.getRelativeTransform().setMatrix(SFMatrix3f.getScale(AVAT_SCALE,AVAT_SCALE,AVAT_SCALE));
-            node.getSonNodes().add(avatarNode);
-            
-            /* *************************************************************** */
-            Node backgroundNode = createBackgroundNode(model1);
-            backgroundNode.getRelativeTransform().setPosition(0, 0, 0);
-            backgroundNode.getRelativeTransform().setMatrix(SFMatrix3f.getScale(AVAT_SCALE,AVAT_SCALE,AVAT_SCALE));
-            node.getSonNodes().add(backgroundNode);
-            
-            Node innerObstaclesNode = new Node();
-            innerObstaclesNode.getRelativeTransform().setPosition(0, 0, 0);
-            innerObstaclesNode.getRelativeTransform().setMatrix(SFMatrix3f.getScale(1, 1, 1));
-            backgroundNode.getSonNodes().add(innerObstaclesNode);
-            
-            Random rand = new Random();
-            for (int i = 0; i < NUMBER_OF_OSTACLE; i++) {
-            	Node n;
-				while(true){
-					n = new Node(model1);
-					float xp = rand.nextFloat()*(LUNGH_MURO-LUNGH_OBST)*2-LUNGH_MURO+LUNGH_OBST;
-					float zp = rand.nextFloat()*(LUNGH_MURO-LUNGH_OBST)*2-LUNGH_MURO+LUNGH_OBST;
-					n.getRelativeTransform().setPosition(xp, ALTEZ_OBST, zp);
-					n.getRelativeTransform().setMatrix(SFMatrix3f.getScale(LUNGH_OBST,ALTEZ_OBST,LUNGH_OBST));
-					if(!avatarNode.getSonNodes().get(0).coveredBy(n)) break;
-				}
-				innerObstaclesNode.getSonNodes().add(n);
-			}
-        	startCam = setupCam();
-        	cam = setupCam();
-            actionSet = new ActionSet(context, node, cam);
-            actionSet.setRoomDimension(LUNGH_MURO);
-            controller.setActionsSet(actionSet);
+        @Override
+        public void onSurfaceCreated(GL10 gl, EGLConfig config) {
+	        models = createModels();
+        	if(changingScenary){
+        		if(node==null){	//It is the first lunch, so I have to create anything.
+		            //Step 6: create a Node, that is a reference system where you can place your Models
+		            node = new Node();
+		            
+		            setupNodeStructure(models);
+		            
+		        	startCam = setupCam();
+		        	cam = setupCam();
+		            actionSet = new ActionSet(context, node, cam);
+		            controller.setActionsSet(actionSet);
+        		}else{
+        			actionSet.stopMovingAndJumping();
+        			node.removeAllSonNodes();
+        			setupNodeStructure(models);
+        			actionSet.restoreDefaultValues();
+        		}
+		        changingScenary = false;
+        	}
+        	actionSet.setRoomDimension(Scenery.getSceneryDimension());
+            enableTouching = true;
         }
 
         @Override
@@ -300,8 +317,8 @@ public class GraphicsView extends GLSurfaceView{
 			
 			float upL =heightRatio/scale;
 			SFVertex3f focus = SFMatrix3f.getRotationX(-rotX).Mult(startCam.getF());
-          	focus.add3f(new SFVertex3f(0, 3*ALTEZ_OBST, 0));
-          	if(focus.getY()<upL+2*ALTEZ_OBST) focus.setY(upL+2*ALTEZ_OBST);	//Per non tagliare gli ostacoli
+          	focus.add3f(new SFVertex3f(0, 3*AVAT_BODY, 0));
+          	if(focus.getY()<upL+2*AVAT_BODY) focus.setY(upL+2*AVAT_BODY);	//Per non tagliare gli ostacoli
 			//SFVertex3f dir = SFMatrix3f.getRotationX(rotX).Mult(startCam.getDir());
           	
 			cam.set(SFMatrix3f.getRotationY(rotY).Mult(focus), 

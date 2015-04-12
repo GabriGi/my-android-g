@@ -156,7 +156,6 @@ public class Node {
 	    }
 	}
 
-	int k = 0;
 	/**
 	 * @param anotherNode
 	 * @return true if the node is covered by anotherNode along the x and z axis.
@@ -211,6 +210,13 @@ public class Node {
     		if(covered) return true;
         }
 		return false;
+	}
+	
+	public void removeAllSonNodes() {
+        for(int i=0;i<sonNodes.size();i++){
+            sonNodes.get(i).removeAllSonNodes();
+        }
+        sonNodes.clear();
 	}
 }
 

@@ -80,6 +80,18 @@ public class ActionSet{
 		timer.purge();
 	}
 	
+	public void stopMovingAndJumping() {
+		if(jumpAvatarTask!=null) jumpAvatarTask.cancel();
+		stopMoving();
+	}
+	
+	public void restoreDefaultValues() {
+		scale = SCALE_DEF;
+		rotX = ROT_X_DEF;
+		rotY = 0;
+		this.avatar = all.getSonNodes().get(0);
+	}
+	
 	private SFVertex3f getXYZFromUV(float destU, float destV) {
 		float destX = destU*roomDimension;
 		float destY = 0;
