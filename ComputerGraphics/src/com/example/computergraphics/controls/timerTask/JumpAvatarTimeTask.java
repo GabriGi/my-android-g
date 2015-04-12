@@ -61,10 +61,7 @@ public class JumpAvatarTimeTask extends TimerTask{
 			jumping = true;
 			avatar.getRelativeTransform().setPosition(currX, currY, currZ);
 		}else{
-			//TODO Bug grafici:
-			/* - A volte, scendento dall'ostacolo, saltella.
-			 * - Appare ridicolo che rimanga sull'ostacolo anche se appoggia solo una piccola parte del body.
-			 */
+			//TODO Appare ridicolo che rimanga sull'ostacolo anche se appoggia solo una piccola parte del body.
 			jumping = false;
 			t = lastUsefulT;
 		}

@@ -58,7 +58,7 @@ public class AlternativeController implements IController {
 
 	@Override
 	public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-		actionSet.startFlingCamera((int)velocityX);
+		actionSet.startFlingCamera((int)velocityX, 0);
 		return true;
 	}
 

@@ -68,6 +68,7 @@ public class GraphicsView extends GLSurfaceView{
         gestureDetector.setIsLongpressEnabled(isLongpressEnabled);
         this.controller.setViewSize(this.getWidth(), this.getHeight());
         this.controller.setActionsSet(actionSet);
+        actionSet.stopMoving();
 	}
     
     @Override
@@ -80,7 +81,7 @@ public class GraphicsView extends GLSurfaceView{
     			controller.stopScrolling();
     		}
     	}
-    	if(actionSet.isFlingEvent()) invalidate();
+    	if(actionSet.getFlingEvent()!=ActionSet.FLING_EVENT_NULL) invalidate();
     	return true;
     }
     
@@ -96,7 +97,8 @@ public class GraphicsView extends GLSurfaceView{
     public void computeScroll() {
     	super.computeScroll();
     	if(actionSet!= null){
-	    	if(actionSet.flingCamera()||actionSet.flingCamera()){
+	    	if(actionSet.getFlingEvent()==ActionSet.FLING_EVENT_CAMERA){
+	    		actionSet.flingCamera();
 	    		invalidate();
 	    	}
     	}
@@ -300,7 +302,7 @@ public class GraphicsView extends GLSurfaceView{
 			SFVertex3f focus = SFMatrix3f.getRotationX(-rotX).Mult(startCam.getF());
           	focus.add3f(new SFVertex3f(0, 3*ALTEZ_OBST, 0));
           	if(focus.getY()<upL+2*ALTEZ_OBST) focus.setY(upL+2*ALTEZ_OBST);	//Per non tagliare gli ostacoli
-//			SFVertex3f dir = SFMatrix3f.getRotationX(rotX).Mult(startCam.getDir());
+			//SFVertex3f dir = SFMatrix3f.getRotationX(rotX).Mult(startCam.getDir());
           	
 			cam.set(SFMatrix3f.getRotationY(rotY).Mult(focus), 
 					SFMatrix3f.getRotationY(rotY).Mult(startCam.getDir()), 	//dir), 
@@ -309,9 +311,9 @@ public class GraphicsView extends GLSurfaceView{
 					widthRatio/scale, 
 					upL, 
 					startCam.getDistance());
-//			cam.setDir(SFMatrix3f.getRotationX(-rotX).Mult(cam.getDir()));
+			//cam.setDir(SFMatrix3f.getRotationX(-rotX).Mult(cam.getDir()));
 			
-//			Log.d("task", "rotX "+rotX+"; scale "+scale);
+			//TODO Scaling e rotY si possono migliorare.
             
         	cam.update();
             program.setupProjection(cam.extractTransform());

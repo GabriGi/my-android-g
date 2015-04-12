@@ -1,5 +1,6 @@
 package com.example.computergraphics.controls;
 
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 
@@ -23,7 +24,7 @@ public class DifferentController implements IController {
 	
 	@Override
 	public void stopScrolling() {
-		// TODO Auto-generated method stub
+		actionSet.stopMoving();
 	}
 	
     /* ***************************************************************************** */
@@ -32,66 +33,65 @@ public class DifferentController implements IController {
     
 	@Override
 	public boolean onDown(MotionEvent e) {
-		// TODO Auto-generated method stub
-		return false;
+		actionSet.stopMoving();
+		return true;
 	}
 
 	@Override
-	public void onShowPress(MotionEvent e) {
-		// TODO Auto-generated method stub
-	}
+	public void onShowPress(MotionEvent e) { /*Nothing to do*/ }
 
 	@Override
 	public void onLongPress(MotionEvent e) {
-		// TODO Auto-generated method stub
+		actionSet.stopMoving();
+		float xFactor = (e.getX()-(viewWidth>>1))/(viewWidth>>1);
+		Log.d("Gestures", "         - rotation: "+xFactor);
+		actionSet.rotateCameraContinuously(xFactor);
 	}
 
 	@Override
 	public boolean onSingleTapUp(MotionEvent e) {
-		// TODO Auto-generated method stub
-		return false;
+		actionSet.stopMoving();
+		float xFactor = (e.getX()-(viewWidth>>1))/viewWidth*10000;
+		float yFactor = (e.getY()-(viewHeight>>1))/viewHeight*5000;
+		Log.d("Gestures", "         - rotation: "+xFactor+" "+yFactor);
+		actionSet.startFlingCamera((int)xFactor, (int)yFactor);
+		return true;
 	}
 
 	@Override
 	public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
-		// TODO Auto-generated method stub
-//		actionSet.moveAvatarWith((e2.getX()-e1.getX())/viewWidth, 
-//				 				 (e1.getY()-e2.getY())/viewHeight);
-		return false;
+		actionSet.moveAvatarWith((e2.getX()-e1.getX())/(viewWidth>>2), (e1.getY()-e2.getY())/(viewHeight>>2));
+		return true;
 	}
 
 	@Override
-	public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX,
-			float velocityY) {
-		// TODO Auto-generated method stub
-		return false;
-	}
+	public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) { return true; }
 
     /* ***************************************************************************** */
     /* *************************    OnDoubleTapListener    ************************* */
     /* ***************************************************************************** */
-    
+	
 	@Override
 	public boolean onSingleTapConfirmed(MotionEvent e) {
-		// TODO Auto-generated method stub
-		return false;
+		return true;
 	}
 	
-//	private float startX, startY;
+	private float startX, startY;
 	
 	@Override
 	public boolean onDoubleTap(MotionEvent e) {
-		// TODO Auto-generated method stub
-//		startX = e.getX();
-//		startY = e.getY();
-		return false;
+		actionSet.stopMoving();
+		startX = e.getX();
+		startY = e.getY();
+		actionSet.jumpAvatar(0, 0);
+		return true;
 	}
 
 	@Override
 	public boolean onDoubleTapEvent(MotionEvent e) {
-		// TODO Auto-generated method stub
-//		actionSet.moveAvatarTo((e.getX()-startX)/viewWidth, (startY-e.getY())/viewHeight, ActionSet.VELOCITY_RUN);
-		return false;
+		actionSet.moveAvatarWith((e.getX()-startX)/(viewWidth>>2), (startY-e.getY())/(viewHeight>>2));
+		if(e.getAction()==MotionEvent.ACTION_UP) stopScrolling();
+		return true;
 	}
 
     /* *******************************************************************************/
@@ -99,20 +99,16 @@ public class DifferentController implements IController {
     /* *******************************************************************************/
 
 	@Override
-	public boolean onScaleBegin(ScaleGestureDetector detector) {
-		// TODO Auto-generated method stub
-		return false;
-	}
+	public boolean onScaleBegin(ScaleGestureDetector detector) { return true; }
     
 	@Override
 	public boolean onScale(ScaleGestureDetector detector) {
-		// TODO Auto-generated method stub
-		return false;
+		Log.d("Gestures", "        - zoom:     "+(detector.getScaleFactor()));
+		actionSet.zoomCamera((float)detector.getScaleFactor());
+		return true;
 	}
 
 	@Override
-	public void onScaleEnd(ScaleGestureDetector detector) {
-		// TODO Auto-generated method stub
-	}
+	public void onScaleEnd(ScaleGestureDetector detector) {  }
 
 }

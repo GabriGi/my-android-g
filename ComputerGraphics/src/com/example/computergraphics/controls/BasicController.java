@@ -126,18 +126,18 @@ public class BasicController implements IController {
     
 	@Override
 	public boolean onScale(ScaleGestureDetector detector) {
-		// TODO forse non e' un buon metodo usare il getScaleFactor. Meglio forse i getX e getY.
-		if(Math.abs(detector.getScaleFactor()-1)<0.025){
-			Log.d("Gestures", "        - rotation: "+(Math.abs(detector.getScaleFactor()-1)));
-			float xFactor = (float) ((detector.getFocusX() - previousX) / viewWidth);
-			float yFactor = (float) ((detector.getFocusY() - previousY) / viewHeight);
-			previousX = detector.getFocusX();
-			previousY = detector.getFocusY();
-			actionSet.rotationCamera(xFactor, yFactor);
-		}else{
-			Log.d("Gestures", "        - zoom:     "+(Math.abs(detector.getScaleFactor()-1)));
-			actionSet.zoomCamera((float)detector.getScaleFactor());
-		}
+		actionSet.stopMoving();
+		
+		Log.d("Gestures", "        - rotation: "+(Math.abs(detector.getScaleFactor()-1)));
+		float xFactor = (float) ((detector.getFocusX() - previousX) / viewWidth);
+		float yFactor = (float) ((detector.getFocusY() - previousY) / viewHeight);
+		previousX = detector.getFocusX();
+		previousY = detector.getFocusY();
+		actionSet.rotationCamera(xFactor, yFactor);
+		
+		Log.d("Gestures", "        - zoom:     "+(Math.abs(detector.getScaleFactor()-1)));
+		actionSet.zoomCamera((float)detector.getScaleFactor());
+		
 		return true;
 	}
 
