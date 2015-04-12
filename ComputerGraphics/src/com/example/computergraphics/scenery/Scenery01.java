@@ -9,6 +9,7 @@ import shadow.math.SFVertex3f;
 public class Scenery01 extends Scenery {
 
 	private static final float ROOM_DIMENSION = 3.5f;
+	private static final float ERR = 2*SPESS_MURO;	//This is to non overlap the inner walls
     private float altezzObst;
     
     /**
@@ -42,6 +43,7 @@ public class Scenery01 extends Scenery {
 	
 	@Override
 	public Node getSceneryNode(Model model) {
+		enabledExternalWalls = startModel==null || finalModel==null;
 		Node backgroundNode = super.createBackgroundNode(model, ROOM_DIMENSION);
         
         Node innerObstaclesNode = createInnerObstacleNode(model);
@@ -54,41 +56,48 @@ public class Scenery01 extends Scenery {
 
 	private Node createInnerObstacleNode(Model model) {
 		Node innerObstaclesNode = new Node();
-		innerObstaclesNode.getSonNodes().add(createWallNode(model, -3.5f, 0f, 0f, 3.5f, altezzObst));
-		innerObstaclesNode.getSonNodes().add(createWallNode(model, -2.5f, -0.5f, 0f, 1f, altezzObst));
-		innerObstaclesNode.getSonNodes().add(createWallNode(model, -2.5f, 2f, 0f, 0.5f, altezzObst));
-		innerObstaclesNode.getSonNodes().add(createWallNode(model, -1.5f, -2f, 0f, 0.5f, altezzObst));
-		innerObstaclesNode.getSonNodes().add(createWallNode(model, -1.5f, 0f, 0f, 0.5f, altezzObst));
 		
-		innerObstaclesNode.getSonNodes().add(createWallNode(model, -0.5f, -3f, 0f, 0.5f, altezzObst));
-		innerObstaclesNode.getSonNodes().add(createWallNode(model, -0.5f, 2.5f, 0f, 1f, altezzObst));
-		innerObstaclesNode.getSonNodes().add(createWallNode(model, 0.5f, -3f, 0f, 0.5f, altezzObst));
-		innerObstaclesNode.getSonNodes().add(createWallNode(model, 0.5f, 3f, 0f, 0.5f, altezzObst));
-		innerObstaclesNode.getSonNodes().add(createWallNode(model, 1.5f, -1f, 0f, 0.5f, altezzObst));
+		innerObstaclesNode.getSonNodes().add(createWallNode(model, -2.5f, -0.5f, 0f, 1f-ERR, altezzObst));
+		innerObstaclesNode.getSonNodes().add(createWallNode(model, -2.5f, 2f, 0f, 0.5f-ERR, altezzObst));
+		innerObstaclesNode.getSonNodes().add(createWallNode(model, -1.5f, -2f, 0f, 0.5f-ERR, altezzObst));
+		innerObstaclesNode.getSonNodes().add(createWallNode(model, -1.5f, 0f, 0f, 0.5f-ERR, altezzObst));
 		
-		innerObstaclesNode.getSonNodes().add(createWallNode(model, 1.5f, 1f, 0f, 0.5f, altezzObst));
-		innerObstaclesNode.getSonNodes().add(createWallNode(model, 2.5f, 2.5f, 0f, 1f, altezzObst));
-		innerObstaclesNode.getSonNodes().add(createWallNode(model, 3.5f, 0f, 0f, 3.5f, altezzObst));
+		innerObstaclesNode.getSonNodes().add(createWallNode(model, -0.5f, -3f, 0f, 0.5f-ERR, altezzObst));
+		innerObstaclesNode.getSonNodes().add(createWallNode(model, -0.5f, 2.5f, 0f, 1f-ERR, altezzObst));
+		innerObstaclesNode.getSonNodes().add(createWallNode(model, 0.5f, -3f, 0f, 0.5f-ERR, altezzObst));
+		innerObstaclesNode.getSonNodes().add(createWallNode(model, 0.5f, 3f, 0f, 0.5f-ERR, altezzObst));
+		
+		innerObstaclesNode.getSonNodes().add(createWallNode(model, 1.5f, -1f, 0f, 0.5f-ERR, altezzObst));
+		innerObstaclesNode.getSonNodes().add(createWallNode(model, 1.5f, 1f, 0f, 0.5f-ERR, altezzObst));
+		innerObstaclesNode.getSonNodes().add(createWallNode(model, 2.5f, 2.5f, 0f, 1f-ERR, altezzObst));
 		
 		
 
-		innerObstaclesNode.getSonNodes().add(createWallNode(model, -2f, -3.5f, 1.5f, 0f, altezzObst));
-		innerObstaclesNode.getSonNodes().add(createWallNode(model, 2f, -3.5f, 1.5f, 0f, altezzObst));
 		innerObstaclesNode.getSonNodes().add(createWallNode(model, -2.5f, -2.5f, 1f, 0f, altezzObst));
 		innerObstaclesNode.getSonNodes().add(createWallNode(model, 1.5f, -2.5f, 1f, 0f, altezzObst));
 		innerObstaclesNode.getSonNodes().add(createWallNode(model, -1f, -1.5f, 0.5f, 0f, altezzObst));
-
 		innerObstaclesNode.getSonNodes().add(createWallNode(model, 2f, -1.5f, 1.5f, 0f, altezzObst));
+		
 		innerObstaclesNode.getSonNodes().add(createWallNode(model, 0.5f, -0.5f, 2f, 0f, altezzObst));
 		innerObstaclesNode.getSonNodes().add(createWallNode(model, -2f, 0.5f, 0.5f, 0f, altezzObst));
 		innerObstaclesNode.getSonNodes().add(createWallNode(model, 0.5f, 0.5f, 1f, 0f, altezzObst));
 		innerObstaclesNode.getSonNodes().add(createWallNode(model, 3f, 0.5f, 0.5f, 0f, altezzObst));
-
+		
 		innerObstaclesNode.getSonNodes().add(createWallNode(model, -0.5f, 1.5f, 2f, 0f, altezzObst));
 		innerObstaclesNode.getSonNodes().add(createWallNode(model, -2f, 2.5f, 0.5f, 0f, altezzObst));
 		innerObstaclesNode.getSonNodes().add(createWallNode(model, 1f, 2.5f, 0.5f, 0f, altezzObst));
-		innerObstaclesNode.getSonNodes().add(createWallNode(model, -2f, 3.5f, 1.5f, 0f, altezzObst));
-		innerObstaclesNode.getSonNodes().add(createWallNode(model, 2f, 3.5f, 1.5f, 0f, altezzObst));
+		
+		if(startModel!=null && finalModel!=null){
+			innerObstaclesNode.getSonNodes().add(createWallNode(model, -3.5f, 0f, 0f, 3.5f-ERR, altezzObst));
+			innerObstaclesNode.getSonNodes().add(createWallNode(model, 3.5f, 0f, 0f, 3.5f-ERR, altezzObst));
+			
+			innerObstaclesNode.getSonNodes().add(createWallNode(model, -2f, -3.5f, 1.5f, 0f, altezzObst));
+			innerObstaclesNode.getSonNodes().add(createWallNode(startModel, 0, -3.5f, 0.5f-ERR, 0f, altezzObst));
+			innerObstaclesNode.getSonNodes().add(createWallNode(model, 2f, -3.5f, 1.5f, 0f, altezzObst));
+			innerObstaclesNode.getSonNodes().add(createWallNode(model, -2f, 3.5f, 1.5f, 0f, altezzObst));
+			innerObstaclesNode.getSonNodes().add(createWallNode(finalModel, 0, 3.5f, 0.5f-ERR, 0f, altezzObst));
+			innerObstaclesNode.getSonNodes().add(createWallNode(model, 2f, 3.5f, 1.5f, 0f, altezzObst));
+		}
 		
         return innerObstaclesNode;
 	}

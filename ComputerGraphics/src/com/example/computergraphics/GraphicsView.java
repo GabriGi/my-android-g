@@ -209,6 +209,8 @@ public class GraphicsView extends GLSurfaceView{
 			Node avatarNode, backgroundNode=null;
             
             if (sceneryNumber!=0) {
+            	sceneryList.get(sceneryNumber).setStartModel(models.get(1));
+            	sceneryList.get(sceneryNumber).setFinishModel(models.get(2));
             	backgroundNode = sceneryList.get(sceneryNumber).getSceneryNode(models.get(0));
 			}
             
@@ -272,6 +274,22 @@ public class GraphicsView extends GLSurfaceView{
             model2.setRootGeometry(mesh2);
             model2.setMaterialComponent(material2);
             models.add(model2);
+
+            //Step 2-5tris: do the same for extra
+            BitmapTexture texture3 = BitmapTexture.loadBitmapTexture(BitmapFactory.decodeResource(context.getResources(),
+                    R.drawable.redpaddedroomtexture01), textureModel);
+            texture3.init();
+            
+            Material material3=new Material(program);
+            material3.getTextures().add(texture3);
+
+            Mesh mesh3=new Mesh(objects[0]);
+            mesh3.init();
+
+            Model model3=new Model();
+            model3.setRootGeometry(mesh3);
+            model3.setMaterialComponent(material3);
+            models.add(model3);
             
 			return models;
 		}
@@ -338,26 +356,28 @@ public class GraphicsView extends GLSurfaceView{
         	cam.update();
             program.setupProjection(cam.extractTransform());
             
-            if(cam.getDir().getZ()>Math.abs(cam.getDir().getX())){				//Se punto verso l'alto..
-            	node.getSonNodes().get(1).getSonNodes().get(1).setEnabled(true);
-            	node.getSonNodes().get(1).getSonNodes().get(2).setEnabled(true);
-            	node.getSonNodes().get(1).getSonNodes().get(3).setEnabled(true);
-            	node.getSonNodes().get(1).getSonNodes().get(4).setEnabled(false);	//..rimuovo il muro in basso
-            } else if(cam.getDir().getZ()<-Math.abs(cam.getDir().getX())){		//Se punto verso il basso..
-            	node.getSonNodes().get(1).getSonNodes().get(1).setEnabled(true);
-            	node.getSonNodes().get(1).getSonNodes().get(2).setEnabled(false);	//..rimuovo il muro in alto
-            	node.getSonNodes().get(1).getSonNodes().get(3).setEnabled(true);
-            	node.getSonNodes().get(1).getSonNodes().get(4).setEnabled(true);
-            } else if(cam.getDir().getX()>Math.abs(cam.getDir().getZ())){		//Se punto verso destra..
-            	node.getSonNodes().get(1).getSonNodes().get(1).setEnabled(true);
-            	node.getSonNodes().get(1).getSonNodes().get(2).setEnabled(true);
-            	node.getSonNodes().get(1).getSonNodes().get(3).setEnabled(false);	//..rimuovo il muro a sinistra
-            	node.getSonNodes().get(1).getSonNodes().get(4).setEnabled(true);
-            } else if(cam.getDir().getX()<-Math.abs(cam.getDir().getZ())){		//Se punto verso sinistra..
-            	node.getSonNodes().get(1).getSonNodes().get(1).setEnabled(false);	//..rimuovo il muro a destra
-            	node.getSonNodes().get(1).getSonNodes().get(2).setEnabled(true);
-            	node.getSonNodes().get(1).getSonNodes().get(3).setEnabled(true);
-            	node.getSonNodes().get(1).getSonNodes().get(4).setEnabled(true);
+            if (sceneryList.get(sceneryNumber).isEnabledExternalWalls()){
+	            if(cam.getDir().getZ()>Math.abs(cam.getDir().getX())){				//Se punto verso l'alto..
+	            	node.getSonNodes().get(1).getSonNodes().get(1).setEnabled(true);
+	            	node.getSonNodes().get(1).getSonNodes().get(2).setEnabled(true);
+	            	node.getSonNodes().get(1).getSonNodes().get(3).setEnabled(true);
+	            	node.getSonNodes().get(1).getSonNodes().get(4).setEnabled(false);	//..rimuovo il muro in basso
+	            } else if(cam.getDir().getZ()<-Math.abs(cam.getDir().getX())){		//Se punto verso il basso..
+	            	node.getSonNodes().get(1).getSonNodes().get(1).setEnabled(true);
+	            	node.getSonNodes().get(1).getSonNodes().get(2).setEnabled(false);	//..rimuovo il muro in alto
+	            	node.getSonNodes().get(1).getSonNodes().get(3).setEnabled(true);
+	            	node.getSonNodes().get(1).getSonNodes().get(4).setEnabled(true);
+	            } else if(cam.getDir().getX()>Math.abs(cam.getDir().getZ())){		//Se punto verso destra..
+	            	node.getSonNodes().get(1).getSonNodes().get(1).setEnabled(true);
+	            	node.getSonNodes().get(1).getSonNodes().get(2).setEnabled(true);
+	            	node.getSonNodes().get(1).getSonNodes().get(3).setEnabled(false);	//..rimuovo il muro a sinistra
+	            	node.getSonNodes().get(1).getSonNodes().get(4).setEnabled(true);
+	            } else if(cam.getDir().getX()<-Math.abs(cam.getDir().getZ())){		//Se punto verso sinistra..
+	            	node.getSonNodes().get(1).getSonNodes().get(1).setEnabled(false);	//..rimuovo il muro a destra
+	            	node.getSonNodes().get(1).getSonNodes().get(2).setEnabled(true);
+	            	node.getSonNodes().get(1).getSonNodes().get(3).setEnabled(true);
+	            	node.getSonNodes().get(1).getSonNodes().get(4).setEnabled(true);
+	            }
             }
         	
             node.updateTree(new SFTransform3f());

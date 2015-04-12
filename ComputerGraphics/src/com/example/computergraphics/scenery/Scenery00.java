@@ -5,7 +5,6 @@ import java.util.Random;
 import sfogl.integration.Model;
 import sfogl.integration.Node;
 import shadow.math.SFMatrix3f;
-import shadow.math.SFVertex3f;
 
 /**See superclass {@link Scenery}) */
 public class Scenery00 extends Scenery {
