@@ -9,7 +9,7 @@ public class Model {
 
 	private Material material;
 	private Mesh geometry=null;
-
+	
     public void setMaterialComponent(Material material) {
 		this.material = material;
 	}
@@ -27,4 +27,12 @@ public class Model {
     public ShadingProgram getProgram(){
         return material.getProgram();
     }
+
+    public float[] getMinAndMaxValues() {
+    	return geometry.getMinAndMaxValues();
+	}
+    
+    public float[] getScaleAndMiddleValues() {
+    	return geometry.getScaleAndMiddleValues();
+	}
 }

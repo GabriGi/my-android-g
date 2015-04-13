@@ -29,10 +29,10 @@ import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 
-import com.example.computergraphics.controls.ActionSet;
 import com.example.computergraphics.controls.BasicController;
 import com.example.computergraphics.controls.IController;
 import com.example.computergraphics.controls.ProxyController;
+import com.example.computergraphics.controls.actionSet.ActionSet;
 import com.example.computergraphics.scenery.Scenery;
 import com.example.computergraphics.scenery.Scenery00;
 import com.example.computergraphics.scenery.Scenery01;
@@ -177,10 +177,34 @@ public class GraphicsView extends GLSurfaceView{
 			cam.setPerspective(true);
 			return cam;
         }
+        
+        private Node createBlenderAvatarNode(Model model) {
+			Node avatarNode = new Node();
+			
+			float sx = AVAT_BODY*model.getScaleAndMiddleValues()[0]/model.getScaleAndMiddleValues()[1];
+            float sy = AVAT_BODY*model.getScaleAndMiddleValues()[1]/model.getScaleAndMiddleValues()[1];
+            float sz = AVAT_BODY*model.getScaleAndMiddleValues()[2]/model.getScaleAndMiddleValues()[1];
+			
+            Node bodyNode =new Node(true);
+            bodyNode.getRelativeTransform().setPosition(0,sy,0);
+            bodyNode.getRelativeTransform().setMatrix(SFMatrix3f.getScale(sx,sy,sz));
+            avatarNode.getSonNodes().add(bodyNode);
+            
+            Node headNode = new Node(model);
+            headNode.getRelativeTransform().setPosition(0, sy, 0);
+            SFMatrix3f m = SFMatrix3f.getScale(sx,sy,sz);
+            headNode.getRelativeTransform().setMatrix(m.MultMatrix(SFMatrix3f.getRotationX((float)-Math.PI/2)));
+            avatarNode.getSonNodes().add(headNode);
 
+            avatarNode.getRelativeTransform().setPosition(0,0,0);
+            avatarNode.getRelativeTransform().setMatrix(SFMatrix3f.getScale(1,1,1));
+            
+			return avatarNode;
+		}
+        
 		private Node createAvatarNode(Model model) {
 			Node avatarNode = new Node();
-            
+			
             Node bodyNode =new Node(model);
             bodyNode.getRelativeTransform().setPosition(0.0f, AVAT_BODY, 0.0f);
             bodyNode.getRelativeTransform().setMatrix(SFMatrix3f.getScale(AVAT_BODY,AVAT_BODY,AVAT_BODY));
@@ -213,8 +237,8 @@ public class GraphicsView extends GLSurfaceView{
             	sceneryList.get(sceneryNumber).setFinishModel(models.get(2));
             	backgroundNode = sceneryList.get(sceneryNumber).getSceneryNode(models.get(0));
 			}
-            
-            avatarNode = createAvatarNode(models.get(1));
+            avatarNode = createBlenderAvatarNode(models.get(3));
+            //avatarNode = createAvatarNode(models.get(1));
             avatarNode.getRelativeTransform().setPosition(sceneryList.get(sceneryNumber).getStartPosition());
             node.getSonNodes().add(avatarNode);
             
@@ -259,7 +283,7 @@ public class GraphicsView extends GLSurfaceView{
             model1.setMaterialComponent(material);
             models.add(model1);
             
-            //Step 2-5bis: do the same for the background
+            //Step 2-3-5.b: do the same for the background
             BitmapTexture texture2 = BitmapTexture.loadBitmapTexture(BitmapFactory.decodeResource(context.getResources(),
                     R.drawable.bluepaddedroomtexture01), textureModel);
             texture2.init();
@@ -267,15 +291,12 @@ public class GraphicsView extends GLSurfaceView{
             Material material2=new Material(program);
             material2.getTextures().add(texture2);
 
-            Mesh mesh2=new Mesh(objects[0]);
-            mesh2.init();
-
             Model model2=new Model();
-            model2.setRootGeometry(mesh2);
+            model2.setRootGeometry(mesh);
             model2.setMaterialComponent(material2);
             models.add(model2);
 
-            //Step 2-5tris: do the same for extra
+            //Step 2-3-5.c: do the same for extra
             BitmapTexture texture3 = BitmapTexture.loadBitmapTexture(BitmapFactory.decodeResource(context.getResources(),
                     R.drawable.redpaddedroomtexture01), textureModel);
             texture3.init();
@@ -283,14 +304,28 @@ public class GraphicsView extends GLSurfaceView{
             Material material3=new Material(program);
             material3.getTextures().add(texture3);
 
-            Mesh mesh3=new Mesh(objects[0]);
-            mesh3.init();
-
             Model model3=new Model();
-            model3.setRootGeometry(mesh3);
+            model3.setRootGeometry(mesh);
             model3.setMaterialComponent(material3);
             models.add(model3);
             
+          //Step 2-3-4-5.c: do the same for a blenderAvatar
+            BitmapTexture texture4 = BitmapTexture.loadBitmapTexture(BitmapFactory.decodeResource(context.getResources(),
+                    R.drawable.blendermonkey), textureModel);
+            texture4.init();
+            
+            Material material4=new Material(program);
+            material4.getTextures().add(texture4);
+            
+            ArrayObject[] monkeyObjects = ObjLoader.arrayObjectFromFile(context, "MonkeyTxN.obj");
+            Mesh mesh4=new Mesh(monkeyObjects[0]);
+            mesh4.init();
+
+            Model model4=new Model();
+            model4.setRootGeometry(mesh4);
+            model4.setMaterialComponent(material4);
+            models.add(model4);
+
 			return models;
 		}
 

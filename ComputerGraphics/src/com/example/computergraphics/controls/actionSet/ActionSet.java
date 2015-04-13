@@ -1,6 +1,7 @@
-package com.example.computergraphics.controls;
+package com.example.computergraphics.controls.actionSet;
 
 import java.util.Timer;
+import java.util.TimerTask;
 
 import sfogl.integration.Node;
 import sfogl.integration.SFCamera;
@@ -8,10 +9,6 @@ import shadow.math.SFMatrix3f;
 import shadow.math.SFVertex3f;
 import android.content.Context;
 import android.widget.Scroller;
-
-import com.example.computergraphics.controls.timerTask.JumpAvatarTimeTask;
-import com.example.computergraphics.controls.timerTask.MoveAvatarTimeTask;
-import com.example.computergraphics.controls.timerTask.RotateCameraTimeTask;
 
 public class ActionSet{
 
@@ -169,12 +166,6 @@ public class ActionSet{
 		else if(scale<SCALE_MIN) scale=SCALE_MIN;
 	}
 	
-	public void rotateCameraContinuously(float velocityU){
-		stopMoving();
-		rotateCameraTask = new RotateCameraTimeTask(this, velocityU/32);
-		timer.schedule(rotateCameraTask, 0, TIMER_PERIOD);
-	}
-	
 	/**
 	 * Inizia la rotazione della telecamera settando uno scroller, spostando quindi la visuale (assi X e Y).
 	 * Usa {@link #flingCamera()} per impostare la posizione durante l'animazione.
@@ -198,6 +189,34 @@ public class ActionSet{
 		}else{
 			flingEvent = FLING_EVENT_NULL;
 			return false;
+		}
+	}
+	
+	public void rotateCameraContinuously(float velocityU){
+		stopMoving();
+		rotateCameraTask = new RotateCameraTimeTask(velocityU/32);
+		timer.schedule(rotateCameraTask, 0, TIMER_PERIOD);
+	}
+	
+	
+	/**
+	 * Task che si occupa della rotazione continua e costante nel tempo attorno all'asse Y della telecamera.
+	 */
+	public class RotateCameraTimeTask extends TimerTask{
+		
+		private float velocityY;
+		
+		/**
+		 * @param actionSet (verra' chiamato il metodo actionSet.rotationCamera(velocityY, 0);
+		 * @param incrementY l'incremento da passare ad ogni clock
+		 */
+		public RotateCameraTimeTask(float incrementY) {
+			this.velocityY = incrementY;
+		}
+		
+		@Override
+		public void run() {
+			rotationCamera(velocityY, 0);
 		}
 	}
 }

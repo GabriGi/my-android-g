@@ -13,6 +13,7 @@ public class Node {
 	protected SFTransform3f effeciveTransform;
 	private boolean enabled;
 	private Model model;
+	private boolean forceCoveredControl = false;
 	
 	public void setup(){
 	    relativeTransform=new SFTransform3f();
@@ -29,6 +30,11 @@ public class Node {
 	public Node(Model model){
 	    setup();
 	    this.model=model;
+	}
+	
+	public Node(boolean forceCoveredControl){
+	    setup();
+	    this.forceCoveredControl = forceCoveredControl;
 	}
 	
 	public Node(SFTransform3f relativeTransform){
@@ -62,8 +68,12 @@ public class Node {
 	    this.enabled=enabled;
 	}
 	
-	public boolean getEnabled(){
+	public boolean isEnabled(){
 	    return enabled;
+	}
+	
+	public boolean isForceCoveredControl() {
+		return forceCoveredControl;
 	}
 	
 	public ArrayList<Node> getSonNodes() {
@@ -161,7 +171,7 @@ public class Node {
 	 * @return true if the node is covered by anotherNode along the x and z axis.
 	 */
 	public boolean coveredBy(Node anotherNode){
-		if(anotherNode.getModel()!=null){
+		if(anotherNode.getModel()!=null || anotherNode.isForceCoveredControl()){
 			float[] position = new float[3];
 			position[0]= relativeTransform.getV()[9];
 			position[1]= relativeTransform.getV()[10];

@@ -21,8 +21,9 @@
       <operations public="false" package="false" protected="false" private="false" static="false"/>    
     </display>  
   </interface>  
-  <class id="3" language="java" name="com.example.computergraphics.controls.ActionSet" project="ComputerGraphics" 
-    file="/ComputerGraphics/src/com/example/computergraphics/controls/ActionSet.java" binary="false" 
+  <class id="3" language="java" name="com.example.computergraphics.controls.actionSet.ActionSet" 
+    project="ComputerGraphics" 
+    file="/ComputerGraphics/src/com/example/computergraphics/controls/actionSet/ActionSet.java" binary="false" 
     corner="BOTTOM_RIGHT">    
     <position height="-1" width="-1" x="652" y="235"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
@@ -82,9 +83,9 @@
       <operations public="false" package="false" protected="false" private="false" static="false"/>    
     </display>  
   </class>  
-  <class id="9" language="java" name="com.example.computergraphics.controls.timerTask.MoveAvatarTimeTask" 
+  <class id="9" language="java" name="com.example.computergraphics.controls.actionSet.MoveAvatarTimeTask" 
     project="ComputerGraphics" 
-    file="/ComputerGraphics/src/com/example/computergraphics/controls/timerTask/MoveAvatarTimeTask.java" binary="false" 
+    file="/ComputerGraphics/src/com/example/computergraphics/controls/actionSet/MoveAvatarTimeTask.java" binary="false" 
     corner="BOTTOM_RIGHT">    
     <position height="-1" width="-1" x="504" y="332"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
@@ -102,9 +103,9 @@
       <operations public="false" package="false" protected="false" private="false" static="false"/>    
     </display>  
   </class>  
-  <class id="11" language="java" name="com.example.computergraphics.controls.timerTask.JumpAvatarTimeTask" 
+  <class id="11" language="java" name="com.example.computergraphics.controls.actionSet.JumpAvatarTimeTask" 
     project="ComputerGraphics" 
-    file="/ComputerGraphics/src/com/example/computergraphics/controls/timerTask/JumpAvatarTimeTask.java" binary="false" 
+    file="/ComputerGraphics/src/com/example/computergraphics/controls/actionSet/JumpAvatarTimeTask.java" binary="false" 
     corner="BOTTOM_RIGHT">    
     <position height="-1" width="-1" x="794" y="332"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
@@ -131,18 +132,7 @@
       <operations public="false" package="false" protected="false" private="false" static="false"/>    
     </display>  
   </class>  
-  <class id="14" language="java" name="com.example.computergraphics.controls.timerTask.RotateCameraTimeTask" 
-    project="ComputerGraphics" 
-    file="/ComputerGraphics/src/com/example/computergraphics/controls/timerTask/RotateCameraTimeTask.java" 
-    binary="false" corner="BOTTOM_RIGHT">    
-    <position height="-1" width="-1" x="1075" y="332"/>    
-    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
-      visibility="true">      
-      <attributes public="false" package="false" protected="false" private="false" static="false"/>      
-      <operations public="false" package="false" protected="false" private="false" static="false"/>    
-    </display>  
-  </class>  
-  <class id="15" language="java" name="com.example.computergraphics.scenery.Scenery" project="ComputerGraphics" 
+  <class id="14" language="java" name="com.example.computergraphics.scenery.Scenery" project="ComputerGraphics" 
     file="/ComputerGraphics/src/com/example/computergraphics/scenery/Scenery.java" binary="false" corner="BOTTOM_RIGHT">    
     <position height="-1" width="-1" x="99" y="515"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
@@ -151,7 +141,7 @@
       <operations public="false" package="false" protected="false" private="false" static="false"/>    
     </display>  
   </class>  
-  <class id="16" language="java" name="com.example.computergraphics.scenery.Scenery00" project="ComputerGraphics" 
+  <class id="15" language="java" name="com.example.computergraphics.scenery.Scenery00" project="ComputerGraphics" 
     file="/ComputerGraphics/src/com/example/computergraphics/scenery/Scenery00.java" binary="false" 
     corner="BOTTOM_RIGHT">    
     <position height="-1" width="-1" x="98" y="611"/>    
@@ -161,7 +151,7 @@
       <operations public="false" package="false" protected="false" private="false" static="false"/>    
     </display>  
   </class>  
-  <class id="17" language="java" name="com.example.computergraphics.scenery.Scenery01" project="ComputerGraphics" 
+  <class id="16" language="java" name="com.example.computergraphics.scenery.Scenery01" project="ComputerGraphics" 
     file="/ComputerGraphics/src/com/example/computergraphics/scenery/Scenery01.java" binary="false" 
     corner="BOTTOM_RIGHT">    
     <position height="-1" width="-1" x="321" y="611"/>    
@@ -171,230 +161,245 @@
       <operations public="false" package="false" protected="false" private="false" static="false"/>    
     </display>  
   </class>  
+  <class id="17" language="java" name="com.example.computergraphics.controls.actionSet.ActionSet.RotateCameraTimeTask" 
+    project="ComputerGraphics" 
+    file="/ComputerGraphics/src/com/example/computergraphics/controls/actionSet/ActionSet.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="1053" y="332"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="false"/>      
+      <operations public="false" package="false" protected="false" private="false" static="false"/>    
+    </display>  
+  </class>  
   <association id="18">    
-    <bendpoint x="615" y="375"/>    
-    <end type="SOURCE" refId="9" navigable="false">      
-      <attribute id="19" name="similAvatarBody"/>      
+    <bendpoint x="685" y="372"/>    
+    <end type="SOURCE" refId="11" navigable="false">      
+      <attribute id="19" name="avatar"/>      
       <multiplicity id="20" minimum="0" maximum="1"/>    
     </end>    
     <end type="TARGET" refId="10" navigable="true"/>    
     <display labels="false" multiplicity="false"/>  
   </association>  
   <association id="21">    
-    <end type="SOURCE" refId="6" navigable="false">      
-      <attribute id="22" name="actionSet">        
-        <position height="18" width="53" x="599" y="182"/>      
-      </attribute>      
-      <multiplicity id="23" minimum="0" maximum="1">        
-        <position height="16" width="23" x="654" y="183"/>      
-      </multiplicity>    
-    </end>    
-    <end type="TARGET" refId="3" navigable="true"/>    
-    <display labels="true" multiplicity="true"/>  
-  </association>  
-  <association id="24">    
+    <bendpoint x="1132" y="235"/>    
+    <bendpoint x="1171" y="274"/>    
+    <bendpoint x="1171" y="475"/>    
+    <bendpoint x="1130" y="516"/>    
     <end type="SOURCE" refId="3" navigable="false">      
-      <attribute id="25" name="rotateCameraTask">        
-        <position height="18" width="95" x="951" y="287"/>      
-      </attribute>      
-      <multiplicity id="26" minimum="0" maximum="1">        
-        <position height="16" width="23" x="1044" y="288"/>      
-      </multiplicity>    
-    </end>    
-    <end type="TARGET" refId="14" navigable="true"/>    
-    <display labels="true" multiplicity="true"/>  
-  </association>  
-  <realization id="27">    
-    <end type="SOURCE" refId="4"/>    
-    <end type="TARGET" refId="2"/>  
-  </realization>  
-  <association id="28">    
-    <end type="SOURCE" refId="3" navigable="false">      
-      <attribute id="29" name="jumpAvatarTask">        
-        <position height="18" width="85" x="757" y="288"/>      
-      </attribute>      
-      <multiplicity id="30" minimum="0" maximum="1">        
-        <position height="16" width="23" x="843" y="290"/>      
-      </multiplicity>    
-    </end>    
-    <end type="TARGET" refId="11" navigable="true"/>    
-    <display labels="true" multiplicity="true"/>  
-  </association>  
-  <realization id="31">    
-    <end type="SOURCE" refId="6"/>    
-    <end type="TARGET" refId="2"/>  
-  </realization>  
-  <association id="32">    
-    <end type="SOURCE" refId="1" navigable="false">      
-      <attribute id="33" name="actionSet">        
-        <position height="18" width="53" x="744" y="194"/>      
-      </attribute>      
-      <multiplicity id="34" minimum="0" maximum="1">        
-        <position height="16" width="23" x="799" y="196"/>      
-      </multiplicity>    
-    </end>    
-    <end type="TARGET" refId="3" navigable="true"/>    
-    <display labels="true" multiplicity="true"/>  
-  </association>  
-  <association id="35">    
-    <bendpoint x="1187" y="235"/>    
-    <bendpoint x="1227" y="275"/>    
-    <bendpoint x="1227" y="477"/>    
-    <bendpoint x="1189" y="515"/>    
-    <end type="SOURCE" refId="3" navigable="false">      
-      <attribute id="36" name="cam">        
+      <attribute id="22" name="cam">        
         <position height="18" width="28" x="549" y="517"/>      
       </attribute>      
-      <multiplicity id="37" minimum="0" maximum="1">        
+      <multiplicity id="23" minimum="0" maximum="1">        
         <position height="16" width="23" x="577" y="518"/>      
       </multiplicity>    
     </end>    
     <end type="TARGET" refId="13" navigable="true"/>    
     <display labels="true" multiplicity="true"/>  
   </association>  
-  <association id="38">    
-    <bendpoint x="1075" y="285"/>    
-    <end type="SOURCE" refId="14" navigable="false">      
-      <attribute id="39" name="actionSet">        
-        <position height="18" width="53" x="787" y="237"/>      
-      </attribute>      
-      <multiplicity id="40" minimum="0" maximum="1">        
-        <position height="16" width="23" x="841" y="239"/>      
-      </multiplicity>    
-    </end>    
-    <end type="TARGET" refId="3" navigable="true"/>    
-    <display labels="true" multiplicity="true"/>  
-  </association>  
-  <association id="41">    
-    <bendpoint x="99" y="391"/>    
-    <end type="SOURCE" refId="7" navigable="false">      
-      <attribute id="42" name="sceneryList"/>      
-      <multiplicity id="43" minimum="0" maximum="2147483647"/>    
-    </end>    
-    <end type="TARGET" refId="15" navigable="true"/>    
-    <display labels="true" multiplicity="true"/>  
-  </association>  
-  <association id="44">    
+  <association id="24">    
     <end type="SOURCE" refId="8" navigable="false">      
-      <attribute id="45" name="cam">        
+      <attribute id="25" name="cam">        
         <position height="18" width="28" x="404" y="468"/>      
       </attribute>      
-      <multiplicity id="46" minimum="0" maximum="1">        
+      <multiplicity id="26" minimum="0" maximum="1">        
         <position height="16" width="23" x="434" y="469"/>      
       </multiplicity>    
     </end>    
     <end type="TARGET" refId="13" navigable="true"/>    
     <display labels="true" multiplicity="true"/>  
   </association>  
-  <association id="47">    
+  <nesting id="27">    
+    <end type="SOURCE" refId="7"/>    
+    <end type="TARGET" refId="8"/>  
+  </nesting>  
+  <nesting id="28">    
+    <bendpoint x="1053" y="279"/>    
+    <end type="SOURCE" refId="3"/>    
+    <end type="TARGET" refId="17"/>  
+  </nesting>  
+  <association id="29">    
     <end type="SOURCE" refId="8" navigable="false">      
-      <attribute id="48" name="node">        
-        <position height="18" width="32" x="551" y="426"/>      
-      </attribute>      
-      <multiplicity id="49" minimum="0" maximum="1">        
-        <position height="16" width="23" x="581" y="427"/>      
-      </multiplicity>    
-    </end>    
-    <end type="TARGET" refId="10" navigable="true"/>    
-    <display labels="true" multiplicity="true"/>  
-  </association>  
-  <association id="50">    
-    <end type="SOURCE" refId="9" navigable="false">      
-      <attribute id="51" name="all"/>      
-      <multiplicity id="52" minimum="0" maximum="1"/>    
-    </end>    
-    <end type="TARGET" refId="10" navigable="true"/>    
-    <display labels="false" multiplicity="false"/>  
-  </association>  
-  <association id="53">    
-    <end type="SOURCE" refId="8" navigable="false">      
-      <attribute id="54" name="startCam">        
+      <attribute id="30" name="startCam">        
         <position height="18" width="51" x="350" y="509"/>      
       </attribute>      
-      <multiplicity id="55" minimum="0" maximum="1">        
+      <multiplicity id="31" minimum="0" maximum="1">        
         <position height="16" width="23" x="404" y="509"/>      
       </multiplicity>    
     </end>    
     <end type="TARGET" refId="13" navigable="true"/>    
     <display labels="true" multiplicity="true"/>  
   </association>  
-  <association id="56">    
-    <end type="SOURCE" refId="11" navigable="false">      
-      <attribute id="57" name="similAvatarBody"/>      
-      <multiplicity id="58" minimum="0" maximum="1"/>    
-    </end>    
-    <end type="TARGET" refId="10" navigable="true"/>    
-    <display labels="false" multiplicity="false"/>  
-  </association>  
-  <association id="59">    
-    <bendpoint x="407" y="77"/>    
-    <end type="SOURCE" refId="4" navigable="false">      
-      <attribute id="60" name="controller">        
-        <position height="18" width="53" x="475" y="36"/>      
-      </attribute>      
-      <multiplicity id="61" minimum="0" maximum="1">        
-        <position height="16" width="23" x="527" y="37"/>      
-      </multiplicity>    
-    </end>    
-    <end type="TARGET" refId="2" navigable="true"/>    
-    <display labels="true" multiplicity="true"/>  
-  </association>  
-  <association id="62">    
-    <end type="SOURCE" refId="9" navigable="false">      
-      <attribute id="63" name="avatar"/>      
-      <multiplicity id="64" minimum="0" maximum="1"/>    
-    </end>    
-    <end type="TARGET" refId="10" navigable="true"/>    
-    <display labels="false" multiplicity="false"/>  
-  </association>  
-  <generalization id="65">    
-    <end type="SOURCE" refId="16"/>    
-    <end type="TARGET" refId="15"/>  
-  </generalization>  
-  <association id="66">    
+  <association id="32">    
     <end type="SOURCE" refId="3" navigable="false">      
-      <attribute id="67" name="avatar"/>      
-      <multiplicity id="68" minimum="0" maximum="1"/>    
-    </end>    
-    <end type="TARGET" refId="10" navigable="true"/>    
-    <display labels="false" multiplicity="false"/>  
-  </association>  
-  <nesting id="69">    
-    <end type="SOURCE" refId="7"/>    
-    <end type="TARGET" refId="8"/>  
-  </nesting>  
-  <association id="70">    
-    <end type="SOURCE" refId="3" navigable="false">      
-      <attribute id="71" name="moveAvatarTask">        
+      <attribute id="33" name="moveAvatarTask">        
         <position height="18" width="89" x="435" y="288"/>      
       </attribute>      
-      <multiplicity id="72" minimum="0" maximum="1">        
+      <multiplicity id="34" minimum="0" maximum="1">        
         <position height="16" width="23" x="523" y="290"/>      
       </multiplicity>    
     </end>    
     <end type="TARGET" refId="9" navigable="true"/>    
     <display labels="true" multiplicity="true"/>  
   </association>  
-  <association id="73">    
-    <bendpoint x="685" y="372"/>    
-    <end type="SOURCE" refId="11" navigable="false">      
-      <attribute id="74" name="avatar"/>      
-      <multiplicity id="75" minimum="0" maximum="1"/>    
+  <association id="35">    
+    <bendpoint x="615" y="375"/>    
+    <end type="SOURCE" refId="9" navigable="false">      
+      <attribute id="36" name="similAvatarBody"/>      
+      <multiplicity id="37" minimum="0" maximum="1"/>    
     </end>    
     <end type="TARGET" refId="10" navigable="true"/>    
     <display labels="false" multiplicity="false"/>  
   </association>  
-  <association id="76">    
+  <association id="38">    
+    <end type="SOURCE" refId="3" navigable="false">      
+      <attribute id="39" name="jumpAvatarTask">        
+        <position height="18" width="85" x="757" y="288"/>      
+      </attribute>      
+      <multiplicity id="40" minimum="0" maximum="1">        
+        <position height="16" width="23" x="843" y="290"/>      
+      </multiplicity>    
+    </end>    
+    <end type="TARGET" refId="11" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="41">    
+    <end type="SOURCE" refId="1" navigable="false">      
+      <attribute id="42" name="actionSet">        
+        <position height="18" width="53" x="744" y="194"/>      
+      </attribute>      
+      <multiplicity id="43" minimum="0" maximum="1">        
+        <position height="16" width="23" x="799" y="196"/>      
+      </multiplicity>    
+    </end>    
+    <end type="TARGET" refId="3" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="44">    
+    <end type="SOURCE" refId="9" navigable="false">      
+      <attribute id="45" name="avatar"/>      
+      <multiplicity id="46" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="10" navigable="true"/>    
+    <display labels="false" multiplicity="false"/>  
+  </association>  
+  <realization id="47">    
+    <end type="SOURCE" refId="6"/>    
+    <end type="TARGET" refId="2"/>  
+  </realization>  
+  <realization id="48">    
+    <end type="SOURCE" refId="5"/>    
+    <end type="TARGET" refId="2"/>  
+  </realization>  
+  <association id="49">    
+    <bendpoint x="80" y="267"/>    
+    <end type="SOURCE" refId="12" navigable="false">      
+      <attribute id="50" name="myView">        
+        <position height="18" width="48" x="59" y="291"/>      
+      </attribute>      
+      <multiplicity id="51" minimum="0" maximum="1">        
+        <position height="16" width="23" x="113" y="293"/>      
+      </multiplicity>    
+    </end>    
+    <end type="TARGET" refId="7" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="52">    
+    <end type="SOURCE" refId="3" navigable="false">      
+      <attribute id="53" name="rotateCameraTask">        
+        <position height="18" width="95" x="916" y="284"/>      
+      </attribute>      
+      <multiplicity id="54" minimum="0" maximum="1">        
+        <position height="16" width="23" x="1009" y="285"/>      
+      </multiplicity>    
+    </end>    
+    <end type="TARGET" refId="17" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="55">    
+    <end type="SOURCE" refId="9" navigable="false">      
+      <attribute id="56" name="all"/>      
+      <multiplicity id="57" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="10" navigable="true"/>    
+    <display labels="false" multiplicity="false"/>  
+  </association>  
+  <association id="58">    
+    <end type="SOURCE" refId="8" navigable="false">      
+      <attribute id="59" name="node">        
+        <position height="18" width="32" x="551" y="426"/>      
+      </attribute>      
+      <multiplicity id="60" minimum="0" maximum="1">        
+        <position height="16" width="23" x="581" y="427"/>      
+      </multiplicity>    
+    </end>    
+    <end type="TARGET" refId="10" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="61">    
     <end type="SOURCE" refId="7" navigable="false">      
-      <attribute id="77" name="controller">        
+      <attribute id="62" name="actionSet">        
+        <position height="18" width="53" x="475" y="240"/>      
+      </attribute>      
+      <multiplicity id="63" minimum="0" maximum="1">        
+        <position height="16" width="23" x="528" y="241"/>      
+      </multiplicity>    
+    </end>    
+    <end type="TARGET" refId="3" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="64">    
+    <end type="SOURCE" refId="7" navigable="false">      
+      <attribute id="65" name="controller">        
         <position height="18" width="53" x="159" y="180"/>      
       </attribute>      
-      <multiplicity id="78" minimum="0" maximum="1">        
+      <multiplicity id="66" minimum="0" maximum="1">        
         <position height="16" width="23" x="215" y="181"/>      
       </multiplicity>    
     </end>    
     <end type="TARGET" refId="4" navigable="true"/>    
     <display labels="true" multiplicity="true"/>  
+  </association>  
+  <realization id="67">    
+    <end type="SOURCE" refId="1"/>    
+    <end type="TARGET" refId="2"/>  
+  </realization>  
+  <realization id="68">    
+    <end type="SOURCE" refId="4"/>    
+    <end type="TARGET" refId="2"/>  
+  </realization>  
+  <generalization id="69">    
+    <end type="SOURCE" refId="15"/>    
+    <end type="TARGET" refId="14"/>  
+  </generalization>  
+  <association id="70">    
+    <end type="SOURCE" refId="11" navigable="false">      
+      <attribute id="71" name="similAvatarBody"/>      
+      <multiplicity id="72" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="10" navigable="true"/>    
+    <display labels="false" multiplicity="false"/>  
+  </association>  
+  <association id="73">    
+    <bendpoint x="407" y="77"/>    
+    <end type="SOURCE" refId="4" navigable="false">      
+      <attribute id="74" name="controller">        
+        <position height="18" width="53" x="475" y="36"/>      
+      </attribute>      
+      <multiplicity id="75" minimum="0" maximum="1">        
+        <position height="16" width="23" x="527" y="37"/>      
+      </multiplicity>    
+    </end>    
+    <end type="TARGET" refId="2" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="76">    
+    <end type="SOURCE" refId="3" navigable="false">      
+      <attribute id="77" name="avatar"/>      
+      <multiplicity id="78" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="10" navigable="true"/>    
+    <display labels="false" multiplicity="false"/>  
   </association>  
   <association id="79">    
     <end type="SOURCE" refId="3" navigable="false">      
@@ -404,62 +409,41 @@
     <end type="TARGET" refId="10" navigable="true"/>    
     <display labels="false" multiplicity="false"/>  
   </association>  
-  <realization id="82">    
-    <end type="SOURCE" refId="5"/>    
-    <end type="TARGET" refId="2"/>  
-  </realization>  
-  <association id="83">    
+  <association id="82">    
+    <end type="SOURCE" refId="6" navigable="false">      
+      <attribute id="83" name="actionSet">        
+        <position height="18" width="53" x="599" y="182"/>      
+      </attribute>      
+      <multiplicity id="84" minimum="0" maximum="1">        
+        <position height="16" width="23" x="654" y="183"/>      
+      </multiplicity>    
+    </end>    
+    <end type="TARGET" refId="3" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <generalization id="85">    
+    <end type="SOURCE" refId="16"/>    
+    <end type="TARGET" refId="14"/>  
+  </generalization>  
+  <association id="86">    
+    <end type="SOURCE" refId="11" navigable="false">      
+      <attribute id="87" name="all"/>      
+      <multiplicity id="88" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="10" navigable="true"/>    
+    <display labels="false" multiplicity="false"/>  
+  </association>  
+  <association id="89">    
     <end type="SOURCE" refId="5" navigable="false">      
-      <attribute id="84" name="actionSet">        
+      <attribute id="90" name="actionSet">        
         <position height="18" width="53" x="486" y="193"/>      
       </attribute>      
-      <multiplicity id="85" minimum="0" maximum="1">        
+      <multiplicity id="91" minimum="0" maximum="1">        
         <position height="16" width="23" x="539" y="195"/>      
       </multiplicity>    
     </end>    
     <end type="TARGET" refId="3" navigable="true"/>    
     <display labels="true" multiplicity="true"/>  
-  </association>  
-  <association id="86">    
-    <end type="SOURCE" refId="7" navigable="false">      
-      <attribute id="87" name="actionSet">        
-        <position height="18" width="53" x="475" y="240"/>      
-      </attribute>      
-      <multiplicity id="88" minimum="0" maximum="1">        
-        <position height="16" width="23" x="528" y="241"/>      
-      </multiplicity>    
-    </end>    
-    <end type="TARGET" refId="3" navigable="true"/>    
-    <display labels="true" multiplicity="true"/>  
-  </association>  
-  <realization id="89">    
-    <end type="SOURCE" refId="1"/>    
-    <end type="TARGET" refId="2"/>  
-  </realization>  
-  <association id="90">    
-    <bendpoint x="80" y="267"/>    
-    <end type="SOURCE" refId="12" navigable="false">      
-      <attribute id="91" name="myView">        
-        <position height="18" width="48" x="59" y="291"/>      
-      </attribute>      
-      <multiplicity id="92" minimum="0" maximum="1">        
-        <position height="16" width="23" x="113" y="293"/>      
-      </multiplicity>    
-    </end>    
-    <end type="TARGET" refId="7" navigable="true"/>    
-    <display labels="true" multiplicity="true"/>  
-  </association>  
-  <generalization id="93">    
-    <end type="SOURCE" refId="17"/>    
-    <end type="TARGET" refId="15"/>  
-  </generalization>  
-  <association id="94">    
-    <end type="SOURCE" refId="11" navigable="false">      
-      <attribute id="95" name="all"/>      
-      <multiplicity id="96" minimum="0" maximum="1"/>    
-    </end>    
-    <end type="TARGET" refId="10" navigable="true"/>    
-    <display labels="false" multiplicity="false"/>  
   </association>  
   <classifier-display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
     accessors="true" visibility="true">    
