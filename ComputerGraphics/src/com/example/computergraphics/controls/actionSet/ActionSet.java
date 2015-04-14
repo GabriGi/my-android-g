@@ -37,6 +37,7 @@ public class ActionSet{
 	private float scale = SCALE_DEF;
 	private float rotX = ROT_X_DEF;
 	private float rotY = 0;
+	private boolean jumpEnabled = false;	//Occhio a cambiare il valore nel menu_main.xml
 	
 	private Node all;
 	private Node avatar;
@@ -52,6 +53,10 @@ public class ActionSet{
 	
 	public void setRoomDimension(float roomDimension) {
 		this.roomDimension = roomDimension;
+	}
+	
+	public void setJumpEnabled(boolean jumpEnabled) {
+		this.jumpEnabled = jumpEnabled;
 	}
 	
 	public float getScale() {
@@ -133,15 +138,17 @@ public class ActionSet{
 	 */
 	public void jumpAvatar(float directionU , float directionV){
 		moveAvatarWith(directionU, directionV);
-		if(jumpAvatarTask != null){
-			if (!jumpAvatarTask.isJumping()) {
-				jumpAvatarTask.cancel();
+		if(jumpEnabled){
+			if(jumpAvatarTask != null){
+				if (!jumpAvatarTask.isJumping()) {
+					jumpAvatarTask.cancel();
+					jumpAvatarTask = new JumpAvatarTimeTask(avatar, JumpAvatarTimeTask.START_VELOCITY, all, TIMER_PERIOD);
+					timer.schedule(jumpAvatarTask, TIMER_PERIOD / 2, TIMER_PERIOD);
+				}
+			}else{
 				jumpAvatarTask = new JumpAvatarTimeTask(avatar, JumpAvatarTimeTask.START_VELOCITY, all, TIMER_PERIOD);
 				timer.schedule(jumpAvatarTask, TIMER_PERIOD / 2, TIMER_PERIOD);
 			}
-		}else{
-			jumpAvatarTask = new JumpAvatarTimeTask(avatar, JumpAvatarTimeTask.START_VELOCITY, all, TIMER_PERIOD);
-			timer.schedule(jumpAvatarTask, TIMER_PERIOD / 2, TIMER_PERIOD);
 		}
 	}
 	
@@ -207,7 +214,8 @@ public class ActionSet{
 		private float velocityY;
 		
 		/**
-		 * @param actionSet (verra' chiamato il metodo actionSet.rotationCamera(velocityY, 0);
+		 * Verra' chiamato il metodo 
+		 * {@link ActionSet}.{@link #rotationCamera(float, float)}
 		 * @param incrementY l'incremento da passare ad ogni clock
 		 */
 		public RotateCameraTimeTask(float incrementY) {

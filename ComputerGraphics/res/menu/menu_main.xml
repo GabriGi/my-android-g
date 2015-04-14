@@ -2,25 +2,46 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools" tools:context=".MainActivity">
     
-    <item android:id="@+id/action_basic_absolute"
-        android:icon="@drawable/ic_inverse_action_basic_absolute"
-        android:title="@string/action_absolute"
-        app:showAsAction="never" />
-	<item android:id="@+id/action_basic_centered"
-        android:icon="@drawable/ic_inverse_action_basic_centered"
-        android:title="@string/action_centered"
-        app:showAsAction="never" />
+	<item android:id="@+id/action_menu_controllers"
+        android:title="@string/action_menu_controllers"
+        app:showAsAction="never">
+        <menu>
+            <group android:id="@+id/controllers">
+                <item android:id="@+id/action_basic_absolute"
+			        android:icon="@drawable/ic_inverse_action_basic_absolute"
+			        android:title="@string/action_absolute"
+			        app:showAsAction="never" />
+				<item android:id="@+id/action_basic_centered"
+			        android:icon="@drawable/ic_inverse_action_basic_centered"
+			        android:title="@string/action_centered"
+			        app:showAsAction="never" />
+			    <item android:id="@+id/action_alternative"
+			        android:icon="@drawable/ic_inverse_action_alternative"
+			        android:title="@string/action_alternative"
+			        app:showAsAction="never" />
+			    <item android:id="@+id/action_different"
+			        android:icon="@drawable/ic_inverse_action_different"
+			        android:title="@string/action_different"
+			        app:showAsAction="never" />
+            </group>
+        </menu>
+    </item>
     
-    <item android:id="@+id/action_alternative"
-        android:icon="@drawable/ic_inverse_action_alternative"
-        android:title="@string/action_alternative"
-        app:showAsAction="never" />
-    <item android:id="@+id/action_different"
-        android:icon="@drawable/ic_inverse_action_different"
-        android:title="@string/action_different"
-        app:showAsAction="never" />
+    <item android:id="@+id/action_jump_enabled"
+        android:title="@string/action_enable_jump"
+        app:showAsAction="never"
+        android:checkable="true"
+        android:checked="false" />
     
-    <item android:id="@+id/action_next_scenary"
-        android:title="@string/action_next_scenary"
-        app:showAsAction="never" />
+    <item android:id="@+id/action_menu_scenery"
+        android:title="@string/action_menu_scenery">
+        <menu>
+            <item android:id="@+id/action_scenery00"
+		        android:title="@string/action_scenery00"
+		        app:showAsAction="never" />
+		    <item android:id="@+id/action_scenery01"
+		        android:title="@string/action_scenery01"
+		        app:showAsAction="never" />
+        </menu>
+    </item>
 </menu>

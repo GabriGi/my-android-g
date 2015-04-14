@@ -29,6 +29,7 @@ import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 
+import com.example.computergraphics.controls.AlternativeController;
 import com.example.computergraphics.controls.BasicController;
 import com.example.computergraphics.controls.IController;
 import com.example.computergraphics.controls.ProxyController;
@@ -36,6 +37,7 @@ import com.example.computergraphics.controls.actionSet.ActionSet;
 import com.example.computergraphics.scenery.Scenery;
 import com.example.computergraphics.scenery.Scenery00;
 import com.example.computergraphics.scenery.Scenery01;
+import com.example.computergraphics.scenery.SceneryCubeAlone;
 
 /**
  * Created by Alessandro on 13/03/15.
@@ -66,7 +68,7 @@ public class GraphicsView extends GLSurfaceView{
         this.context=context;
         //super.setEGLConfigChooser(8,8,8,8,16,0);
         
-        controller = new ProxyController(new BasicController(BasicController.ABSOLUTE_MODE));
+        controller = new ProxyController(new AlternativeController());//new BasicController(BasicController.ABSOLUTE_MODE));
         gestureDetector = new GestureDetector(context, controller);
         gestureDetector.setOnDoubleTapListener(controller);
         gestureDetector.setIsLongpressEnabled(false);		//Solo se sto usando il BasicController!!!
@@ -75,10 +77,15 @@ public class GraphicsView extends GLSurfaceView{
         sceneryList = new ArrayList<Scenery>();
     	sceneryList.add(new Scenery00(AVAT_BODY));
     	sceneryList.add(new Scenery01(AVAT_BODY));
-    	sceneryNumber = 1;
+    	sceneryList.add(new SceneryCubeAlone(AVAT_BODY));
+    	sceneryNumber = 2;
     	
         setRenderer(new GraphicsRenderer());
     }
+    
+    public void setJumpEnabled(boolean jumpEnabled) {
+		actionSet.setJumpEnabled(jumpEnabled);
+	}
     
     public boolean isEnableTouching() {
 		return enableTouching;
@@ -178,31 +185,41 @@ public class GraphicsView extends GLSurfaceView{
 			return cam;
         }
         
-        private Node createBlenderAvatarNode(Model model) {
+        /**
+         * L'idea e' di provare prima a chiamare true (l'avatar è alto il doppio degli ostacoli), 
+         * poi false (avatar alto quanto gli ostacoli),
+         * infine usare {@link #createDefaultAvatarNode(Model)}
+         * @param realDimension true: crea il nodo alto 1; false: crea il nodo alto 0.5 (AVAT_BODY*2)
+         */
+        private Node createCustomAvatarNode(Model model) {
 			Node avatarNode = new Node();
 			
-			float sx = AVAT_BODY*model.getScaleAndMiddleValues()[0]/model.getScaleAndMiddleValues()[1];
-            float sy = AVAT_BODY*model.getScaleAndMiddleValues()[1]/model.getScaleAndMiddleValues()[1];
-            float sz = AVAT_BODY*model.getScaleAndMiddleValues()[2]/model.getScaleAndMiddleValues()[1];
+			float sx = model.getScaleAndMiddleValues()[0];
+            float sy = model.getScaleAndMiddleValues()[1];
+            float sz = model.getScaleAndMiddleValues()[2];
+			float sMax = Math.max(Math.max(sx, sy), sz);
+			sx = AVAT_BODY*sx/sMax;
+            sy = AVAT_BODY*sy/sMax;
+            sz = AVAT_BODY*sz/sMax;
 			
             Node bodyNode =new Node(true);
-            bodyNode.getRelativeTransform().setPosition(0,sy,0);
-            bodyNode.getRelativeTransform().setMatrix(SFMatrix3f.getScale(sx,sy,sz));
+            bodyNode.getRelativeTransform().setPosition(0,AVAT_BODY,0);
+            bodyNode.getRelativeTransform().setMatrix(SFMatrix3f.getScale(AVAT_BODY,AVAT_BODY,AVAT_BODY));
             avatarNode.getSonNodes().add(bodyNode);
             
-            Node headNode = new Node(model);
-            headNode.getRelativeTransform().setPosition(0, sy, 0);
+            Node customNode = new Node(model);
+            customNode.getRelativeTransform().setPosition(0, sy, 0);
             SFMatrix3f m = SFMatrix3f.getScale(sx,sy,sz);
-            headNode.getRelativeTransform().setMatrix(m.MultMatrix(SFMatrix3f.getRotationX((float)-Math.PI/2)));
-            avatarNode.getSonNodes().add(headNode);
+            customNode.getRelativeTransform().setMatrix(m.MultMatrix(SFMatrix3f.getRotationX((float)-Math.PI/2)));
+            avatarNode.getSonNodes().add(customNode);
 
             avatarNode.getRelativeTransform().setPosition(0,0,0);
-            avatarNode.getRelativeTransform().setMatrix(SFMatrix3f.getScale(1,1,1));
+            avatarNode.getRelativeTransform().setMatrix(SFMatrix3f.getScale(1,1,1));	//MUST be 1
             
 			return avatarNode;
 		}
         
-		private Node createAvatarNode(Model model) {
+		private Node createDefaultAvatarNode(Model model) {
 			Node avatarNode = new Node();
 			
             Node bodyNode =new Node(model);
@@ -221,7 +238,7 @@ public class GraphicsView extends GLSurfaceView{
             avatarNode.getSonNodes().add(headNode);
 
             avatarNode.getRelativeTransform().setPosition(0,0,0);
-            avatarNode.getRelativeTransform().setMatrix(SFMatrix3f.getScale(1,1,1));
+            avatarNode.getRelativeTransform().setMatrix(SFMatrix3f.getScale(1,1,1));	//MUST be 1
             
 			return avatarNode;
 		}
@@ -237,18 +254,34 @@ public class GraphicsView extends GLSurfaceView{
             	sceneryList.get(sceneryNumber).setFinishModel(models.get(2));
             	backgroundNode = sceneryList.get(sceneryNumber).getSceneryNode(models.get(0));
 			}
-            avatarNode = createBlenderAvatarNode(models.get(3));
-            //avatarNode = createAvatarNode(models.get(1));
+            avatarNode = createCustomAvatarNode(models.get(3));
             avatarNode.getRelativeTransform().setPosition(sceneryList.get(sceneryNumber).getStartPosition());
             node.getSonNodes().add(avatarNode);
             
-            if(sceneryNumber!=0){
+            if(sceneryNumber!=0){		//se non riesco ad usare l'avatar personalizzato uso quello di default.
             	if(avatarNode.getSonNodes().get(0).coveredBySonNodes(backgroundNode)){ 
-            		Log.d("ERRORE", "La posizione di partenza dell'Avatar è dentro un ostacolo!");
+            		//Non dovrebbe mai capitare.. Ma meglio essere coperti..
+            		Log.d("ERRORE", "L'Avatar è dentro un ostacolo e quindi troppo grande!");
+            		node.removeAllSonNodes();
+            		avatarNode = createDefaultAvatarNode(models.get(1));
+                    avatarNode.getRelativeTransform().setPosition(sceneryList.get(sceneryNumber).getStartPosition());
+                    if(avatarNode.getSonNodes().get(0).coveredBySonNodes(backgroundNode)){ 
+                		//..anche perche' l'errore potrebbe essere nello scenario
+                		Log.d("ERRORE", "Posizione di partenza non valida! Non e' possibile giocare.");
+                    }
+                	node.getSonNodes().add(avatarNode);
 				}
             }else{
+            	int tentativo = 0;
 	            do{ 
 	            	backgroundNode = sceneryList.get(0).getSceneryNode(models.get(0));
+	            	if(tentativo++==10){		//..fino a 10 volte, poi uso l'Avatar di default.
+	            		Log.d("ERRORE", "L'Avatar è dentro un ostacolo e quindi troppo grande!");
+                		node.removeAllSonNodes();
+	            		avatarNode = createDefaultAvatarNode(models.get(1));
+	                    avatarNode.getRelativeTransform().setPosition(sceneryList.get(sceneryNumber).getStartPosition());
+	                    node.getSonNodes().add(avatarNode);
+	            	}
 				}while(avatarNode.getSonNodes().get(0).coveredBySonNodes(backgroundNode));
             }
 			node.getSonNodes().add(backgroundNode);
@@ -256,7 +289,7 @@ public class GraphicsView extends GLSurfaceView{
 
 		private ArrayList<Model> createModels() {
         	ArrayList<Model> models = new ArrayList<Model>();
-			//Step 1 : load Shading effects
+			//Step 1 : load Shading effects (ONLY ONE)
             ShadersKeeper.loadPipelineShaders(context);
             program= ShadersKeeper.getProgram(ShadersKeeper.STANDARD_TEXTURE_SHADER);
 

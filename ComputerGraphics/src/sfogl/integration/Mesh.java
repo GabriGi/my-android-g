@@ -4,7 +4,6 @@ import sfogl2.SFOGLBufferObject;
 import sfogl2.SFOGLShader;
 import shadow.system.SFInitiable;
 import android.opengl.GLES20;
-import android.util.Log;
 
 
 public class Mesh implements SFInitiable{
@@ -65,7 +64,24 @@ public class Mesh implements SFInitiable{
 	}
     
     private float[] normalizeVertices(float[] vert) {
-    	minX=maxX=vert[0];
+    	setupMinMaxScaleMiddle(vert);
+	    for (int i = 0; i < vert.length; i+=3) {
+	    	vert[i]=scaleX*(vert[i]-middleX);
+		}
+	    for (int i = 1; i < vert.length; i+=3) {
+	    	vert[i]=scaleY*(vert[i]-middleY);
+		}
+	    for (int i = 2; i < vert.length; i+=3) {
+	    	vert[i]=scaleZ*(vert[i]-middleZ);
+		}
+	    
+//	    Log.d("mesh", ""+minX+" "+minY+" "+minZ+" "+maxX+" "+maxY+" "+maxZ);
+//	    Log.d("mesh", ""+1/scaleX+" "+1/scaleY+" "+1/scaleZ+" "+middleX+" "+middleY+" "+middleZ);
+	    return vert;
+	}
+
+	private void setupMinMaxScaleMiddle(float[] vert) {
+		minX=maxX=vert[0];
 	    minY=maxY=vert[1];
 	    minZ=maxZ=vert[2];
 	    for (int i = 0; i < vert.length; i+=3) {
@@ -85,23 +101,10 @@ public class Mesh implements SFInitiable{
 		}
 	    scaleX=2/(maxX-minX);
 	    middleX=(minX+maxX)/2;
-	    for (int i = 0; i < vert.length; i+=3) {
-	    	vert[i]=scaleX*(vert[i]-middleX);
-		}
 	    scaleY=2/(maxY-minY);
 	    middleY=(minY+maxY)/2;
-	    for (int i = 1; i < vert.length; i+=3) {
-	    	vert[i]=scaleY*(vert[i]-middleY);
-		}
 	    scaleZ=2/(maxZ-minZ);
 	    middleZ=(minZ+maxZ)/2;
-	    for (int i = 2; i < vert.length; i+=3) {
-	    	vert[i]=scaleZ*(vert[i]-middleZ);
-		}
-	    
-//	    Log.d("mesh", ""+minX+" "+minY+" "+minZ+" "+maxX+" "+maxY+" "+maxZ);
-//	    Log.d("mesh", ""+1/scaleX+" "+1/scaleY+" "+1/scaleZ+" "+middleX+" "+middleY+" "+middleZ);
-	    return vert;
 	}
     
 	@Override
@@ -115,10 +118,10 @@ public class Mesh implements SFInitiable{
         float[] vert = arrayObject.getVerticesBuffer().clone();
         vertices.loadData(normalizeVertices(vert));
         //vertices.loadData(arrayObject.getVerticesBuffer());
+        
         normals.loadData(arrayObject.getNormalsBuffer());
         if(isTxCoord())
 		     txCoords.loadData(arrayObject.getTxCoordsBuffer());
-
 	}
 	
 	@Override

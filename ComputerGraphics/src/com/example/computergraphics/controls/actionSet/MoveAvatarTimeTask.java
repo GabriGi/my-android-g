@@ -40,17 +40,37 @@ public class MoveAvatarTimeTask extends TimerTask{
 		float currX = avatar.getRelativeTransform().getV()[9];
 		float currY = avatar.getRelativeTransform().getV()[10];
 		float currZ = avatar.getRelativeTransform().getV()[11];
-		currX += velocityX;
-		currZ += velocityZ;
-		if((currX>finalX&&finalX>startX)||(currX<finalX&&finalX<startX)) currX=finalX;
-		if((currZ>finalZ&&finalZ>startZ)||(currZ<finalZ&&finalZ<startZ)) currZ=finalZ;
-		similAvatarBody.getRelativeTransform().setPosition(currX, currY+avatarBodyY, currZ);
+		
+		float tempCurrX = currX + velocityX;
+		float tempCurrZ = currZ + velocityZ;
+		if((tempCurrX>finalX&&finalX>startX)||(tempCurrX<finalX&&finalX<startX)) tempCurrX=finalX;
+		if((tempCurrZ>finalZ&&finalZ>startZ)||(tempCurrZ<finalZ&&finalZ<startZ)) tempCurrZ=finalZ;
+		similAvatarBody.getRelativeTransform().setPosition(tempCurrX, currY+avatarBodyY, tempCurrZ);
 		boolean touchObstacle = similAvatarBody.coveredBySonNodes(all.getSonNodes().get(1));
-		if(!touchObstacle){
-			avatar.getRelativeTransform().setPosition(currX, currY, currZ);
+		//Log.d("task", "tXZ "+touchObstacle);
+		if(touchObstacle){
+			similAvatarBody.getRelativeTransform().setPosition(currX, currY+avatarBodyY, tempCurrZ);
+			touchObstacle = similAvatarBody.coveredBySonNodes(all.getSonNodes().get(1));
+			//Log.d("task", "tZ "+touchObstacle);
+			if(touchObstacle){
+				similAvatarBody.getRelativeTransform().setPosition(tempCurrX, currY+avatarBodyY, currZ);
+				touchObstacle = similAvatarBody.coveredBySonNodes(all.getSonNodes().get(1));
+				//Log.d("task", "tX "+touchObstacle);
+				if(touchObstacle){
+					 cancel();
+				}else{
+					currX = tempCurrX;
+				}
+			}else{
+				currZ = tempCurrZ;
+			}
 		}else{
-			cancel();
+			currX = tempCurrX;
+			currZ = tempCurrZ;
 		}
+		
+		avatar.getRelativeTransform().setPosition(currX, currY, currZ);
+		
 		SFMatrix3f matrix = new SFMatrix3f();
 		all.getRelativeTransform().getMatrix(matrix);
 		SFVertex3f position = matrix.Mult(new SFVertex3f(-currX, 0, -currZ));

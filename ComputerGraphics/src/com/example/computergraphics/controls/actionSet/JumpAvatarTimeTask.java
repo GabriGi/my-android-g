@@ -33,7 +33,7 @@ public class JumpAvatarTimeTask extends TimerTask{
 		this.avatar = avatar;
 		this.similAvatarBody = avatar.getSonNodes().get(0).clodeNode();
 		avatarBodyY = similAvatarBody.getRelativeTransform().getV()[10];
-		//avatar.getRelativeTransform().getV()[10] = 2*avatarBodyY;
+		//avatar.getRelativeTransform().getV()[10] = 2*avatarBodyY;	//DEBUG Teletrasporto a mezz'aria.
 		startY = avatar.getRelativeTransform().getV()[10];
 		this.startVelocityY = startVelocityY;
 		this.all = all;
@@ -55,6 +55,7 @@ public class JumpAvatarTimeTask extends TimerTask{
 		if(tempCurrY<0) tempCurrY=0;
 		similAvatarBody.getRelativeTransform().setPosition(currX, tempCurrY+avatarBodyY, currZ);
 		boolean touchObstacle = similAvatarBody.coveredBySonNodes(all.getSonNodes().get(1));
+		//Log.d("task", "tY "+touchObstacle);
 		if(!touchObstacle){
 			currY = tempCurrY;
 			lastUsefulT = t;

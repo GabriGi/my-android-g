@@ -27,11 +27,21 @@ public class Node {
 	    setup();
 	}
 	
+	/**
+	 * Create a node with the specified model.
+	 * Note that if a node has a model, he always will been covered tested.
+	 * @param forceCoveredControl
+	 */
+	
 	public Node(Model model){
 	    setup();
 	    this.model=model;
 	}
 	
+	/**
+	 * Create a node that force the covered control even if he has't specify a model.
+	 * @param forceCoveredControl
+	 */
 	public Node(boolean forceCoveredControl){
 	    setup();
 	    this.forceCoveredControl = forceCoveredControl;
@@ -167,10 +177,12 @@ public class Node {
 	}
 
 	/**
+	 * Check if the node is covered by anotherNode along all the three axis using a cubic geometry.
+	 * The test will be done if the node specify a model or he is created with {@link #Node(boolean)}
 	 * @param anotherNode
-	 * @return true if the node is covered by anotherNode along the x and z axis.
+	 * @return true if the node is covered by anotherNode, false otherwise
 	 */
-	public boolean coveredBy(Node anotherNode){
+	public boolean coveredBy(Node anotherNode){	//TODO non usare getV per la scala (se il nodo e' ruotato funziona male..)
 		if(anotherNode.getModel()!=null || anotherNode.isForceCoveredControl()){
 			float[] position = new float[3];
 			position[0]= relativeTransform.getV()[9];
@@ -212,6 +224,12 @@ public class Node {
 		}
 	}
 
+	/**
+	 * Check if the node is covered by anotherNode and all its son along all the three axis 
+	 * using a cubic geometry (see {@link #coveredBy(Node)})
+	 * @param anotherNode
+	 * @return true if the node is covered by anotherNode, false otherwise
+	 */
 	public boolean coveredBySonNodes(Node anotherNode){
 	    boolean covered = coveredBy(anotherNode);
 	    if(covered) return true;
@@ -222,11 +240,15 @@ public class Node {
 		return false;
 	}
 	
+	/**
+	 * //Clear a node son list [and remove the node from memory] recursively.
+	 */
 	public void removeAllSonNodes() {
         for(int i=0;i<sonNodes.size();i++){
             sonNodes.get(i).removeAllSonNodes();
         }
-        sonNodes.clear();
+        sonNodes.clear();	//Clear its son list...
+        //Destroy();	//...and remove the node from memory.
 	}
 }
 

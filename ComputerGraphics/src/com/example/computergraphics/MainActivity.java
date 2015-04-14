@@ -1,21 +1,17 @@
 package com.example.computergraphics;
 
-
-import java.util.Random;
-
-import com.example.computergraphics.controls.AlternativeController;
-import com.example.computergraphics.controls.BasicController;
-import com.example.computergraphics.controls.DifferentController;
-
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.example.computergraphics.controls.AlternativeController;
+import com.example.computergraphics.controls.BasicController;
+import com.example.computergraphics.controls.DifferentController;
+
 public class MainActivity extends Activity {
 
 	private GraphicsView myView;
-	private Random rand = new Random();
 	
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,9 +42,17 @@ public class MainActivity extends Activity {
 	        case R.id.action_different:
 	        	myView.setController(new DifferentController(), true);
 	        	return true;
-	        case R.id.action_next_scenary:
-	        	myView.setSceneryNumber(rand.nextInt(myView.getNumberOfScenery()));;
-//	        	myView.setSceneryNumber(1);;
+	        case R.id.action_scenery00:
+	        	myView.setSceneryNumber(0);;
+	        	return true;
+	        case R.id.action_scenery01:
+	        	myView.setSceneryNumber(0);;
+	        	return true;
+	        case R.id.action_jump_enabled:
+	        	item.setChecked(!item.isChecked());
+	        	if(item.isChecked()) item.setTitle(R.string.action_disable_jump);
+	        	else item.setTitle(R.string.action_enable_jump);
+	        	myView.setJumpEnabled(item.isChecked());;
 	        	return true;
 	        default:
 	        	return super.onOptionsItemSelected(item);
