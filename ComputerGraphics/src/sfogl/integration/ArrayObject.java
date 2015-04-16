@@ -1,14 +1,13 @@
 package sfogl.integration;
 
-import android.util.Log;
 
 public class ArrayObject {
 
     private float[] verticesBuffer;
     private float[] normalsBuffer;
     private float[] txCoordsBuffer;
-    private short[] indicesOfVerticesBuffer;
-    private short[] indicesOfTexturesBuffer;
+    private short[] indicesBuffer;
+//    private short[] indicesOfTexturesBuffer;
     
 
 	private float minX, minY, minZ, maxX, maxY, maxZ;
@@ -20,19 +19,20 @@ public class ArrayObject {
 		this.verticesBuffer = verticesBuffer;
 		this.normalsBuffer = normalsBuffer;
 		this.txCoordsBuffer = txCoordsBuffer;
-		this.indicesOfVerticesBuffer = indicesBuffer;
+		this.indicesBuffer = indicesBuffer;
 		setupMinMaxScaleMiddle();
+		normalizeVertices(this.verticesBuffer);
 	}
 	
-	public ArrayObject(float[] verticesBuffer, float[] normalsBuffer, float[] txCoordsBuffer, short[] indicesBuffer, short[] indicesOfTexturesBuffer) {
-		super();
-		this.verticesBuffer = verticesBuffer;
-		this.normalsBuffer = normalsBuffer;
-		this.txCoordsBuffer = txCoordsBuffer;
-		this.indicesOfVerticesBuffer = indicesBuffer;
-		this.indicesOfTexturesBuffer = indicesOfTexturesBuffer; 
-		setupMinMaxScaleMiddle();
-	}
+//	public ArrayObject(float[] verticesBuffer, float[] normalsBuffer, float[] txCoordsBuffer, short[] indicesBuffer, short[] indicesOfTexturesBuffer) {
+//		super();
+//		this.verticesBuffer = verticesBuffer;
+//		this.normalsBuffer = normalsBuffer;
+//		this.txCoordsBuffer = txCoordsBuffer;
+//		this.indicesBuffer = indicesBuffer;
+//		this.indicesOfTexturesBuffer = indicesOfTexturesBuffer; 
+//		setupMinMaxScaleMiddle();
+//	}
 
     public float[] getNormalsBuffer() {
 		return normalsBuffer;
@@ -51,43 +51,43 @@ public class ArrayObject {
     }
 
     public short[] getIndicesBuffer() {
-        return indicesOfVerticesBuffer;
+        return indicesBuffer;
     }
     
-    public ArrayObject cloneScaled(float sx,float sy,float sz){
-    	float[] newvertices = verticesBuffer.clone();
-    	float[] newtxCoords = txCoordsBuffer.clone();
-    	newvertices = centerInZero(newvertices);
-    	//newtxCoords = rescaleVertices(newtxCoords);
-//    	float sx=1/scaleX;
-//    	float sy=1/scaleY;
-//    	float sz=1/scaleZ;
-    	for (int i = 0; i < newtxCoords.length; i+=3) {
-			int j = 0;
-			while(indicesOfTexturesBuffer[j]!=(i/3)){
-				j++;
-			}
-			newvertices[(indicesOfVerticesBuffer[j])*3]*=sx;
-			newtxCoords[i]*=sx;
-			newvertices[(indicesOfVerticesBuffer[j])*3+1]*=sy;
-			newtxCoords[i]*=sy;
-			newvertices[(indicesOfVerticesBuffer[j])*3+2]*=sz;
-			newtxCoords[i]*=sz;
-		}
-    	
-    	Log.d("task", " ");
-    	for (int i = 0; i < newvertices.length; i+=3) {
-    		Log.d("task", "v " +newvertices[i]+" "+newvertices[i+1]+" "+newvertices[i+2]);
-		}
-    	for (int i = 0; i < newtxCoords.length; i+=3) {
-    		Log.d("task", "vt "+newtxCoords[i]+" "+newtxCoords[i+1]+" "+newtxCoords[i+2]);
-		}
-    	for (int i = 0; i < indicesOfVerticesBuffer.length; i++) {
-    		Log.d("task", "f "+(indicesOfVerticesBuffer[i]+1)+"/"+(indicesOfTexturesBuffer[i]+1));
-		}
-    	
-    	return new ArrayObject(newvertices, normalsBuffer, newtxCoords, indicesOfVerticesBuffer);
-    }
+//    public ArrayObject cloneScaled(float sx,float sy,float sz){
+//    	float[] newvertices = verticesBuffer.clone();
+//    	float[] newtxCoords = txCoordsBuffer.clone();
+//    	newvertices = centerInZero(newvertices);
+//    	//newtxCoords = rescaleVertices(newtxCoords);
+////    	float sx=1/scaleX;
+////    	float sy=1/scaleY;
+////    	float sz=1/scaleZ;
+//    	for (int i = 0; i < newtxCoords.length; i+=3) {
+//			int j = 0;
+//			while(indicesOfTexturesBuffer[j]!=(i/3)){
+//				j++;
+//			}
+//			newvertices[(indicesBuffer[j])*3]*=sx;
+//			newtxCoords[i]*=sx;
+//			newvertices[(indicesBuffer[j])*3+1]*=sy;
+//			newtxCoords[i]*=sy;
+//			newvertices[(indicesBuffer[j])*3+2]*=sz;
+//			newtxCoords[i]*=sz;
+//		}
+//    	
+//    	Log.d("task", " ");
+//    	for (int i = 0; i < newvertices.length; i+=3) {
+//    		Log.d("task", "v " +newvertices[i]+" "+newvertices[i+1]+" "+newvertices[i+2]);
+//		}
+//    	for (int i = 0; i < newtxCoords.length; i+=3) {
+//    		Log.d("task", "vt "+newtxCoords[i]+" "+newtxCoords[i+1]+" "+newtxCoords[i+2]);
+//		}
+//    	for (int i = 0; i < indicesBuffer.length; i++) {
+//    		Log.d("task", "f "+(indicesBuffer[i]+1)+"/"+(indicesOfTexturesBuffer[i]+1));
+//		}
+//    	
+//    	return new ArrayObject(newvertices, normalsBuffer, newtxCoords, indicesBuffer);
+//    }
     
     public float[] getMinAndMaxValues() {
     	return new float[]{minX, minY, minZ, maxX, maxY, maxZ};
@@ -97,21 +97,21 @@ public class ArrayObject {
     	return new float[]{1/scaleX, 1/scaleY, 1/scaleZ, middleX, middleY, middleZ};
 	}
 
-    /**
-     * Trasla i vertici passati, di modo che il loro punto medio sia l'origine
-     */
-    private float[] centerInZero(float[] vert) {
-	    for (int i = 0; i < vert.length; i+=3) {
-	    	vert[i]=(vert[i]-middleX);
-		}
-	    for (int i = 1; i < vert.length; i+=3) {
-	    	vert[i]=(vert[i]-middleY);
-		}
-	    for (int i = 2; i < vert.length; i+=3) {
-	    	vert[i]=(vert[i]-middleZ);
-	    }
-	    return vert;
-	}
+//    /**
+//     * Trasla i vertici passati, di modo che il loro punto medio sia l'origine
+//     */
+//    private float[] centerInZero(float[] vert) {
+//	    for (int i = 0; i < vert.length; i+=3) {
+//	    	vert[i]=(vert[i]-middleX);
+//		}
+//	    for (int i = 1; i < vert.length; i+=3) {
+//	    	vert[i]=(vert[i]-middleY);
+//		}
+//	    for (int i = 2; i < vert.length; i+=3) {
+//	    	vert[i]=(vert[i]-middleZ);
+//	    }
+//	    return vert;
+//	}
     
 //    /**
 //     * Riscala i vertici (texture) di modo che siano proporzionali ai vertici
@@ -129,21 +129,21 @@ public class ArrayObject {
 //	    return vert;
 //	}
     
-//    /**
-//     * Deforma i vertici rendendoli di 2x2x2 (da -1 a 1)
-//     */    
-//    private float[] normalizeVertices(float[] vert) {
-//	    for (int i = 0; i < vert.length; i+=3) {
-//	    	vert[i]=scaleX*(vert[i]-middleX);
-//		}
-//	    for (int i = 1; i < vert.length; i+=3) {
-//	    	vert[i]=scaleY*(vert[i]-middleY);
-//		}
-//	    for (int i = 2; i < vert.length; i+=3) {
-//	    	vert[i]=scaleZ*(vert[i]-middleZ);
-//		}
-//	    return vert;
-//	}
+    /**
+     * Deforma i vertici rendendoli di 2x2x2 (da -1 a 1)
+     */    
+    private float[] normalizeVertices(float[] vert) {
+	    for (int i = 0; i < vert.length; i+=3) {
+	    	vert[i]=scaleX*(vert[i]-middleX);
+		}
+	    for (int i = 1; i < vert.length; i+=3) {
+	    	vert[i]=scaleY*(vert[i]-middleY);
+		}
+	    for (int i = 2; i < vert.length; i+=3) {
+	    	vert[i]=scaleZ*(vert[i]-middleZ);
+		}
+	    return vert;
+	}
 
 	private void setupMinMaxScaleMiddle() {
 		minX=maxX=verticesBuffer[0];
