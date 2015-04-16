@@ -194,9 +194,9 @@ public class GraphicsView extends GLSurfaceView{
         private Node createCustomAvatarNode(Model model) {
 			Node avatarNode = new Node();
 			
-			float sx = model.getScaleAndMiddleValues()[0];
-            float sy = model.getScaleAndMiddleValues()[1];
-            float sz = model.getScaleAndMiddleValues()[2];
+			float sx = model.getGeometry().getArrayObject().getScaleAndMiddleValues()[0];
+            float sy = model.getGeometry().getArrayObject().getScaleAndMiddleValues()[1];
+            float sz = model.getGeometry().getArrayObject().getScaleAndMiddleValues()[2];
 			float sMax = Math.max(Math.max(sx, sy), sz);
 			sx = AVAT_BODY*sx/sMax;
             sy = AVAT_BODY*sy/sMax;
@@ -297,7 +297,7 @@ public class GraphicsView extends GLSurfaceView{
             int textureModel=SFOGLTextureModel.generateTextureObjectModel(SFImageFormat.RGB,
                     GLES20.GL_REPEAT, GLES20.GL_REPEAT, GLES20.GL_LINEAR, GLES20.GL_LINEAR);
             BitmapTexture texture = BitmapTexture.loadBitmapTexture(BitmapFactory.decodeResource(context.getResources(),
-                    R.drawable.cubetexturefinale02), textureModel);									//TODO cambiare qui
+                    R.drawable.muromattoni), textureModel);									//TODO cambiare qui
             texture.init();
             
             //Step 3 : create a Material (materials combine shaders+textures+shading parameters)
@@ -305,7 +305,7 @@ public class GraphicsView extends GLSurfaceView{
             material.getTextures().add(texture);
 
             //Step 4: load a Geometry
-            ArrayObject[] objects = ObjLoader.arrayObjectFromFile(context, "CubeBlender03.obj");	//TODO cambiare qui
+            ArrayObject[] objects = ObjLoader.arrayObjectFromFile(context, "CubeBlender08.obj");	//TODO cambiare qui
 
             Mesh mesh=new Mesh(objects[0]);
             mesh.init();

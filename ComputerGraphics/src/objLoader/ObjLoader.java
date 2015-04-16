@@ -115,6 +115,7 @@ public class ObjLoader {
         //ArrayList<SFVertex3f> normals=new ArrayList<SFVertex3f>();
         //ArrayList<SFVertex3f> indices=new ArrayList<SFVertex3f>();
         ArrayList<Integer> indices_=new ArrayList<Integer>();
+        ArrayList<Integer> vtIndices_=new ArrayList<Integer>();
 
         ArrayList<ObjIndex[]> indices__=object.getIndices();
         for (int i = 0; i < indices__.size(); i++) {
@@ -126,10 +127,21 @@ public class ObjLoader {
                 indices_.add(set[0].getvIndex());
                 indices_.add(set[2].getvIndex());
                 indices_.add(set[3].getvIndex());
+
+                vtIndices_.add(set[0].getVtIndex());
+                vtIndices_.add(set[1].getVtIndex());
+                vtIndices_.add(set[2].getVtIndex());
+                vtIndices_.add(set[0].getVtIndex());
+                vtIndices_.add(set[2].getVtIndex());
+                vtIndices_.add(set[3].getVtIndex());
             }else{
                 indices_.add(set[0].getvIndex());
                 indices_.add(set[1].getvIndex());
                 indices_.add(set[2].getvIndex());
+
+                vtIndices_.add(set[0].getVtIndex());
+                vtIndices_.add(set[1].getVtIndex());
+                vtIndices_.add(set[2].getVtIndex());
             }
         }
 
@@ -157,11 +169,13 @@ public class ObjLoader {
         }
 
         short[] indices=new short[indices_.size()];
+        short[] vtIndices=new short[indices_.size()];
         for (int i = 0; i < indices_.size(); i++) {
             indices[i]=(short)(indices_.get(i)-1);
+            vtIndices[i]=(short)(vtIndices_.get(i)-1);
         }
 
-        return new ArrayObject(vertices,normals,txCoords,indices);
+        return new ArrayObject(vertices,normals,txCoords,indices,vtIndices);
     }
 
     private static SFVertex4f readValue(String line) {

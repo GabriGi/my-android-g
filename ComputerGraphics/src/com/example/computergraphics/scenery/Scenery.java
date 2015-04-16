@@ -89,19 +89,20 @@ public class Scenery {
 	
 	protected Node createWallNode(Model model, float x, float z, float sx, float sz, float h){
 
-//        Mesh mesh=model.getGeometry();
-//        Material material=model.getMaterial();
-//        
-//        ArrayObject array=mesh.getArrayObject();
-//        
-//        Model modelClone=new Model();
-//        modelClone.setMaterialComponent(material);
-//        Mesh meshClone=new Mesh(array.cloneScaled(sx+SPESS_MURO, h, sz+SPESS_MURO));
-//        modelClone.setRootGeometry(meshClone);
+        Mesh mesh=model.getGeometry();
+        Material material=model.getMaterial();
+        
+        ArrayObject array=mesh.getArrayObject();
+        
+        Model modelClone=new Model();
+        modelClone.setMaterialComponent(material);
+        Mesh meshClone=new Mesh(array.cloneScaled(sx+SPESS_MURO, h, sz+SPESS_MURO));
+        modelClone.setRootGeometry(meshClone);
 		
-		Node wall1Node=new Node(model);//Clone);
+		Node wall1Node=new Node(modelClone);
         wall1Node.getRelativeTransform().setPosition(x, h, z);
-        wall1Node.getRelativeTransform().setMatrix(SFMatrix3f.getScale(sx+SPESS_MURO, h, sz+SPESS_MURO));
+        wall1Node.getRelativeTransform().setMatrix(SFMatrix3f.getScale(1,1,1));
+//        wall1Node.getRelativeTransform().setMatrix(SFMatrix3f.getScale(sx+SPESS_MURO, h, sz+SPESS_MURO));
         return wall1Node;
 	}
 }
