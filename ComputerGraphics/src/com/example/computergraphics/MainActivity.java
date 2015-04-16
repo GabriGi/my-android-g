@@ -46,7 +46,7 @@ public class MainActivity extends Activity {
 	        	myView.setSceneryNumber(0);;
 	        	return true;
 	        case R.id.action_scenery01:
-	        	myView.setSceneryNumber(0);;
+	        	myView.setSceneryNumber(1);;
 	        	return true;
 	        case R.id.action_jump_enabled:
 	        	item.setChecked(!item.isChecked());

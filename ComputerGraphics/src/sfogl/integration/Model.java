@@ -23,6 +23,14 @@ public class Model {
         material.loadData();
         geometry.draw(material.getProgram().getShader());
 	}
+	
+	public Mesh getGeometry() {
+		return geometry;
+	}
+	
+	public Material getMaterial() {
+		return material;
+	}
 
     public ShadingProgram getProgram(){
         return material.getProgram();

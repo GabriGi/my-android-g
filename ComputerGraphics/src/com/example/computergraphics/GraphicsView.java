@@ -68,7 +68,7 @@ public class GraphicsView extends GLSurfaceView{
         this.context=context;
         //super.setEGLConfigChooser(8,8,8,8,16,0);
         
-        controller = new ProxyController(new AlternativeController());//new BasicController(BasicController.ABSOLUTE_MODE));
+        controller = new ProxyController(new BasicController(BasicController.ABSOLUTE_MODE));
         gestureDetector = new GestureDetector(context, controller);
         gestureDetector.setOnDoubleTapListener(controller);
         gestureDetector.setIsLongpressEnabled(false);		//Solo se sto usando il BasicController!!!
@@ -273,7 +273,7 @@ public class GraphicsView extends GLSurfaceView{
 				}
             }else{
             	int tentativo = 0;
-	            do{ 
+	            do{ 					//Se l'Avatar è dentro un ostacolo, rigenero lo scenario..
 	            	backgroundNode = sceneryList.get(0).getSceneryNode(models.get(0));
 	            	if(tentativo++==10){		//..fino a 10 volte, poi uso l'Avatar di default.
 	            		Log.d("ERRORE", "L'Avatar è dentro un ostacolo e quindi troppo grande!");
@@ -297,7 +297,7 @@ public class GraphicsView extends GLSurfaceView{
             int textureModel=SFOGLTextureModel.generateTextureObjectModel(SFImageFormat.RGB,
                     GLES20.GL_REPEAT, GLES20.GL_REPEAT, GLES20.GL_LINEAR, GLES20.GL_LINEAR);
             BitmapTexture texture = BitmapTexture.loadBitmapTexture(BitmapFactory.decodeResource(context.getResources(),
-                    R.drawable.paddedroomtexture01), textureModel);
+                    R.drawable.cubetexturefinale02), textureModel);									//TODO cambiare qui
             texture.init();
             
             //Step 3 : create a Material (materials combine shaders+textures+shading parameters)
@@ -305,7 +305,7 @@ public class GraphicsView extends GLSurfaceView{
             material.getTextures().add(texture);
 
             //Step 4: load a Geometry
-            ArrayObject[] objects = ObjLoader.arrayObjectFromFile(context, "Cube.obj");
+            ArrayObject[] objects = ObjLoader.arrayObjectFromFile(context, "CubeBlender03.obj");	//TODO cambiare qui
 
             Mesh mesh=new Mesh(objects[0]);
             mesh.init();

@@ -209,7 +209,7 @@ public class ActionSet{
 	/**
 	 * Task che si occupa della rotazione continua e costante nel tempo attorno all'asse Y della telecamera.
 	 */
-	public class RotateCameraTimeTask extends TimerTask{
+	private class RotateCameraTimeTask extends TimerTask{
 		
 		private float velocityY;
 		

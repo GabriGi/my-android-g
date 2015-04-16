@@ -22,6 +22,10 @@ public class Mesh implements SFInitiable{
 	public Mesh() {
 		super();
 	}
+	
+	public ArrayObject getArrayObject() {
+		return arrayObject;
+	}
 
     public boolean isTxCoord(){
     	return arrayObject.isTxCoord();

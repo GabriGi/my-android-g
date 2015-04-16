@@ -50,6 +50,7 @@ public class ProxyController implements IController {
 	@Override
 	public boolean onDown(MotionEvent e) {
         Log.d(DEBUG_TAG,"onDown");
+        scrolling = false;
 		return controller.onDown(e);
 	}
 
@@ -106,8 +107,8 @@ public class ProxyController implements IController {
 	@Override
 	public boolean onDoubleTap(MotionEvent e) {
         Log.d(DEBUG_TAG, "onDoubleTap");
-        doubling = true;
-		return controller.onDoubleTap(e);
+        doubling = controller.onDoubleTap(e);
+		return doubling;
 	}
 
 	@Override
@@ -125,8 +126,8 @@ public class ProxyController implements IController {
 	@Override
 	public boolean onScaleBegin(ScaleGestureDetector detector) {
         Log.d(DEBUG_TAG, "onScaleBegin");
-        scaling = true;
-		return controller.onScaleBegin(detector);
+        scaling = controller.onScaleBegin(detector);
+		return scaling;
 	}
     
 	@Override

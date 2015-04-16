@@ -43,7 +43,7 @@ public class AlternativeController implements IController {
 
 	@Override
 	public void onLongPress(MotionEvent e) {
-		actionSet.jumpAvatar(0, 0.5f);
+		actionSet.jumpAvatar(0, (viewHeight-e.getY())/viewHeight);
 	}
 
 	@Override
@@ -70,13 +70,13 @@ public class AlternativeController implements IController {
     
 	@Override
 	public boolean onSingleTapConfirmed(MotionEvent e) {
-		actionSet.moveAvatarTo(0, 1, ActionSet.VELOCITY_WALK);
+		actionSet.moveAvatarWith(0, (viewHeight-e.getY())/viewHeight);
 		return true;
 	}
 
 	private float previousY;
 	private int doubleTapCounter = 0;
-	private static final int MIN_DTC_FOR_SCROLL = 5;	// min2, max 5.
+	private static final int MIN_DTC_FOR_SCROLL = 6;	// min2, max 5.
 	
 	@Override
 	public boolean onDoubleTap(MotionEvent e) {

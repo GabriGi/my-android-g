@@ -35,5 +35,14 @@ public class ArrayObject {
     public short[] getIndicesBuffer() {
         return indicesBuffer;
     }
+    
+//    public ArrayObject cloneScaled(float x,float y,float z){
+//    	float[]  newvertices=new float[verticesBuffer.length];
+//    	float[]  newtxCoords=new float[txCoordsBuffer.length];
+//    	for (int i = 0; i < newvertices.length; i+=3) {
+//			newvertices[]
+//		}
+//    	return null;
+//    }
 
 }

@@ -14,6 +14,7 @@ public class MoveAvatarTimeTask extends TimerTask{
 	private Node avatar, similAvatarBody, all;
 	private float startX, startZ, finalX, finalZ, velocityX, velocityZ;
 	private float avatarBodyY;
+	private int t = 0;
 	
 	/**
 	 * @param avatar il nodo dell'avatar
@@ -33,6 +34,8 @@ public class MoveAvatarTimeTask extends TimerTask{
 		this.velocityX = velocityX;
 		this.velocityZ = velocityZ;
 		this.all = all;
+		float angle = (float) (Math.atan2(velocityZ, velocityX)-Math.PI/2);
+		avatar.getRelativeTransform().setMatrix(SFMatrix3f.getRotationY(-angle));
 	}
 	
 	@Override
@@ -64,9 +67,12 @@ public class MoveAvatarTimeTask extends TimerTask{
 			}else{
 				currZ = tempCurrZ;
 			}
+			t++;
+			if(t>19) cancel();
 		}else{
 			currX = tempCurrX;
 			currZ = tempCurrZ;
+			t=0;
 		}
 		
 		avatar.getRelativeTransform().setPosition(currX, currY, currZ);
