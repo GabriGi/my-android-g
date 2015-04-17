@@ -2,8 +2,9 @@ package com.example.computergraphics.scenery;
 
 import java.util.Random;
 
+import com.example.computergraphics.MyNode;
+
 import sfogl.integration.Model;
-import sfogl.integration.Node;
 import shadow.math.SFMatrix3f;
 
 /**See superclass {@link Scenery}) */
@@ -23,10 +24,10 @@ public class Scenery00 extends Scenery {
 	}
 	
 	@Override
-	public Node getSceneryNode(Model model) {
-		Node backgroundNode = super.createBackgroundNode(model, LUNGH_MURO);
+	public MyNode getSceneryNode(Model model) {
+		MyNode backgroundNode = super.createBackgroundNode(model, LUNGH_MURO);
         
-        Node innerObstaclesNode = createInnerObstacleNode(model);
+        MyNode innerObstaclesNode = createInnerObstacleNode(model);
         innerObstaclesNode.getRelativeTransform().setPosition(0,0,0);
         innerObstaclesNode.getRelativeTransform().setMatrix(SFMatrix3f.getScale(1,1,1));
         backgroundNode.getSonNodes().add(innerObstaclesNode);
@@ -34,11 +35,11 @@ public class Scenery00 extends Scenery {
 		return backgroundNode;
 	}
 
-	private Node createInnerObstacleNode(Model model1) {
-		Node innerObstaclesNode = new Node();
+	private MyNode createInnerObstacleNode(Model model1) {
+		MyNode innerObstaclesNode = new MyNode();
 		Random rand = new Random();
         for (int i = 0; i < NUMBER_OF_OSTACLE; i++) {
-        	Node n = new Node(model1);
+        	MyNode n = new MyNode(model1);
 				float xp = rand.nextFloat()*(LUNGH_MURO-LUNGH_OBST)*2-LUNGH_MURO+LUNGH_OBST;
 				float zp = rand.nextFloat()*(LUNGH_MURO-LUNGH_OBST)*2-LUNGH_MURO+LUNGH_OBST;
 				n.getRelativeTransform().setPosition(xp, altezzObst, zp);

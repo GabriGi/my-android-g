@@ -13,7 +13,6 @@ public class Node {
 	protected SFTransform3f effeciveTransform;
 	private boolean enabled;
 	private Model model;
-	private boolean forceCoveredControl = false;
 	
 	public void setup(){
 	    relativeTransform=new SFTransform3f();
@@ -25,26 +24,6 @@ public class Node {
 	
 	public Node(){
 	    setup();
-	}
-	
-	/**
-	 * Create a node with the specified model.
-	 * Note that if a node has a model, he always will been covered tested.
-	 * @param forceCoveredControl
-	 */
-	
-	public Node(Model model){
-	    setup();
-	    this.model=model;
-	}
-	
-	/**
-	 * Create a node that force the covered control even if he has't specify a model.
-	 * @param forceCoveredControl
-	 */
-	public Node(boolean forceCoveredControl){
-	    setup();
-	    this.forceCoveredControl = forceCoveredControl;
 	}
 	
 	public Node(SFTransform3f relativeTransform){
@@ -82,10 +61,6 @@ public class Node {
 	    return enabled;
 	}
 	
-	public boolean isForceCoveredControl() {
-		return forceCoveredControl;
-	}
-	
 	public ArrayList<Node> getSonNodes() {
 		return sonNodes;
 	}
@@ -98,12 +73,12 @@ public class Node {
 		return relativeTransform;
 	}
 	
-	public Node clodeNode(){
+	public Node cloneNode(){
         SFTransform3f transform=new SFTransform3f();
         transform.set(getRelativeTransform());
         Node node=new Node(transform,getModel());
         for (int i = 0; i < getSonNodes().size(); i++) {
-            node.getSonNodes().add(getSonNodes().get(i).clodeNode());
+            node.getSonNodes().add(getSonNodes().get(i).cloneNode());
         }
         return node;
     }
@@ -174,70 +149,6 @@ public class Node {
 	            sonNodes.get(i).draw();
 	        }
 	    }
-	}
-
-	/**
-	 * Check if the node is covered by anotherNode along all the three axis using a cubic geometry.
-	 * The test will be done if the node specify a model or he is created with {@link #Node(boolean)}
-	 * @param anotherNode
-	 * @return true if the node is covered by anotherNode, false otherwise
-	 */
-	public boolean coveredBy(Node anotherNode){	//TODO non usare getV per la scala (se il nodo e' ruotato funziona male..)
-		if(anotherNode.getModel()!=null || anotherNode.isForceCoveredControl()){
-			float[] position = new float[3];
-			position[0]= relativeTransform.getV()[9];
-			position[1]= relativeTransform.getV()[10];
-			position[2]= relativeTransform.getV()[11];
-			float[] scale = new float[3];
-			scale[0]= relativeTransform.getV()[0];
-			scale[1]= relativeTransform.getV()[4];
-			scale[2]= relativeTransform.getV()[8];
-	
-			float[] anotherPosition = new float[3];
-			anotherPosition[0]= anotherNode.getRelativeTransform().getV()[9];
-			anotherPosition[1]= anotherNode.getRelativeTransform().getV()[10];
-			anotherPosition[2]= anotherNode.getRelativeTransform().getV()[11];
-			float[] anotherScale = new float[3];
-			anotherScale[0]= anotherNode.getRelativeTransform().getV()[0];
-			anotherScale[1]= anotherNode.getRelativeTransform().getV()[4];
-			anotherScale[2]= anotherNode.getRelativeTransform().getV()[8];
-	
-			boolean coveredX= !(((position[0]-scale[0])<=(anotherPosition[0]-anotherScale[0]) &&
-								 (position[0]+scale[0])<=(anotherPosition[0]-anotherScale[0])) ||
-								((position[0]-scale[0])>=(anotherPosition[0]+anotherScale[0]) &&
-								 (position[0]+scale[0])>=(anotherPosition[0]+anotherScale[0])));
-			boolean coveredY= !(((position[1]-scale[1])<=(anotherPosition[1]-anotherScale[1]) &&
-								 (position[1]+scale[1])<=(anotherPosition[1]-anotherScale[1])) ||
-								((position[1]-scale[1])>=(anotherPosition[1]+anotherScale[1]) &&
-								 (position[1]+scale[1])>=(anotherPosition[1]+anotherScale[1])));
-			boolean coveredZ= !(((position[2]-scale[2])<=(anotherPosition[2]-anotherScale[2]) &&
-								 (position[2]+scale[2])<=(anotherPosition[2]-anotherScale[2])) ||
-								((position[2]-scale[2])>=(anotherPosition[2]+anotherScale[2]) &&
-								 (position[2]+scale[2])>=(anotherPosition[2]+anotherScale[2])));
-			if(coveredX&&coveredY&&coveredZ){
-				return true;
-			}else{
-				return false;
-			}
-		}else{
-			return false;
-		}
-	}
-
-	/**
-	 * Check if the node is covered by anotherNode and all its son along all the three axis 
-	 * using a cubic geometry (see {@link #coveredBy(Node)})
-	 * @param anotherNode
-	 * @return true if the node is covered by anotherNode, false otherwise
-	 */
-	public boolean coveredBySonNodes(Node anotherNode){
-	    boolean covered = coveredBy(anotherNode);
-	    if(covered) return true;
-	    for(int i=0;i<anotherNode.getSonNodes().size();i++){
-    		covered = coveredBySonNodes(anotherNode.getSonNodes().get(i));
-    		if(covered) return true;
-        }
-		return false;
 	}
 	
 	/**

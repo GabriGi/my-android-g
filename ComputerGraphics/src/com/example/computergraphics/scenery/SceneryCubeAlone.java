@@ -1,7 +1,8 @@
 package com.example.computergraphics.scenery;
 
+import com.example.computergraphics.MyNode;
+
 import sfogl.integration.Model;
-import sfogl.integration.Node;
 import shadow.math.SFMatrix3f;
 
 /**See superclass {@link Scenery}) */
@@ -15,15 +16,15 @@ public class SceneryCubeAlone extends Scenery {
 	}
 	
 	@Override
-	public Node getSceneryNode(Model model) {
-		Node backgroundNode = new Node(model);
+	public MyNode getSceneryNode(Model model) {
+		MyNode backgroundNode = new MyNode(model);
 		backgroundNode.getRelativeTransform().setPosition(0,0.75f,0);
 		backgroundNode.getRelativeTransform().setMatrix(SFMatrix3f.getScale(0.75f,0.75f,0.75f));
-		backgroundNode.getSonNodes().add(new Node());
-		backgroundNode.getSonNodes().add(new Node());
-		backgroundNode.getSonNodes().add(new Node());
-		backgroundNode.getSonNodes().add(new Node());
-		backgroundNode.getSonNodes().add(new Node());
+		backgroundNode.getSonNodes().add(new MyNode());
+		backgroundNode.getSonNodes().add(new MyNode());
+		backgroundNode.getSonNodes().add(new MyNode());
+		backgroundNode.getSonNodes().add(new MyNode());
+		backgroundNode.getSonNodes().add(new MyNode());
 		return backgroundNode;
 	}
 }

@@ -1,9 +1,10 @@
 package com.example.computergraphics.scenery;
 
 import sfogl.integration.Model;
-import sfogl.integration.Node;
 import shadow.math.SFMatrix3f;
 import shadow.math.SFVertex3f;
+
+import com.example.computergraphics.MyNode;
 
 /**
  * Uno scenario a base quadrata con un pavimento e 4 mura.
@@ -33,7 +34,7 @@ public class Scenery {
 	}
 	
 	public SFVertex3f getFinalPosition() {
-		return new SFVertex3f(0,0,0);
+		return new SFVertex3f(0,LUNGH_MURO,0);
 	}
 	
 	/**
@@ -56,15 +57,15 @@ public class Scenery {
 	 * call {@link #setStartModel(Model)} or {@link #setFinishModel(Model) BEFORE calling this method.
 	 * @param model the model used to visualize the scenery.
 	 */
-	public Node getSceneryNode(Model model) {
-		Node sceneryNode = createBackgroundNode(model, LUNGH_MURO);
+	public MyNode getSceneryNode(Model model) {
+		MyNode sceneryNode = createBackgroundNode(model, LUNGH_MURO);
 		return sceneryNode;
 	}
     
-	protected Node createBackgroundNode(Model model, float sceneryDimension) {
-		Node backgroundNode = new Node();
+	protected MyNode createBackgroundNode(Model model, float sceneryDimension) {
+		MyNode backgroundNode = new MyNode();
         
-		Node floorNode=new Node(model);
+		MyNode floorNode=new MyNode(model);
         floorNode.getRelativeTransform().setPosition(0.0f, -SPESS_MURO, 0.0f);
         floorNode.getRelativeTransform().setMatrix(SFMatrix3f.getScale(sceneryDimension+SPESS_MURO,SPESS_MURO,sceneryDimension+SPESS_MURO));
         backgroundNode.getSonNodes().add(floorNode);
@@ -84,7 +85,7 @@ public class Scenery {
         return backgroundNode;
 	}
 	
-	protected Node createWallNode(Model model, float x, float z, float sx, float sz, float h){
+	protected MyNode createWallNode(Model model, float x, float z, float sx, float sz, float h){
 
 //        Mesh mesh=model.getGeometry();
 //        Material material=model.getMaterial();
@@ -96,7 +97,7 @@ public class Scenery {
 //        Mesh meshClone=new Mesh(array.cloneScaled(sx+SPESS_MURO, h, sz+SPESS_MURO));
 //        modelClone.setRootGeometry(meshClone);
 		
-		Node wall1Node=new Node(model);//Clone);
+		MyNode wall1Node=new MyNode(model);//Clone);
         wall1Node.getRelativeTransform().setPosition(x, h, z);
 //        wall1Node.getRelativeTransform().setMatrix(SFMatrix3f.getScale(1,1,1));
         wall1Node.getRelativeTransform().setMatrix(SFMatrix3f.getScale(sx+SPESS_MURO, h, sz+SPESS_MURO));

@@ -3,7 +3,8 @@ package com.example.computergraphics.controls.actionSet;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import sfogl.integration.Node;
+import com.example.computergraphics.MyNode;
+
 import sfogl.integration.SFCamera;
 import shadow.math.SFMatrix3f;
 import shadow.math.SFVertex3f;
@@ -39,15 +40,15 @@ public class ActionSet{
 	private float rotY = 0;
 	private boolean jumpEnabled = false;	//Occhio a cambiare il valore nel menu_main.xml
 	
-	private Node all;
-	private Node avatar;
+	private MyNode all;
+	private MyNode avatar;
 	
 	private SFCamera cam;
 	
-	public ActionSet(Context context, Node node, SFCamera cam) {
+	public ActionSet(Context context, MyNode node, SFCamera cam) {
 		this.myScroller = new Scroller(context);
 		this.all = node;
-		this.avatar = node.getSonNodes().get(0);
+		this.avatar = (MyNode)node.getSonNodes().get(0);
 		this.cam = cam;
 	}
 	
@@ -91,8 +92,8 @@ public class ActionSet{
 		scale = SCALE_DEF;
 		rotX = ROT_X_DEF;
 		rotY = 0;
-		this.avatar = all.getSonNodes().get(0);
-		SFVertex3f position = new SFVertex3f(); avatar.getRelativeTransform().getPosition(position);
+		this.avatar = (MyNode)all.getSonNodes().get(0);
+		SFVertex3f position = new SFVertex3f(); avatar.getPosition(position);
 		all.getRelativeTransform().setPosition(-position.getX(),-position.getY(),-position.getZ());
 	}
 	

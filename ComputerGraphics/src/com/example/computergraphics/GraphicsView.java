@@ -11,7 +11,6 @@ import sfogl.integration.BitmapTexture;
 import sfogl.integration.Material;
 import sfogl.integration.Mesh;
 import sfogl.integration.Model;
-import sfogl.integration.Node;
 import sfogl.integration.SFCamera;
 import sfogl.integration.ShadingProgram;
 import sfogl2.SFOGLSystemState;
@@ -26,10 +25,11 @@ import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.util.Log;
 import android.view.GestureDetector;
+import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
+import android.widget.Toast;
 
-import com.example.computergraphics.controls.AlternativeController;
 import com.example.computergraphics.controls.BasicController;
 import com.example.computergraphics.controls.IController;
 import com.example.computergraphics.controls.ProxyController;
@@ -61,7 +61,11 @@ public class GraphicsView extends GLSurfaceView{
     private ArrayList<Scenery> sceneryList;
 	private int sceneryNumber = 0;
 	private boolean changingScenary = true;
-    
+	
+    private Toast toast;
+    private boolean started = false;
+    private long startTime = 0;
+	
     public GraphicsView(Context context) {
         super(context);
         setEGLContextClientVersion(2);
@@ -79,6 +83,10 @@ public class GraphicsView extends GLSurfaceView{
     	sceneryList.add(new Scenery01(AVAT_BODY));
     	sceneryList.add(new SceneryCubeAlone(AVAT_BODY));
     	sceneryNumber = 2;
+    	
+    	CharSequence text = "Complimenti! Hai vinto!";
+    	toast = Toast.makeText(context, text, Toast.LENGTH_SHORT);;
+    	toast.setGravity(Gravity.CENTER_VERTICAL, 0, 0);
     	
         setRenderer(new GraphicsRenderer());
     }
@@ -111,6 +119,7 @@ public class GraphicsView extends GLSurfaceView{
 			enableTouching = false;
 			onPause();
 			changingScenary = true;
+			started = false;
 			onResume();
 	    	return true;
     	}else{
@@ -123,6 +132,10 @@ public class GraphicsView extends GLSurfaceView{
     public boolean onTouchEvent(MotionEvent event) {
     	if(enableTouching){
 	    	super.onTouchEvent(event);
+	    	if(!started){
+	    		started = true;
+	    		startTime = System.currentTimeMillis();
+	    	}
 	    	scaleDetector.onTouchEvent(event);
 	    	if(!scaleDetector.isInProgress()){
 	    		gestureDetector.onTouchEvent(event);
@@ -162,7 +175,7 @@ public class GraphicsView extends GLSurfaceView{
     	private float rotY = 0.0f;					//The user will change it at runtime
     	//private float rotZ = 0.0f;				//This must be 0.0f.
         
-    	private Node node;
+    	private MyNode node;
         private SFCamera cam;
         private SFCamera startCam;
     	private ArrayList<Model> models;
@@ -191,54 +204,57 @@ public class GraphicsView extends GLSurfaceView{
          * infine usare {@link #createDefaultAvatarNode(Model)}
          * @param realDimension true: crea il nodo alto 1; false: crea il nodo alto 0.5 (AVAT_BODY*2)
          */
-        private Node createCustomAvatarNode(Model model) {
-			Node avatarNode = new Node();
-			
+        private MyNode createCustomAvatarNode(Model model) {
+        	MyNode avatarNode = new MyNode();
+											//The higher MUST be 1
 			float sx = model.getGeometry().getArrayObject().getScaleAndMiddleValues()[0];
             float sy = model.getGeometry().getArrayObject().getScaleAndMiddleValues()[1];
             float sz = model.getGeometry().getArrayObject().getScaleAndMiddleValues()[2];
 			float sMax = Math.max(Math.max(sx, sy), sz);
-			sx = AVAT_BODY*sx/sMax;
-            sy = AVAT_BODY*sy/sMax;
-            sz = AVAT_BODY*sz/sMax;
+//			sx = AVAT_BODY*sx/sMax;
+//            sy = AVAT_BODY*sy/sMax;
+//            sz = AVAT_BODY*sz/sMax;
+			sx = sx/sMax;
+            sy = sy/sMax;
+            sz = sz/sMax;
 			
-            Node bodyNode =new Node(true);
-            bodyNode.getRelativeTransform().setPosition(0,AVAT_BODY,0);
-            bodyNode.getRelativeTransform().setMatrix(SFMatrix3f.getScale(AVAT_BODY,AVAT_BODY,AVAT_BODY));
-            avatarNode.getSonNodes().add(bodyNode);
+//            MyNode bodyNode =new MyNode(true);
+//            bodyNode.getRelativeTransform().setPosition(0,AVAT_BODY,0);
+//            bodyNode.getRelativeTransform().setMatrix(SFMatrix3f.getScale(AVAT_BODY,AVAT_BODY,AVAT_BODY));
+//            avatarNode.getSonNodes().add(bodyNode);
             
-            Node customNode = new Node(model);
-            customNode.getRelativeTransform().setPosition(0, sy, 0);
+            MyNode customNode = new MyNode(model);
+            customNode.getRelativeTransform().setPosition(0, 0, 0);
             SFMatrix3f m = SFMatrix3f.getScale(sx,sy,sz);
             customNode.getRelativeTransform().setMatrix(m.MultMatrix(SFMatrix3f.getRotationX((float)-Math.PI/2)));
             avatarNode.getSonNodes().add(customNode);
 
-            avatarNode.getRelativeTransform().setPosition(0,0,0);
-            avatarNode.getRelativeTransform().setMatrix(SFMatrix3f.getScale(1,1,1));	//MUST be 1
+            avatarNode.setPosition(0,2*AVAT_BODY,0);
+            avatarNode.setScale(AVAT_BODY,2*AVAT_BODY,AVAT_BODY);
             
 			return avatarNode;
 		}
         
-		private Node createDefaultAvatarNode(Model model) {
-			Node avatarNode = new Node();
+		private MyNode createDefaultAvatarNode(Model model) {
+			MyNode avatarNode = new MyNode(true);
 			
-            Node bodyNode =new Node(model);
-            bodyNode.getRelativeTransform().setPosition(0.0f, AVAT_BODY, 0.0f);
-            bodyNode.getRelativeTransform().setMatrix(SFMatrix3f.getScale(AVAT_BODY,AVAT_BODY,AVAT_BODY));
+			MyNode bodyNode =new MyNode(model);
+            bodyNode.getRelativeTransform().setPosition(0, -0.5f, 0);
+            bodyNode.getRelativeTransform().setMatrix(SFMatrix3f.getScale(1,0.5f,1));
             avatarNode.getSonNodes().add(bodyNode);
 
-            Node neckNode = new Node(model);
-            neckNode.getRelativeTransform().setPosition(0.0f, 0.55f, 0.0f);
-            neckNode.getRelativeTransform().setMatrix(SFMatrix3f.getScale(0.15f,0.05f,0.15f));
+            MyNode neckNode = new MyNode(model);
+            neckNode.getRelativeTransform().setPosition(0.0f, 0.1f, 0.0f);
+            neckNode.getRelativeTransform().setMatrix(SFMatrix3f.getScale(0.6f,0.1f,0.6f));
             avatarNode.getSonNodes().add(neckNode);
             
-            Node headNode = new Node(model);
-            headNode.getRelativeTransform().setPosition(0.0f, 0.8f, 0.0f);
-            headNode.getRelativeTransform().setMatrix(SFMatrix3f.getScale(0.2f,0.2f,0.2f));
+            MyNode headNode = new MyNode(model);
+            headNode.getRelativeTransform().setPosition(0.0f, 0.6f, 0.0f);
+            headNode.getRelativeTransform().setMatrix(SFMatrix3f.getScale(0.8f,0.4f,0.8f));
             avatarNode.getSonNodes().add(headNode);
 
-            avatarNode.getRelativeTransform().setPosition(0,0,0);
-            avatarNode.getRelativeTransform().setMatrix(SFMatrix3f.getScale(1,1,1));	//MUST be 1
+            avatarNode.setPosition(0,0,0);
+            avatarNode.setScale(AVAT_BODY,2*AVAT_BODY,AVAT_BODY);
             
 			return avatarNode;
 		}
@@ -247,7 +263,7 @@ public class GraphicsView extends GLSurfaceView{
 			
 			node.getRelativeTransform().setPosition(0, 0, 0);
 			 
-			Node avatarNode, backgroundNode=null;
+			MyNode avatarNode, backgroundNode=null;
             
             if (sceneryNumber!=0) {
             	sceneryList.get(sceneryNumber).setStartModel(models.get(1));
@@ -255,17 +271,17 @@ public class GraphicsView extends GLSurfaceView{
             	backgroundNode = sceneryList.get(sceneryNumber).getSceneryNode(models.get(0));
 			}
             avatarNode = createCustomAvatarNode(models.get(3));
-            avatarNode.getRelativeTransform().setPosition(sceneryList.get(sceneryNumber).getStartPosition());
+            avatarNode.setPosition(sceneryList.get(sceneryNumber).getStartPosition());
             node.getSonNodes().add(avatarNode);
             
             if(sceneryNumber!=0){		//se non riesco ad usare l'avatar personalizzato uso quello di default.
-            	if(avatarNode.getSonNodes().get(0).coveredBySonNodes(backgroundNode)){ 
+            	if(((MyNode)avatarNode.getSonNodes().get(0)).coveredBySonNodes(backgroundNode)){ 
             		//Non dovrebbe mai capitare.. Ma meglio essere coperti..
             		Log.d("ERRORE", "L'Avatar è dentro un ostacolo e quindi troppo grande!");
             		node.removeAllSonNodes();
             		avatarNode = createDefaultAvatarNode(models.get(1));
-                    avatarNode.getRelativeTransform().setPosition(sceneryList.get(sceneryNumber).getStartPosition());
-                    if(avatarNode.getSonNodes().get(0).coveredBySonNodes(backgroundNode)){ 
+                    avatarNode.setPosition(sceneryList.get(sceneryNumber).getStartPosition());
+                    if(avatarNode.coveredBySonNodes(backgroundNode)){ 
                 		//..anche perche' l'errore potrebbe essere nello scenario
                 		Log.d("ERRORE", "Posizione di partenza non valida! Non e' possibile giocare.");
                     }
@@ -279,12 +295,17 @@ public class GraphicsView extends GLSurfaceView{
 	            		Log.d("ERRORE", "L'Avatar è dentro un ostacolo e quindi troppo grande!");
                 		node.removeAllSonNodes();
 	            		avatarNode = createDefaultAvatarNode(models.get(1));
-	                    avatarNode.getRelativeTransform().setPosition(sceneryList.get(sceneryNumber).getStartPosition());
+	                    avatarNode.setPosition(sceneryList.get(sceneryNumber).getStartPosition());
 	                    node.getSonNodes().add(avatarNode);
 	            	}
-				}while(avatarNode.getSonNodes().get(0).coveredBySonNodes(backgroundNode));
+				}while(avatarNode.coveredBySonNodes(backgroundNode));
             }
 			node.getSonNodes().add(backgroundNode);
+			
+            MyNode victoryNode = new MyNode(true);
+            victoryNode.setPosition(sceneryList.get(sceneryNumber).getFinalPosition());
+            victoryNode.setScale(0.0f, 0.01f, 0.0f);
+            node.getSonNodes().add(victoryNode);
 		}
 
 		private ArrayList<Model> createModels() {
@@ -297,7 +318,7 @@ public class GraphicsView extends GLSurfaceView{
             int textureModel=SFOGLTextureModel.generateTextureObjectModel(SFImageFormat.RGB,
                     GLES20.GL_REPEAT, GLES20.GL_REPEAT, GLES20.GL_LINEAR, GLES20.GL_LINEAR);
             BitmapTexture texture = BitmapTexture.loadBitmapTexture(BitmapFactory.decodeResource(context.getResources(),
-                    R.drawable.muromattoni), textureModel);									//TODO cambiare qui
+                    R.drawable.borderedsquare), textureModel);									//TODO cambiare qui
             texture.init();
             
             //Step 3 : create a Material (materials combine shaders+textures+shading parameters)
@@ -316,7 +337,7 @@ public class GraphicsView extends GLSurfaceView{
             model1.setMaterialComponent(material);
             models.add(model1);
             
-            //Step 2-3-5.b: do the same for the background
+            //Step 2-3-5.b: do the same for the avatar
             BitmapTexture texture2 = BitmapTexture.loadBitmapTexture(BitmapFactory.decodeResource(context.getResources(),
                     R.drawable.bluepaddedroomtexture01), textureModel);
             texture2.init();
@@ -368,7 +389,7 @@ public class GraphicsView extends GLSurfaceView{
         	if(changingScenary){
         		if(node==null){	//It is the first lunch, so I have to create anything.
 		            //Step 6: create a Node, that is a reference system where you can place your Models
-		            node = new Node();
+		            node = new MyNode();
 		            
 		            setupNodeStructure(models);
 		            
@@ -456,6 +477,16 @@ public class GraphicsView extends GLSurfaceView{
             //int[] viewport=new int[4];
             //GLES20.glGetIntegerv(GLES20.GL_VIEWPORT,viewport,0);
             //Log.e("Graphics View Size", Arrays.toString(viewport));
+            
+            if(((MyNode)node.getSonNodes().get(0)).coveredBy((MyNode)node.getSonNodes().get(2))){
+            	showWinMessage();
+            }
         }
     }
+
+	public void showWinMessage() {
+//		CharSequence text = "Complimenti! Hai vinto in "+(System.currentTimeMillis()-startTime);
+//    	toast.setText(text);
+    	toast.show();
+	}
 }

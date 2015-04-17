@@ -1,7 +1,8 @@
 package com.example.computergraphics.scenery;
 
+import com.example.computergraphics.MyNode;
+
 import sfogl.integration.Model;
-import sfogl.integration.Node;
 import shadow.math.SFMatrix3f;
 import shadow.math.SFVertex3f;
 
@@ -42,11 +43,11 @@ public class Scenery01 extends Scenery {
 	}
 	
 	@Override
-	public Node getSceneryNode(Model model) {
+	public MyNode getSceneryNode(Model model) {
 		enabledExternalWalls = startModel==null || finalModel==null;
-		Node backgroundNode = super.createBackgroundNode(model, ROOM_DIMENSION);
+		MyNode backgroundNode = super.createBackgroundNode(model, ROOM_DIMENSION);
         
-        Node innerObstaclesNode = createInnerObstacleNode(model);
+        MyNode innerObstaclesNode = createInnerObstacleNode(model);
         innerObstaclesNode.getRelativeTransform().setPosition(0,0,0);
         innerObstaclesNode.getRelativeTransform().setMatrix(SFMatrix3f.getScale(1,1,1));
         backgroundNode.getSonNodes().add(innerObstaclesNode);
@@ -54,8 +55,8 @@ public class Scenery01 extends Scenery {
 		return backgroundNode;
 	}
 
-	private Node createInnerObstacleNode(Model model) {
-		Node innerObstaclesNode = new Node();
+	private MyNode createInnerObstacleNode(Model model) {
+		MyNode innerObstaclesNode = new MyNode();
 		
 		innerObstaclesNode.getSonNodes().add(createWallNode(model, -2.5f, -0.5f, 0f, 1f-ERR, altezzObst));
 		innerObstaclesNode.getSonNodes().add(createWallNode(model, -2.5f, 2f, 0f, 0.5f-ERR, altezzObst));

@@ -2,7 +2,8 @@ package com.example.computergraphics.controls.actionSet;
 
 import java.util.TimerTask;
 
-import sfogl.integration.Node;
+import com.example.computergraphics.MyNode;
+
 import shadow.math.SFMatrix3f;
 import shadow.math.SFVertex3f;
 
@@ -11,9 +12,8 @@ import shadow.math.SFVertex3f;
  */
 public class MoveAvatarTimeTask extends TimerTask{
 
-	private Node avatar, similAvatarBody, all;
+	private MyNode avatar, similAvatar, all;
 	private float startX, startZ, finalX, finalZ, velocityX, velocityZ;
-	private float avatarBodyY;
 	private int t = 0;
 	
 	/**
@@ -23,41 +23,41 @@ public class MoveAvatarTimeTask extends TimerTask{
 	 * @param velocityZ la componente Z della velocita'
 	 * @param all il nodo alla base del sistema di riferimento
 	 */
-	public MoveAvatarTimeTask(Node avatar, SFVertex3f destination, float velocityX, float velocityZ, Node all) {
+	public MoveAvatarTimeTask(MyNode avatar, SFVertex3f destination, float velocityX, float velocityZ, MyNode all) {
 		this.avatar = avatar;
-		this.similAvatarBody = avatar.getSonNodes().get(0).clodeNode();
-		startX = avatar.getRelativeTransform().getV()[9];
-		avatarBodyY = similAvatarBody.getRelativeTransform().getV()[10];
-		startZ = avatar.getRelativeTransform().getV()[11];
+		this.similAvatar = avatar.cloneSingleNodeWithoutSons();
+		startX = avatar.getPosX();
+		startZ = avatar.getPosZ();
 		this.finalX = destination.getX();
 		this.finalZ = destination.getZ();
 		this.velocityX = velocityX;
 		this.velocityZ = velocityZ;
 		this.all = all;
 		float angle = (float) (Math.atan2(velocityZ, velocityX)-Math.PI/2);
-		avatar.getRelativeTransform().setMatrix(SFMatrix3f.getRotationY(-angle));
+		SFMatrix3f m = SFMatrix3f.getScale(avatar.getScaleX(), avatar.getScaleY(), avatar.getScaleZ());
+		avatar.getRelativeTransform().setMatrix(m.MultMatrix(SFMatrix3f.getRotationY(-angle)));
 	}
 	
 	@Override
 	public void run() {
-		float currX = avatar.getRelativeTransform().getV()[9];
-		float currY = avatar.getRelativeTransform().getV()[10];
-		float currZ = avatar.getRelativeTransform().getV()[11];
+		float currX = avatar.getPosX();
+		float currY = avatar.getPosY();
+		float currZ = avatar.getPosZ();
 		
 		float tempCurrX = currX + velocityX;
 		float tempCurrZ = currZ + velocityZ;
 		if((tempCurrX>finalX&&finalX>startX)||(tempCurrX<finalX&&finalX<startX)) tempCurrX=finalX;
 		if((tempCurrZ>finalZ&&finalZ>startZ)||(tempCurrZ<finalZ&&finalZ<startZ)) tempCurrZ=finalZ;
-		similAvatarBody.getRelativeTransform().setPosition(tempCurrX, currY+avatarBodyY, tempCurrZ);
-		boolean touchObstacle = similAvatarBody.coveredBySonNodes(all.getSonNodes().get(1));
+		similAvatar.setPosition(tempCurrX, currY, tempCurrZ);
+		boolean touchObstacle = similAvatar.coveredBySonNodes(((MyNode)all.getSonNodes().get(1)));
 		//Log.d("task", "tXZ "+touchObstacle);
 		if(touchObstacle){
-			similAvatarBody.getRelativeTransform().setPosition(currX, currY+avatarBodyY, tempCurrZ);
-			touchObstacle = similAvatarBody.coveredBySonNodes(all.getSonNodes().get(1));
+			similAvatar.setPosition(currX, currY, tempCurrZ);
+			touchObstacle = similAvatar.coveredBySonNodes(((MyNode)all.getSonNodes().get(1)));
 			//Log.d("task", "tZ "+touchObstacle);
 			if(touchObstacle){
-				similAvatarBody.getRelativeTransform().setPosition(tempCurrX, currY+avatarBodyY, currZ);
-				touchObstacle = similAvatarBody.coveredBySonNodes(all.getSonNodes().get(1));
+				similAvatar.setPosition(tempCurrX, currY, currZ);
+				touchObstacle = similAvatar.coveredBySonNodes(((MyNode)all.getSonNodes().get(1)));
 				//Log.d("task", "tX "+touchObstacle);
 				if(touchObstacle){
 					 cancel();
@@ -75,7 +75,7 @@ public class MoveAvatarTimeTask extends TimerTask{
 			t=0;
 		}
 		
-		avatar.getRelativeTransform().setPosition(currX, currY, currZ);
+		avatar.setPosition(currX, currY, currZ);
 		
 		SFMatrix3f matrix = new SFMatrix3f();
 		all.getRelativeTransform().getMatrix(matrix);
