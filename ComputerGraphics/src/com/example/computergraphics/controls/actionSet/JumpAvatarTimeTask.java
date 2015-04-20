@@ -11,7 +11,7 @@ public class JumpAvatarTimeTask extends TimerTask{
 	
 	private float timerPeriod = 0.025f;
 	private float t = 0;
-	private static final float OBSTACLE_HEIGHT = 2*0.25f;
+	private static final float OBSTACLE_HEIGHT = 2*0.25f;	//TODO prendere il valore dalla view (o meglio farer classe settings)
 	private static final float a = 9.8f/2;
 	public static final float START_VELOCITY = (float)Math.sqrt(4*a*OBSTACLE_HEIGHT)*1.15f;
 
@@ -61,6 +61,9 @@ public class JumpAvatarTimeTask extends TimerTask{
 			avatar.setPosition(currX, currY, currZ);
 		}else{
 			//TODO Appare ridicolo che rimanga sull'ostacolo anche se appoggia solo una piccola parte del body.
+			//TODO Far appoggiare l'avatar e non lasciarlo circa 0.125f più su
+			//		(posso ciclare 2 volte, prima provando ad agguingere 0.01f, poi 0.001f
+			//		ogni volta controllando touchObstacle.
 			jumping = false;
 			t = lastUsefulT;
 		}

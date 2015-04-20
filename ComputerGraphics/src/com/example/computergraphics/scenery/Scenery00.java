@@ -24,12 +24,12 @@ public class Scenery00 extends Scenery {
 	}
 	
 	@Override
-	public MyNode getSceneryNode(Model model) {
-		MyNode backgroundNode = super.createBackgroundNode(model, LUNGH_MURO);
+	public MyNode getSceneryNode(Model wallModel, Model floorModel) {
+		MyNode backgroundNode = super.createBackgroundNode(wallModel, floorModel, LUNGH_MURO);
         
-        MyNode innerObstaclesNode = createInnerObstacleNode(model);
-        innerObstaclesNode.getRelativeTransform().setPosition(0,0,0);
-        innerObstaclesNode.getRelativeTransform().setMatrix(SFMatrix3f.getScale(1,1,1));
+        MyNode innerObstaclesNode = createInnerObstacleNode(wallModel);
+        innerObstaclesNode.setScale(1,1,1);
+        innerObstaclesNode.setPosition(0,-1,0);
         backgroundNode.getSonNodes().add(innerObstaclesNode);
 		
 		return backgroundNode;
@@ -42,8 +42,8 @@ public class Scenery00 extends Scenery {
         	MyNode n = new MyNode(model1);
 				float xp = rand.nextFloat()*(LUNGH_MURO-LUNGH_OBST)*2-LUNGH_MURO+LUNGH_OBST;
 				float zp = rand.nextFloat()*(LUNGH_MURO-LUNGH_OBST)*2-LUNGH_MURO+LUNGH_OBST;
-				n.getRelativeTransform().setPosition(xp, altezzObst, zp);
-				n.getRelativeTransform().setMatrix(SFMatrix3f.getScale(LUNGH_OBST,altezzObst,LUNGH_OBST));
+				n.setScale(LUNGH_OBST, altezzObst, LUNGH_OBST);
+				n.setPosition(xp, 0, zp);
 			innerObstaclesNode.getSonNodes().add(n);
 		}
         return innerObstaclesNode;

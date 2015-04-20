@@ -16,10 +16,10 @@ public class SceneryCubeAlone extends Scenery {
 	}
 	
 	@Override
-	public MyNode getSceneryNode(Model model) {
-		MyNode backgroundNode = new MyNode(model);
-		backgroundNode.getRelativeTransform().setPosition(0,0.75f,0);
-		backgroundNode.getRelativeTransform().setMatrix(SFMatrix3f.getScale(0.75f,0.75f,0.75f));
+	public MyNode getSceneryNode(Model wallModel, Model floorModel) {
+		MyNode backgroundNode = new MyNode(wallModel);
+		backgroundNode.setScale(0.75f,0.75f,0.75f);
+		backgroundNode.setPosition(0,0,0);
 		backgroundNode.getSonNodes().add(new MyNode());
 		backgroundNode.getSonNodes().add(new MyNode());
 		backgroundNode.getSonNodes().add(new MyNode());

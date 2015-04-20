@@ -59,8 +59,11 @@ public class BasicController implements IController {
 			actionSet.moveAvatarWith((e2.getX()-(viewWidth>>1))/(viewWidth>>1), 
 									 ((viewHeight>>1)-e2.getY())/(viewHeight>>1));
 		}else if(mode==ABSOLUTE_MODE){
-			actionSet.moveAvatarWith((e2.getX()-(viewWidth>>1))/(viewWidth>>1), 
-		   			   (viewHeight-(viewHeight>>3)-e2.getY())/(viewHeight));
+			float posY =(viewHeight-(viewHeight>>3)-e2.getY())/(viewHeight);
+			if(Math.signum(posY)>0) posY*=8/7;
+			else posY*=8;
+			Log.d("task", ""+posY);
+			actionSet.moveAvatarWith((e2.getX()-(viewWidth>>1))/(viewWidth>>1), posY);
 		}
 		return true;
 	}
@@ -82,8 +85,11 @@ public class BasicController implements IController {
 								   ((viewHeight>>1)-e.getY())/(viewHeight>>1), 
 								   ActionSet.VELOCITY_WALK);
 		}else if(mode==ABSOLUTE_MODE){
-			actionSet.moveAvatarTo((e.getX()-(viewWidth>>1))/(viewWidth>>1), 
-					   			   (viewHeight-(viewHeight>>3)-e.getY())/(viewHeight), 
+			float posY =(viewHeight-(viewHeight>>3)-e.getY())/(viewHeight);
+			if(Math.signum(posY)>0) posY*=8/7;
+			else posY*=8;
+			Log.d("task", ""+posY);
+			actionSet.moveAvatarTo((e.getX()-(viewWidth>>1))/(viewWidth>>1), posY, 
 								   ActionSet.VELOCITY_WALK);
 		}
 		return true;

@@ -62,7 +62,7 @@ public class DifferentController implements IController {
 
 	@Override
 	public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
-		actionSet.moveAvatarWith((e2.getX()-e1.getX())/(viewWidth>>2), (e1.getY()-e2.getY())/(viewHeight>>2));
+		actionSet.moveAvatarWith((e2.getX()-e1.getX())/(viewWidth>>1), (e1.getY()-e2.getY())/(viewHeight>>1));
 		return true;
 	}
 

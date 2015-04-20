@@ -56,8 +56,10 @@ public class MyNode extends Node {
 	}
 	
 	/**
-	 * Da usare solo per muovere l'avatar:
-	 * Node.getRelativeTransform().setPosition(posX, posY+scaleY, posZ);
+	 * Deve essere chiamato DOPO {@link #setScale(float, float, float)}, 
+	 * oppure devo tenere conto di scaleY in posY. E' come fare: 
+	 * Node.getRelativeTransform().setPosition(posX, posY+scaleY, posZ), 
+	 * ma in più vengono settati i parametri passati in MytNode
 	 * @param posX
 	 * @param posY
 	 * @param posZ
@@ -112,7 +114,7 @@ public class MyNode extends Node {
 	 * @param anotherNode
 	 * @return true if the node is covered by anotherNode, false otherwise
 	 */
-	public boolean coveredBy(MyNode anotherNode){	//TODO non usare getV per la scala (se il nodo e' ruotato funziona male..)
+	public boolean coveredBy(MyNode anotherNode){
 		if(anotherNode.getModel()!=null || anotherNode.isForceCoveredControl()){
 			float[] position = new float[3];
 			position[0]= posX;
@@ -124,13 +126,13 @@ public class MyNode extends Node {
 			scale[2]= scaleZ;
 	
 			float[] anotherPosition = new float[3];
-			anotherPosition[0]= anotherNode.getRelativeTransform().getV()[9];
-			anotherPosition[1]= anotherNode.getRelativeTransform().getV()[10];
-			anotherPosition[2]= anotherNode.getRelativeTransform().getV()[11];
+			anotherPosition[0]= anotherNode.getPosX();
+			anotherPosition[1]= anotherNode.getPosY()+anotherNode.getScaleY();
+			anotherPosition[2]= anotherNode.getPosZ();
 			float[] anotherScale = new float[3];
-			anotherScale[0]= anotherNode.getRelativeTransform().getV()[0];
-			anotherScale[1]= anotherNode.getRelativeTransform().getV()[4];
-			anotherScale[2]= anotherNode.getRelativeTransform().getV()[8];
+			anotherScale[0]= anotherNode.getScaleX();
+			anotherScale[1]= anotherNode.getScaleY();
+			anotherScale[2]= anotherNode.getScaleZ();
 	
 			boolean coveredX= !(((position[0]-scale[0])<=(anotherPosition[0]-anotherScale[0]) &&
 								 (position[0]+scale[0])<=(anotherPosition[0]-anotherScale[0])) ||

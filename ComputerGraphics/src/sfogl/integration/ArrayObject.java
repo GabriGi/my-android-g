@@ -93,6 +93,9 @@ public class ArrayObject {
     	return new float[]{minX, minY, minZ, maxX, maxY, maxZ};
 	}
     
+    /**
+     * @return in this order: scaleX, scaleY, scaleZ, middleX, middleY, middleZ
+     */
     public float[] getScaleAndMiddleValues() {
     	return new float[]{1/scaleX, 1/scaleY, 1/scaleZ, middleX, middleY, middleZ};
 	}

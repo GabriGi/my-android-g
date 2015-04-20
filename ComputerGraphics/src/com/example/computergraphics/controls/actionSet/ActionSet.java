@@ -76,6 +76,11 @@ public class ActionSet{
 		return flingEvent;
 	}
 	
+	public boolean isMoving() {
+		if(moveAvatarTask!=null) return moveAvatarTask.cancel();
+		else return false;
+	}
+	
 	public void stopMoving() {
 		myScroller.forceFinished(true);
 		if(moveAvatarTask!=null) moveAvatarTask.cancel();
@@ -94,7 +99,7 @@ public class ActionSet{
 		rotY = 0;
 		this.avatar = (MyNode)all.getSonNodes().get(0);
 		SFVertex3f position = new SFVertex3f(); avatar.getPosition(position);
-		all.getRelativeTransform().setPosition(-position.getX(),-position.getY(),-position.getZ());
+		all.setPosition(-position.getX(),-position.getY(),-position.getZ());
 	}
 	
 	private SFVertex3f getXYZFromUV(float destU, float destV) {
@@ -110,9 +115,11 @@ public class ActionSet{
 	 * prendendo come parametri le due componenti (u e v) dello schermo (con valori compresi tra -1 e 1)
 	 */
 	public void moveAvatarTo(float destU, float destV, float velocity){
-		SFVertex3f start = new SFVertex3f(); avatar.getRelativeTransform().getPosition(start);
+		SFVertex3f start = new SFVertex3f(); avatar.getPosition(start);
 		SFVertex3f space = getXYZFromUV(destU, destV); 
 		SFVertex3f dest = new SFVertex3f(start.getV()); dest.add3f(space);
+
+		if(velocity>VELOCITY_RUN) velocity = VELOCITY_RUN;
 		float velX = (float)(velocity/Math.sqrt(1+(space.getZ()/space.getX())*(space.getZ()/space.getX())));
 		float velZ = (float)(velocity/Math.sqrt(1+(space.getX()/space.getZ())*(space.getX()/space.getZ())));
 		if(space.getX()<0) velX=0-velX;
@@ -129,7 +136,6 @@ public class ActionSet{
 	 */
 	public void moveAvatarWith(float velocityU , float velocityV){
 		float velocity = (float)Math.max(Math.abs(velocityU), Math.abs(velocityV)) * VELOCITY_RUN;
-		if(velocity>VELOCITY_RUN) velocity = VELOCITY_RUN;
 		moveAvatarTo(velocityU, velocityV, velocity);
 	}
 	

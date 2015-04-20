@@ -12,8 +12,9 @@ public class AlternativeController implements IController {
 
 	private int viewWidth;
 	private int viewHeight;
+	private float lastVelocityY=0;
 	
-	private static final float CAMERA_SESIBILITY = -0.5f;
+	private static final float CAMERA_SESIBILITY = 0.5f;
 	
 	@Override
 	public void setActionsSet(ActionSet actionSet) {
@@ -35,7 +36,7 @@ public class AlternativeController implements IController {
     
 	@Override
 	public boolean onDown(MotionEvent e) {
-		actionSet.stopMoving();
+		//actionSet.stopMoving();
 		return true; }
 
 	@Override
@@ -43,7 +44,8 @@ public class AlternativeController implements IController {
 
 	@Override
 	public void onLongPress(MotionEvent e) {
-		actionSet.jumpAvatar(0, (viewHeight-e.getY())/viewHeight);
+		lastVelocityY = (viewHeight-e.getY())/viewHeight;
+		actionSet.jumpAvatar(0, lastVelocityY);
 	}
 
 	@Override
@@ -55,12 +57,15 @@ public class AlternativeController implements IController {
 			float yFactor = distanceY/viewHeight/CAMERA_SESIBILITY;
 			Log.d("Gestures", "         - rotation: "+xFactor+" "+yFactor);
 			actionSet.rotationCamera(xFactor, yFactor);
+			if(actionSet.isMoving()){
+				actionSet.moveAvatarWith(0, lastVelocityY);
+			}
 		return true;
 	}
 
 	@Override
 	public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-		actionSet.startFlingCamera((int)velocityX, 0);
+		actionSet.startFlingCamera((int)-velocityX, 0);
 		return true;
 	}
 
@@ -70,7 +75,12 @@ public class AlternativeController implements IController {
     
 	@Override
 	public boolean onSingleTapConfirmed(MotionEvent e) {
-		actionSet.moveAvatarWith(0, (viewHeight-e.getY())/viewHeight);
+		if(!actionSet.isMoving()){
+			lastVelocityY = (viewHeight-e.getY())/viewHeight;
+			actionSet.moveAvatarWith(0, lastVelocityY);
+		}else{
+			actionSet.stopMoving();
+		}
 		return true;
 	}
 

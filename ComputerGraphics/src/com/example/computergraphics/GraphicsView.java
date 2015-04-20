@@ -81,8 +81,8 @@ public class GraphicsView extends GLSurfaceView{
         sceneryList = new ArrayList<Scenery>();
     	sceneryList.add(new Scenery00(AVAT_BODY));
     	sceneryList.add(new Scenery01(AVAT_BODY));
-    	sceneryList.add(new SceneryCubeAlone(AVAT_BODY));
-    	sceneryNumber = 2;
+    	//sceneryList.add(new SceneryCubeAlone(AVAT_BODY));		//DEBUG
+    	sceneryNumber = 1;
     	
     	CharSequence text = "Complimenti! Hai vinto!";
     	toast = Toast.makeText(context, text, Toast.LENGTH_SHORT);;
@@ -198,39 +198,24 @@ public class GraphicsView extends GLSurfaceView{
 			return cam;
         }
         
-        /**
-         * L'idea e' di provare prima a chiamare true (l'avatar è alto il doppio degli ostacoli), 
-         * poi false (avatar alto quanto gli ostacoli),
-         * infine usare {@link #createDefaultAvatarNode(Model)}
-         * @param realDimension true: crea il nodo alto 1; false: crea il nodo alto 0.5 (AVAT_BODY*2)
-         */
         private MyNode createCustomAvatarNode(Model model) {
-        	MyNode avatarNode = new MyNode();
-											//The higher MUST be 1
+        	MyNode avatarNode = new MyNode(true);
+			
 			float sx = model.getGeometry().getArrayObject().getScaleAndMiddleValues()[0];
-            float sy = model.getGeometry().getArrayObject().getScaleAndMiddleValues()[1];
+            float sy = model.getGeometry().getArrayObject().getScaleAndMiddleValues()[1]/2;
             float sz = model.getGeometry().getArrayObject().getScaleAndMiddleValues()[2];
-			float sMax = Math.max(Math.max(sx, sy), sz);
-//			sx = AVAT_BODY*sx/sMax;
-//            sy = AVAT_BODY*sy/sMax;
-//            sz = AVAT_BODY*sz/sMax;
+			float sMax = Math.max(Math.max(sx, sy), sz); 	//The higher scale MUST be 1
 			sx = sx/sMax;
             sy = sy/sMax;
             sz = sz/sMax;
-			
-//            MyNode bodyNode =new MyNode(true);
-//            bodyNode.getRelativeTransform().setPosition(0,AVAT_BODY,0);
-//            bodyNode.getRelativeTransform().setMatrix(SFMatrix3f.getScale(AVAT_BODY,AVAT_BODY,AVAT_BODY));
-//            avatarNode.getSonNodes().add(bodyNode);
             
             MyNode customNode = new MyNode(model);
-            customNode.getRelativeTransform().setPosition(0, 0, 0);
-            SFMatrix3f m = SFMatrix3f.getScale(sx,sy,sz);
-            customNode.getRelativeTransform().setMatrix(m.MultMatrix(SFMatrix3f.getRotationX((float)-Math.PI/2)));
+            customNode.setScale(sx,sy,sz);
+            customNode.setPosition(0, -1, 0);
             avatarNode.getSonNodes().add(customNode);
 
-            avatarNode.setPosition(0,2*AVAT_BODY,0);
             avatarNode.setScale(AVAT_BODY,2*AVAT_BODY,AVAT_BODY);
+            avatarNode.setPosition(0,0,0);
             
 			return avatarNode;
 		}
@@ -239,47 +224,47 @@ public class GraphicsView extends GLSurfaceView{
 			MyNode avatarNode = new MyNode(true);
 			
 			MyNode bodyNode =new MyNode(model);
-            bodyNode.getRelativeTransform().setPosition(0, -0.5f, 0);
-            bodyNode.getRelativeTransform().setMatrix(SFMatrix3f.getScale(1,0.5f,1));
+            bodyNode.setScale(1,0.5f,1);
+            bodyNode.setPosition(0, -1.0f, 0);
             avatarNode.getSonNodes().add(bodyNode);
 
             MyNode neckNode = new MyNode(model);
-            neckNode.getRelativeTransform().setPosition(0.0f, 0.1f, 0.0f);
-            neckNode.getRelativeTransform().setMatrix(SFMatrix3f.getScale(0.6f,0.1f,0.6f));
+            neckNode.setScale(0.6f,0.1f,0.6f);
+            neckNode.setPosition(0.0f, 0.0f, 0.0f);
             avatarNode.getSonNodes().add(neckNode);
             
             MyNode headNode = new MyNode(model);
-            headNode.getRelativeTransform().setPosition(0.0f, 0.6f, 0.0f);
-            headNode.getRelativeTransform().setMatrix(SFMatrix3f.getScale(0.8f,0.4f,0.8f));
+            headNode.setScale(0.8f,0.4f,0.8f);
+            headNode.setPosition(0.0f, 0.1f, 0.0f);
             avatarNode.getSonNodes().add(headNode);
 
-            avatarNode.setPosition(0,0,0);
             avatarNode.setScale(AVAT_BODY,2*AVAT_BODY,AVAT_BODY);
+            avatarNode.setPosition(0,0,0);
             
 			return avatarNode;
 		}
 
 		private void setupNodeStructure(ArrayList<Model> models) {
 			
-			node.getRelativeTransform().setPosition(0, 0, 0);
+			node.setPosition(0, 0, 0);
 			 
 			MyNode avatarNode, backgroundNode=null;
             
             if (sceneryNumber!=0) {
-            	sceneryList.get(sceneryNumber).setStartModel(models.get(1));
-            	sceneryList.get(sceneryNumber).setFinishModel(models.get(2));
-            	backgroundNode = sceneryList.get(sceneryNumber).getSceneryNode(models.get(0));
+            	sceneryList.get(sceneryNumber).setStartModel(models.get(2));
+            	sceneryList.get(sceneryNumber).setFinishModel(models.get(3));
+            	backgroundNode = sceneryList.get(sceneryNumber).getSceneryNode(models.get(1), models.get(0));
 			}
-            avatarNode = createCustomAvatarNode(models.get(3));
+            avatarNode = createCustomAvatarNode(models.get(5));
             avatarNode.setPosition(sceneryList.get(sceneryNumber).getStartPosition());
             node.getSonNodes().add(avatarNode);
             
             if(sceneryNumber!=0){		//se non riesco ad usare l'avatar personalizzato uso quello di default.
-            	if(((MyNode)avatarNode.getSonNodes().get(0)).coveredBySonNodes(backgroundNode)){ 
+            	if(avatarNode.coveredBySonNodes(backgroundNode)){ 
             		//Non dovrebbe mai capitare.. Ma meglio essere coperti..
             		Log.d("ERRORE", "L'Avatar è dentro un ostacolo e quindi troppo grande!");
             		node.removeAllSonNodes();
-            		avatarNode = createDefaultAvatarNode(models.get(1));
+            		avatarNode = createDefaultAvatarNode(models.get(4));
                     avatarNode.setPosition(sceneryList.get(sceneryNumber).getStartPosition());
                     if(avatarNode.coveredBySonNodes(backgroundNode)){ 
                 		//..anche perche' l'errore potrebbe essere nello scenario
@@ -290,11 +275,11 @@ public class GraphicsView extends GLSurfaceView{
             }else{
             	int tentativo = 0;
 	            do{ 					//Se l'Avatar è dentro un ostacolo, rigenero lo scenario..
-	            	backgroundNode = sceneryList.get(0).getSceneryNode(models.get(0));
+	            	backgroundNode = sceneryList.get(0).getSceneryNode(models.get(1), models.get(0));
 	            	if(tentativo++==10){		//..fino a 10 volte, poi uso l'Avatar di default.
 	            		Log.d("ERRORE", "L'Avatar è dentro un ostacolo e quindi troppo grande!");
                 		node.removeAllSonNodes();
-	            		avatarNode = createDefaultAvatarNode(models.get(1));
+	            		avatarNode = createDefaultAvatarNode(models.get(4));
 	                    avatarNode.setPosition(sceneryList.get(sceneryNumber).getStartPosition());
 	                    node.getSonNodes().add(avatarNode);
 	            	}
@@ -318,7 +303,7 @@ public class GraphicsView extends GLSurfaceView{
             int textureModel=SFOGLTextureModel.generateTextureObjectModel(SFImageFormat.RGB,
                     GLES20.GL_REPEAT, GLES20.GL_REPEAT, GLES20.GL_LINEAR, GLES20.GL_LINEAR);
             BitmapTexture texture = BitmapTexture.loadBitmapTexture(BitmapFactory.decodeResource(context.getResources(),
-                    R.drawable.borderedsquare), textureModel);									//TODO cambiare qui
+                    R.drawable.borderedsquare), textureModel);
             texture.init();
             
             //Step 3 : create a Material (materials combine shaders+textures+shading parameters)
@@ -326,18 +311,31 @@ public class GraphicsView extends GLSurfaceView{
             material.getTextures().add(texture);
 
             //Step 4: load a Geometry
-            ArrayObject[] objects = ObjLoader.arrayObjectFromFile(context, "CubeBlender08.obj");	//TODO cambiare qui
+            ArrayObject[] objects = ObjLoader.arrayObjectFromFile(context, "CubeBlender08.obj");
 
             Mesh mesh=new Mesh(objects[0]);
             mesh.init();
 
             //Step 5: create a Model combining material+geometry
-            Model model1=new Model();
-            model1.setRootGeometry(mesh);
-            model1.setMaterialComponent(material);
-            models.add(model1);
+            Model model=new Model();
+            model.setRootGeometry(mesh);
+            model.setMaterialComponent(material);
+/* 0*/      models.add(model);
             
-            //Step 2-3-5.b: do the same for the avatar
+			//Step 2-3-5.(1): do the same for the background's floor
+			BitmapTexture texture1 = BitmapTexture.loadBitmapTexture(BitmapFactory.decodeResource(context.getResources(),
+			        R.drawable.muromattoni), textureModel);
+			texture1.init();
+			
+			Material material1=new Material(program);
+			material1.getTextures().add(texture1);
+			
+			Model model1=new Model();
+			model1.setRootGeometry(mesh);
+			model1.setMaterialComponent(material1);
+/* 1*/      models.add(model1);
+			
+            //Step 2-3-5.(2): do the same for start position
             BitmapTexture texture2 = BitmapTexture.loadBitmapTexture(BitmapFactory.decodeResource(context.getResources(),
                     R.drawable.bluepaddedroomtexture01), textureModel);
             texture2.init();
@@ -348,9 +346,9 @@ public class GraphicsView extends GLSurfaceView{
             Model model2=new Model();
             model2.setRootGeometry(mesh);
             model2.setMaterialComponent(material2);
-            models.add(model2);
+/* 2*/      models.add(model2);
 
-            //Step 2-3-5.c: do the same for extra
+            //Step 2-3-5.(3): do the same for final position
             BitmapTexture texture3 = BitmapTexture.loadBitmapTexture(BitmapFactory.decodeResource(context.getResources(),
                     R.drawable.redpaddedroomtexture01), textureModel);
             texture3.init();
@@ -361,24 +359,37 @@ public class GraphicsView extends GLSurfaceView{
             Model model3=new Model();
             model3.setRootGeometry(mesh);
             model3.setMaterialComponent(material3);
-            models.add(model3);
-            
-          //Step 2-3-4-5.c: do the same for a blenderAvatar
-            BitmapTexture texture4 = BitmapTexture.loadBitmapTexture(BitmapFactory.decodeResource(context.getResources(),
-                    R.drawable.blendermonkey), textureModel);
-            texture4.init();
-            
-            Material material4=new Material(program);
-            material4.getTextures().add(texture4);
-            
-            ArrayObject[] monkeyObjects = ObjLoader.arrayObjectFromFile(context, "MonkeyTxN.obj");
-            Mesh mesh4=new Mesh(monkeyObjects[0]);
-            mesh4.init();
+/* 3*/      models.add(model3);
 
-            Model model4=new Model();
-            model4.setRootGeometry(mesh4);
-            model4.setMaterialComponent(material4);
-            models.add(model4);
+			//Step 2-3-5.(4): do the same for default avatar
+			BitmapTexture texture4 = BitmapTexture.loadBitmapTexture(BitmapFactory.decodeResource(context.getResources(),
+			        R.drawable.grey), textureModel);
+			texture4.init();
+			
+			Material material4=new Material(program);
+			material4.getTextures().add(texture4);
+			
+			Model model4=new Model();
+			model4.setRootGeometry(mesh);
+			model4.setMaterialComponent(material4);
+/* 4*/      models.add(model4);
+            
+          //Step 2-3-4-5.(4): do the same for custom avatar
+            BitmapTexture texture5 = BitmapTexture.loadBitmapTexture(BitmapFactory.decodeResource(context.getResources(),
+                    R.drawable.grey), textureModel);										//TODO cambiare qui
+            texture5.init();
+            
+            Material material5=new Material(program);
+            material5.getTextures().add(texture5);
+            
+            ArrayObject[] customAvatarObjects = ObjLoader.arrayObjectFromFile(context, "Platformer2.obj");	//TODO cambiare qui
+            Mesh mesh5=new Mesh(customAvatarObjects[0]);
+            mesh5.init();
+
+            Model model5=new Model();
+            model5.setRootGeometry(mesh5);
+            model5.setMaterialComponent(material5);
+/* 5*/      models.add(model5);
 
 			return models;
 		}

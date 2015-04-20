@@ -1,13 +1,15 @@
 package objLoader;
 
+import android.content.Context;
+
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Iterator;
-
-import android.content.Context;
 
 /**
  * Iterates other an obj file to extract the exact obj commands
@@ -22,10 +24,10 @@ public class ObjFileIterator implements Iterator<String>{
 	public ObjFileIterator(Context context,String filename){
 		try {
             InputStream stream=context.getAssets().open(filename);
-           reader = new BufferedReader(new InputStreamReader( stream));
+			reader = new BufferedReader(new InputStreamReader(stream));
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
-		} catch (IOException e) {
+		} catch (IOException e){
             e.printStackTrace();
         }
 	}

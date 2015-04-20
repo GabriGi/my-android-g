@@ -43,13 +43,13 @@ public class Scenery01 extends Scenery {
 	}
 	
 	@Override
-	public MyNode getSceneryNode(Model model) {
+	public MyNode getSceneryNode(Model wallModel, Model floorModel) {
 		enabledExternalWalls = startModel==null || finalModel==null;
-		MyNode backgroundNode = super.createBackgroundNode(model, ROOM_DIMENSION);
+		MyNode backgroundNode = super.createBackgroundNode(wallModel, floorModel, ROOM_DIMENSION);
         
-        MyNode innerObstaclesNode = createInnerObstacleNode(model);
-        innerObstaclesNode.getRelativeTransform().setPosition(0,0,0);
-        innerObstaclesNode.getRelativeTransform().setMatrix(SFMatrix3f.getScale(1,1,1));
+        MyNode innerObstaclesNode = createInnerObstacleNode(wallModel);
+        innerObstaclesNode.setScale(1,1,1);
+        innerObstaclesNode.setPosition(0,-1,0);
         backgroundNode.getSonNodes().add(innerObstaclesNode);
 		
 		return backgroundNode;

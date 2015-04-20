@@ -57,30 +57,30 @@ public class Scenery {
 	 * call {@link #setStartModel(Model)} or {@link #setFinishModel(Model) BEFORE calling this method.
 	 * @param model the model used to visualize the scenery.
 	 */
-	public MyNode getSceneryNode(Model model) {
-		MyNode sceneryNode = createBackgroundNode(model, LUNGH_MURO);
+	public MyNode getSceneryNode(Model wallModel, Model floorModel) {
+		MyNode sceneryNode = createBackgroundNode(wallModel, floorModel, LUNGH_MURO);
 		return sceneryNode;
 	}
     
-	protected MyNode createBackgroundNode(Model model, float sceneryDimension) {
+	protected MyNode createBackgroundNode(Model wallModel, Model floorModel, float sceneryDimension) {
 		MyNode backgroundNode = new MyNode();
         
-		MyNode floorNode=new MyNode(model);
-        floorNode.getRelativeTransform().setPosition(0.0f, -SPESS_MURO, 0.0f);
-        floorNode.getRelativeTransform().setMatrix(SFMatrix3f.getScale(sceneryDimension+SPESS_MURO,SPESS_MURO,sceneryDimension+SPESS_MURO));
+		MyNode floorNode=new MyNode(floorModel);
+        floorNode.setScale(sceneryDimension+SPESS_MURO, SPESS_MURO, sceneryDimension+SPESS_MURO);
+        floorNode.setPosition(0.0f, -SPESS_MURO*2, 0.0f);
         backgroundNode.getSonNodes().add(floorNode);
         
-        backgroundNode.getSonNodes().add(createWallNode(model, sceneryDimension, 0, 0, sceneryDimension, altezzMuro));
-        backgroundNode.getSonNodes().add(createWallNode(model, 0, sceneryDimension, sceneryDimension, 0, altezzMuro));
-        backgroundNode.getSonNodes().add(createWallNode(model, -sceneryDimension, 0, 0, sceneryDimension, altezzMuro));
-        backgroundNode.getSonNodes().add(createWallNode(model, 0, -sceneryDimension, sceneryDimension, 0, altezzMuro));
+        backgroundNode.getSonNodes().add(createWallNode(wallModel, sceneryDimension, 0, 0, sceneryDimension, altezzMuro));
+        backgroundNode.getSonNodes().add(createWallNode(wallModel, 0, sceneryDimension, sceneryDimension, 0, altezzMuro));
+        backgroundNode.getSonNodes().add(createWallNode(wallModel, -sceneryDimension, 0, 0, sceneryDimension, altezzMuro));
+        backgroundNode.getSonNodes().add(createWallNode(wallModel, 0, -sceneryDimension, sceneryDimension, 0, altezzMuro));
         if(!enabledExternalWalls){
         	for (int i = 1; i < 5; i++) {
         		backgroundNode.getSonNodes().get(i).setEnabled(false);
 			}
         }
-		backgroundNode.getRelativeTransform().setPosition(0,0,0);
-		backgroundNode.getRelativeTransform().setMatrix(SFMatrix3f.getScale(1,1,1));
+		backgroundNode.setScale(1,1,1);
+		backgroundNode.setPosition(0,-1,0);
         
         return backgroundNode;
 	}
@@ -98,9 +98,9 @@ public class Scenery {
 //        modelClone.setRootGeometry(meshClone);
 		
 		MyNode wall1Node=new MyNode(model);//Clone);
-        wall1Node.getRelativeTransform().setPosition(x, h, z);
 //        wall1Node.getRelativeTransform().setMatrix(SFMatrix3f.getScale(1,1,1));
-        wall1Node.getRelativeTransform().setMatrix(SFMatrix3f.getScale(sx+SPESS_MURO, h, sz+SPESS_MURO));
+        wall1Node.setScale(sx+SPESS_MURO, h, sz+SPESS_MURO);
+        wall1Node.setPosition(x, 0, z);
         return wall1Node;
 	}
 }

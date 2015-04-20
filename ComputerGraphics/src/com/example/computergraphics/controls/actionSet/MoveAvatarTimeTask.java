@@ -80,7 +80,7 @@ public class MoveAvatarTimeTask extends TimerTask{
 		SFMatrix3f matrix = new SFMatrix3f();
 		all.getRelativeTransform().getMatrix(matrix);
 		SFVertex3f position = matrix.Mult(new SFVertex3f(-currX, 0, -currZ));
-		all.getRelativeTransform().setPosition(position);
+		all.setPosition(position);
 		
 		if((currX==finalX&&currZ==finalZ)) cancel();
 	}
