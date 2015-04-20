@@ -58,8 +58,8 @@ public class JumpAvatarTimeTask extends TimerTask{
 			currY = tempCurrY;
 			lastUsefulT = t;
 			jumping = true;
-			avatar.setPosition(currX, currY, currZ);
 		}else{
+			currY = OBSTACLE_HEIGHT;
 			//TODO Appare ridicolo che rimanga sull'ostacolo anche se appoggia solo una piccola parte del body.
 			//TODO Far appoggiare l'avatar e non lasciarlo circa 0.125f più su
 			//		(posso ciclare 2 volte, prima provando ad agguingere 0.01f, poi 0.001f
@@ -67,6 +67,7 @@ public class JumpAvatarTimeTask extends TimerTask{
 			jumping = false;
 			t = lastUsefulT;
 		}
+		avatar.setPosition(currX, currY, currZ);
 		if(currY==0){
 			jumping = false;
 			cancel();

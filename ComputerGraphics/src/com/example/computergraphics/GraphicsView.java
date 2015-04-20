@@ -303,7 +303,7 @@ public class GraphicsView extends GLSurfaceView{
             int textureModel=SFOGLTextureModel.generateTextureObjectModel(SFImageFormat.RGB,
                     GLES20.GL_REPEAT, GLES20.GL_REPEAT, GLES20.GL_LINEAR, GLES20.GL_LINEAR);
             BitmapTexture texture = BitmapTexture.loadBitmapTexture(BitmapFactory.decodeResource(context.getResources(),
-                    R.drawable.borderedsquare), textureModel);
+                    R.drawable.grass), textureModel);
             texture.init();
             
             //Step 3 : create a Material (materials combine shaders+textures+shading parameters)
@@ -311,7 +311,7 @@ public class GraphicsView extends GLSurfaceView{
             material.getTextures().add(texture);
 
             //Step 4: load a Geometry
-            ArrayObject[] objects = ObjLoader.arrayObjectFromFile(context, "CubeBlender08.obj");
+            ArrayObject[] objects = ObjLoader.arrayObjectFromFile(context, "CubeBlender07.obj");
 
             Mesh mesh=new Mesh(objects[0]);
             mesh.init();
@@ -324,7 +324,7 @@ public class GraphicsView extends GLSurfaceView{
             
 			//Step 2-3-5.(1): do the same for the background's floor
 			BitmapTexture texture1 = BitmapTexture.loadBitmapTexture(BitmapFactory.decodeResource(context.getResources(),
-			        R.drawable.muromattoni), textureModel);
+			        R.drawable.muromattoniridotto), textureModel);
 			texture1.init();
 			
 			Material material1=new Material(program);
@@ -376,13 +376,13 @@ public class GraphicsView extends GLSurfaceView{
             
           //Step 2-3-4-5.(4): do the same for custom avatar
             BitmapTexture texture5 = BitmapTexture.loadBitmapTexture(BitmapFactory.decodeResource(context.getResources(),
-                    R.drawable.grey), textureModel);										//TODO cambiare qui
+                    R.drawable.grey), textureModel);											//TODO cambiare qui
             texture5.init();
             
             Material material5=new Material(program);
             material5.getTextures().add(texture5);
-            
-            ArrayObject[] customAvatarObjects = ObjLoader.arrayObjectFromFile(context, "Platformer2.obj");	//TODO cambiare qui
+        																						//TODO cambiare qui
+            ArrayObject[] customAvatarObjects = ObjLoader.arrayObjectFromFile(context, "Platformer2.obj");
             Mesh mesh5=new Mesh(customAvatarObjects[0]);
             mesh5.init();
 

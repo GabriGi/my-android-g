@@ -1,5 +1,7 @@
 package sfogl.integration;
 
+import android.util.Log;
+
 
 public class ArrayObject {
 
@@ -7,8 +9,6 @@ public class ArrayObject {
     private float[] normalsBuffer;
     private float[] txCoordsBuffer;
     private short[] indicesBuffer;
-//    private short[] indicesOfTexturesBuffer;
-    
 
 	private float minX, minY, minZ, maxX, maxY, maxZ;
 	private float scaleX, scaleY, scaleZ, middleX, middleY, middleZ;
@@ -24,16 +24,6 @@ public class ArrayObject {
 		normalizeVertices(this.verticesBuffer);
 	}
 	
-//	public ArrayObject(float[] verticesBuffer, float[] normalsBuffer, float[] txCoordsBuffer, short[] indicesBuffer, short[] indicesOfTexturesBuffer) {
-//		super();
-//		this.verticesBuffer = verticesBuffer;
-//		this.normalsBuffer = normalsBuffer;
-//		this.txCoordsBuffer = txCoordsBuffer;
-//		this.indicesBuffer = indicesBuffer;
-//		this.indicesOfTexturesBuffer = indicesOfTexturesBuffer; 
-//		setupMinMaxScaleMiddle();
-//	}
-
     public float[] getNormalsBuffer() {
 		return normalsBuffer;
 	}
@@ -54,40 +44,35 @@ public class ArrayObject {
         return indicesBuffer;
     }
     
-//    public ArrayObject cloneScaled(float sx,float sy,float sz){
-//    	float[] newvertices = verticesBuffer.clone();
-//    	float[] newtxCoords = txCoordsBuffer.clone();
-//    	newvertices = centerInZero(newvertices);
-//    	//newtxCoords = rescaleVertices(newtxCoords);
-////    	float sx=1/scaleX;
-////    	float sy=1/scaleY;
-////    	float sz=1/scaleZ;
+    public ArrayObject cloneWithTextureScaled(float sx,float sy,float sz){
+    	float[] newtxCoords = txCoordsBuffer.clone();
+    	sx/=sy*2;
+    	sz/=sy*2;
+    	sy = 1/2;
+
+    	//Facce 1 e 2
+    	newtxCoords[6] = newtxCoords[12] = newtxCoords[15] *= sx;
+    	newtxCoords[24] = newtxCoords[30] = newtxCoords[33] *= sx;
+    	//Facce Dx e Sx
+    	newtxCoords[42] = newtxCoords[48] = newtxCoords[51] *= sz;
+    	newtxCoords[60] = newtxCoords[66] = newtxCoords[69] *= sz;
+    	//Facce A e B
+    	newtxCoords[78] = newtxCoords[84] = newtxCoords[87] *= sx;
+    	newtxCoords[96] = newtxCoords[102] = newtxCoords[105] *= sx;
+    	newtxCoords[73] = newtxCoords[82] = newtxCoords[88] *= sz;
+    	newtxCoords[91] = newtxCoords[100] = newtxCoords[106] *= sz;
+    	
+//    	Log.d("task", "New set of vertices????");
 //    	for (int i = 0; i < newtxCoords.length; i+=3) {
-//			int j = 0;
-//			while(indicesOfTexturesBuffer[j]!=(i/3)){
-//				j++;
-//			}
-//			newvertices[(indicesBuffer[j])*3]*=sx;
-//			newtxCoords[i]*=sx;
-//			newvertices[(indicesBuffer[j])*3+1]*=sy;
-//			newtxCoords[i]*=sy;
-//			newvertices[(indicesBuffer[j])*3+2]*=sz;
-//			newtxCoords[i]*=sz;
-//		}
-//    	
-//    	Log.d("task", " ");
-//    	for (int i = 0; i < newvertices.length; i+=3) {
-//    		Log.d("task", "v " +newvertices[i]+" "+newvertices[i+1]+" "+newvertices[i+2]);
-//		}
-//    	for (int i = 0; i < newtxCoords.length; i+=3) {
+//    		if(i%18==0) Log.d("task", "-----------");
 //    		Log.d("task", "vt "+newtxCoords[i]+" "+newtxCoords[i+1]+" "+newtxCoords[i+2]);
 //		}
-//    	for (int i = 0; i < indicesBuffer.length; i++) {
-//    		Log.d("task", "f "+(indicesBuffer[i]+1)+"/"+(indicesOfTexturesBuffer[i]+1));
-//		}
-//    	
-//    	return new ArrayObject(newvertices, normalsBuffer, newtxCoords, indicesBuffer);
-//    }
+    	
+    	ArrayObject a = new ArrayObject(verticesBuffer, normalsBuffer, newtxCoords, indicesBuffer);
+    	a.setMinAndMaxValues(minX, minY, minZ, maxX, maxY, maxZ);
+    	a.setScaleAndMiddleValues(scaleX, scaleY, scaleZ, middleX, middleY, middleZ);
+    	return a;
+    }
     
     public float[] getMinAndMaxValues() {
     	return new float[]{minX, minY, minZ, maxX, maxY, maxZ};
@@ -100,6 +85,24 @@ public class ArrayObject {
     	return new float[]{1/scaleX, 1/scaleY, 1/scaleZ, middleX, middleY, middleZ};
 	}
 
+    private void setMinAndMaxValues(float minX, float minY, float minZ, float maxX, float maxY, float maxZ) {
+		this.minX = minX;
+		this.minY = minY;
+		this.minZ = minZ;
+		this.maxX = maxX;
+		this.maxY = maxY;
+		this.maxZ = maxZ;
+	}
+    
+    private void setScaleAndMiddleValues(float scaleX, float scaleY, float scaleZ, float middleX, float middleY, float middleZ) {
+    	this.scaleX = scaleX;
+    	this.scaleY = scaleY;
+    	this.scaleZ = scaleZ;
+    	this.middleX = middleX;
+    	this.middleY = middleY;
+    	this.middleZ = middleZ;
+    }
+    
 //    /**
 //     * Trasla i vertici passati, di modo che il loro punto medio sia l'origine
 //     */

@@ -1,7 +1,9 @@
 package com.example.computergraphics.scenery;
 
+import sfogl.integration.ArrayObject;
+import sfogl.integration.Material;
+import sfogl.integration.Mesh;
 import sfogl.integration.Model;
-import shadow.math.SFMatrix3f;
 import shadow.math.SFVertex3f;
 
 import com.example.computergraphics.MyNode;
@@ -86,18 +88,19 @@ public class Scenery {
 	}
 	
 	protected MyNode createWallNode(Model model, float x, float z, float sx, float sz, float h){
-
-//        Mesh mesh=model.getGeometry();
-//        Material material=model.getMaterial();
-//        
-//        ArrayObject array=mesh.getArrayObject();
-//        
-//        Model modelClone=new Model();
-//        modelClone.setMaterialComponent(material);
-//        Mesh meshClone=new Mesh(array.cloneScaled(sx+SPESS_MURO, h, sz+SPESS_MURO));
-//        modelClone.setRootGeometry(meshClone);
 		
-		MyNode wall1Node=new MyNode(model);//Clone);
+		Material material = model.getMaterial();
+        
+        ArrayObject objects = model.getGeometry().getArrayObject();
+        objects = objects.cloneWithTextureScaled(sx+SPESS_MURO, h, sz+SPESS_MURO);
+        Mesh mesh=new Mesh(objects);
+        mesh.init();
+        
+        Model clonedModel=new Model();
+        clonedModel.setMaterialComponent(material);
+        clonedModel.setRootGeometry(mesh);
+		
+		MyNode wall1Node=new MyNode(clonedModel);
 //        wall1Node.getRelativeTransform().setMatrix(SFMatrix3f.getScale(1,1,1));
         wall1Node.setScale(sx+SPESS_MURO, h, sz+SPESS_MURO);
         wall1Node.setPosition(x, 0, z);
