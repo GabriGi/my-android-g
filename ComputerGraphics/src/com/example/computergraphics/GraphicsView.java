@@ -311,7 +311,7 @@ public class GraphicsView extends GLSurfaceView{
             material.getTextures().add(texture);
 
             //Step 4: load a Geometry
-            ArrayObject[] objects = ObjLoader.arrayObjectFromFile(context, "CubeBlender07.obj");
+            ArrayObject[] objects = ObjLoader.arrayObjectFromFile(context, "CubeOk.obj");
 
             Mesh mesh=new Mesh(objects[0]);
             mesh.init();
@@ -337,7 +337,7 @@ public class GraphicsView extends GLSurfaceView{
 			
             //Step 2-3-5.(2): do the same for start position
             BitmapTexture texture2 = BitmapTexture.loadBitmapTexture(BitmapFactory.decodeResource(context.getResources(),
-                    R.drawable.bluepaddedroomtexture01), textureModel);
+                    R.drawable.muromattoniridottoblu), textureModel);
             texture2.init();
             
             Material material2=new Material(program);
@@ -350,7 +350,7 @@ public class GraphicsView extends GLSurfaceView{
 
             //Step 2-3-5.(3): do the same for final position
             BitmapTexture texture3 = BitmapTexture.loadBitmapTexture(BitmapFactory.decodeResource(context.getResources(),
-                    R.drawable.redpaddedroomtexture01), textureModel);
+                    R.drawable.muromattoniridottoverde), textureModel);
             texture3.init();
             
             Material material3=new Material(program);
@@ -382,7 +382,7 @@ public class GraphicsView extends GLSurfaceView{
             Material material5=new Material(program);
             material5.getTextures().add(texture5);
         																						//TODO cambiare qui
-            ArrayObject[] customAvatarObjects = ObjLoader.arrayObjectFromFile(context, "Platformer2.obj");
+            ArrayObject[] customAvatarObjects = ObjLoader.arrayObjectFromFile(context, "Platformer3.obj");
             Mesh mesh5=new Mesh(customAvatarObjects[0]);
             mesh5.init();
 
@@ -428,7 +428,7 @@ public class GraphicsView extends GLSurfaceView{
         @Override
         public void onDrawFrame(GL10 gl) {
 
-            SFOGLSystemState.cleanupColorAndDepth(1, 1, 0, 1);
+            SFOGLSystemState.cleanupColorAndDepth(0.6f, 0.85f, 1, 1);
             
             //setup the View Projection
         	
@@ -490,9 +490,15 @@ public class GraphicsView extends GLSurfaceView{
             //Log.e("Graphics View Size", Arrays.toString(viewport));
             
             if(((MyNode)node.getSonNodes().get(0)).coveredBy((MyNode)node.getSonNodes().get(2))){
-            	showWinMessage();
+            	if(!winMessageGiaMostrato){
+            		showWinMessage();
+            		winMessageGiaMostrato = true;
+            	}
+            }else{
+            	winMessageGiaMostrato = false;
             }
         }
+        private boolean winMessageGiaMostrato = false;
     }
 
 	public void showWinMessage() {
