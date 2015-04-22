@@ -2,10 +2,9 @@ package com.example.computergraphics.scenery;
 
 import java.util.Random;
 
-import com.example.computergraphics.MyNode;
-
 import sfogl.integration.Model;
-import shadow.math.SFMatrix3f;
+
+import com.example.computergraphics.MyNode;
 
 /**See superclass {@link Scenery}) */
 public class Scenery00 extends Scenery {
@@ -35,15 +34,13 @@ public class Scenery00 extends Scenery {
 		return backgroundNode;
 	}
 
-	private MyNode createInnerObstacleNode(Model model1) {
+	private MyNode createInnerObstacleNode(Model model) {
 		MyNode innerObstaclesNode = new MyNode();
 		Random rand = new Random();
         for (int i = 0; i < NUMBER_OF_OSTACLE; i++) {
-        	MyNode n = new MyNode(model1);
-				float xp = rand.nextFloat()*(LUNGH_MURO-LUNGH_OBST)*2-LUNGH_MURO+LUNGH_OBST;
-				float zp = rand.nextFloat()*(LUNGH_MURO-LUNGH_OBST)*2-LUNGH_MURO+LUNGH_OBST;
-				n.setScale(LUNGH_OBST, altezzObst, LUNGH_OBST);
-				n.setPosition(xp, 0, zp);
+			float xp = rand.nextFloat()*(LUNGH_MURO-LUNGH_OBST)*2-LUNGH_MURO+LUNGH_OBST;
+			float zp = rand.nextFloat()*(LUNGH_MURO-LUNGH_OBST)*2-LUNGH_MURO+LUNGH_OBST;
+        	MyNode n = createWallNode(model, xp, zp, LUNGH_OBST, LUNGH_OBST, altezzObst);
 			innerObstaclesNode.getSonNodes().add(n);
 		}
         return innerObstaclesNode;

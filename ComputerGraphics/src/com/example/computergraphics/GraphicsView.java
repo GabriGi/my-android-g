@@ -37,7 +37,6 @@ import com.example.computergraphics.controls.actionSet.ActionSet;
 import com.example.computergraphics.scenery.Scenery;
 import com.example.computergraphics.scenery.Scenery00;
 import com.example.computergraphics.scenery.Scenery01;
-import com.example.computergraphics.scenery.SceneryCubeAlone;
 
 /**
  * Created by Alessandro on 13/03/15.
@@ -85,7 +84,7 @@ public class GraphicsView extends GLSurfaceView{
     	sceneryNumber = 1;
     	
     	CharSequence text = "Complimenti! Hai vinto!";
-    	toast = Toast.makeText(context, text, Toast.LENGTH_SHORT);;
+    	toast = Toast.makeText(context, text, Toast.LENGTH_LONG);;
     	toast.setGravity(Gravity.CENTER_VERTICAL, 0, 0);
     	
         setRenderer(new GraphicsRenderer());
@@ -337,7 +336,7 @@ public class GraphicsView extends GLSurfaceView{
 			
             //Step 2-3-5.(2): do the same for start position
             BitmapTexture texture2 = BitmapTexture.loadBitmapTexture(BitmapFactory.decodeResource(context.getResources(),
-                    R.drawable.muromattoniridottoblu), textureModel);
+                    R.drawable.muromattoniridottorosso), textureModel);
             texture2.init();
             
             Material material2=new Material(program);
@@ -350,7 +349,7 @@ public class GraphicsView extends GLSurfaceView{
 
             //Step 2-3-5.(3): do the same for final position
             BitmapTexture texture3 = BitmapTexture.loadBitmapTexture(BitmapFactory.decodeResource(context.getResources(),
-                    R.drawable.muromattoniridottoverde), textureModel);
+                    R.drawable.muromattoniridottoscacchi), textureModel);
             texture3.init();
             
             Material material3=new Material(program);
@@ -363,7 +362,7 @@ public class GraphicsView extends GLSurfaceView{
 
 			//Step 2-3-5.(4): do the same for default avatar
 			BitmapTexture texture4 = BitmapTexture.loadBitmapTexture(BitmapFactory.decodeResource(context.getResources(),
-			        R.drawable.grey), textureModel);
+			        R.drawable.grey2), textureModel);
 			texture4.init();
 			
 			Material material4=new Material(program);
@@ -376,7 +375,7 @@ public class GraphicsView extends GLSurfaceView{
             
           //Step 2-3-4-5.(4): do the same for custom avatar
             BitmapTexture texture5 = BitmapTexture.loadBitmapTexture(BitmapFactory.decodeResource(context.getResources(),
-                    R.drawable.grey), textureModel);											//TODO cambiare qui
+                    R.drawable.grey2), textureModel);											//TODO cambiare qui
             texture5.init();
             
             Material material5=new Material(program);

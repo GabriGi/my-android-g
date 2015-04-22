@@ -1,6 +1,5 @@
 package sfogl.integration;
 
-import android.util.Log;
 
 
 public class ArrayObject {
@@ -46,23 +45,25 @@ public class ArrayObject {
     
     public ArrayObject cloneWithTextureScaled(float sx,float sy,float sz){
     	float[] newtxCoords = txCoordsBuffer.clone();
-    	sx/=sy*2;
-    	sz/=sy*2;
-    	sy = 1/2;
+    	sx*=2;	sy*=2;	sz*=2;
 
     	//Facce 1 e 2
     	newtxCoords[6] = newtxCoords[12] = newtxCoords[15] *= sx;
     	newtxCoords[24] = newtxCoords[30] = newtxCoords[33] *= sx;
+    	newtxCoords[1] = newtxCoords[10] = newtxCoords[16] *= sy;
+    	newtxCoords[19] = newtxCoords[28] = newtxCoords[34] *= sy;
     	//Facce Dx e Sx
     	newtxCoords[42] = newtxCoords[48] = newtxCoords[51] *= sz;
     	newtxCoords[60] = newtxCoords[66] = newtxCoords[69] *= sz;
+    	newtxCoords[37] = newtxCoords[46] = newtxCoords[52] *= sy;
+    	newtxCoords[55] = newtxCoords[64] = newtxCoords[70] *= sy;
     	//Facce A e B
     	newtxCoords[78] = newtxCoords[84] = newtxCoords[87] *= sx;
     	newtxCoords[96] = newtxCoords[102] = newtxCoords[105] *= sx;
     	newtxCoords[73] = newtxCoords[82] = newtxCoords[88] *= sz;
     	newtxCoords[91] = newtxCoords[100] = newtxCoords[106] *= sz;
     	
-//    	Log.d("task", "New set of vertices????");
+//    	Log.d("task", "New set of vertices");
 //    	for (int i = 0; i < newtxCoords.length; i+=3) {
 //    		if(i%18==0) Log.d("task", "-----------");
 //    		Log.d("task", "vt "+newtxCoords[i]+" "+newtxCoords[i+1]+" "+newtxCoords[i+2]);
@@ -102,38 +103,6 @@ public class ArrayObject {
     	this.middleY = middleY;
     	this.middleZ = middleZ;
     }
-    
-//    /**
-//     * Trasla i vertici passati, di modo che il loro punto medio sia l'origine
-//     */
-//    private float[] centerInZero(float[] vert) {
-//	    for (int i = 0; i < vert.length; i+=3) {
-//	    	vert[i]=(vert[i]-middleX);
-//		}
-//	    for (int i = 1; i < vert.length; i+=3) {
-//	    	vert[i]=(vert[i]-middleY);
-//		}
-//	    for (int i = 2; i < vert.length; i+=3) {
-//	    	vert[i]=(vert[i]-middleZ);
-//	    }
-//	    return vert;
-//	}
-    
-//    /**
-//     * Riscala i vertici (texture) di modo che siano proporzionali ai vertici
-//     */
-//    private float[] rescaleVertices(float[] vert) {
-//	    for (int i = 0; i < vert.length; i+=3) {
-//	    	vert[i]=scaleX*vert[i];
-//		}
-//	    for (int i = 1; i < vert.length; i+=3) {
-//	    	vert[i]=scaleY*vert[i];
-//		}
-//	    for (int i = 2; i < vert.length; i+=3) {
-//	    	vert[i]=scaleZ*vert[i];
-//		}
-//	    return vert;
-//	}
     
     /**
      * Deforma i vertici rendendoli di 2x2x2 (da -1 a 1)

@@ -7,8 +7,8 @@
     <string name="action_menu_controllers">Controllers</string>
     <string name="action_centered">Centered Controller</string>
     <string name="action_absolute">Absolute Controller</string>
-    <string name="action_alternative">Alternative Controller</string>
     <string name="action_different">Different Controller</string>
+    <string name="action_alternative">Alternative Controller</string>
     
     <string name="action_menu_scenery">Scenery</string>
     <string name="action_scenery00">Scenery 0</string>

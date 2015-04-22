@@ -1,9 +1,8 @@
 package com.example.computergraphics.scenery;
 
-import com.example.computergraphics.MyNode;
-
 import sfogl.integration.Model;
-import shadow.math.SFMatrix3f;
+
+import com.example.computergraphics.MyNode;
 
 /**See superclass {@link Scenery}) */
 public class SceneryCubeAlone extends Scenery {

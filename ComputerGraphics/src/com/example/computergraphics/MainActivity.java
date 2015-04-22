@@ -46,14 +46,14 @@ public class MainActivity extends Activity {
 	        	text = "Centered Controller selected.";
 	    		toast = Toast.makeText(context, text, duration);
 	    		break;
-	        case R.id.action_alternative:
-	        	myView.setController(new AlternativeController(), true);
-	        	text = "Alternative Controller selected.";
-	    		toast = Toast.makeText(context, text, duration);
-	    		break;
 	        case R.id.action_different:
 	        	myView.setController(new DifferentController(), true);
 	        	text = "Different Controller selected.";
+	    		toast = Toast.makeText(context, text, duration);
+	    		break;
+	        case R.id.action_alternative:
+	        	myView.setController(new AlternativeController(), true);
+	        	text = "Alternative Controller selected.";
 	    		toast = Toast.makeText(context, text, duration);
 	    		break;
 	        case R.id.action_scenery00:
@@ -78,9 +78,11 @@ public class MainActivity extends Activity {
 	        toast.show();
 	        return true;
     	}else{
-        	text = "Please wait. Loading in progress.";
-    		toast = Toast.makeText(context, text, duration);
-	        toast.show();
+    		if (item.getItemId()!=R.id.action_menu_controllers && item.getItemId()!=R.id.action_menu_scenery){
+	        	text = "Please wait. Loading in progress.";
+	    		toast = Toast.makeText(context, text, duration);
+		        toast.show();
+    		}
     		return super.onOptionsItemSelected(item);
     	}
     }

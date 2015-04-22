@@ -15,13 +15,13 @@
 			        android:icon="@drawable/ic_inverse_action_basic_centered"
 			        android:title="@string/action_centered"
 			        app:showAsAction="never" />
-			    <item android:id="@+id/action_alternative"
-			        android:icon="@drawable/ic_inverse_action_alternative"
-			        android:title="@string/action_alternative"
-			        app:showAsAction="never" />
 			    <item android:id="@+id/action_different"
 			        android:icon="@drawable/ic_inverse_action_different"
 			        android:title="@string/action_different"
+			        app:showAsAction="never" />
+			    <item android:id="@+id/action_alternative"
+			        android:icon="@drawable/ic_inverse_action_alternative"
+			        android:title="@string/action_alternative"
 			        app:showAsAction="never" />
             </group>
         </menu>
