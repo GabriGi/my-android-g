@@ -13,8 +13,8 @@ import com.example.computergraphics.MyNode;
  */
 public class Scenery {
 
-    static final protected float LUNGH_MURO = 3.00f;			//for each side
-    static final protected float SPESS_MURO = 0.05f;			//for each side (is good also with 0f)
+    static final protected float LUNGH_MURO = 3.00f;	//for each side
+    static final protected float SPESS_MURO = 0.05f;
     protected float altezzMuro;
     protected Model startModel;
     protected Model finalModel;
@@ -71,6 +71,10 @@ public class Scenery {
         floorNode.setScale(sceneryDimension+SPESS_MURO, SPESS_MURO, sceneryDimension+SPESS_MURO);
         floorNode.setPosition(0.0f, -SPESS_MURO*2, 0.0f);
         backgroundNode.getSonNodes().add(floorNode);
+//		Quando trovo una tezture del prato decente, posso sostituire le quattro righe sopra con queste tre:
+//		MyNode floorNode=createWallNode(floorModel, 0, 0, sceneryDimension, sceneryDimension, SPESS_MURO);
+//		floorNode.setPosition(0.0f, -SPESS_MURO*2, 0.0f);
+//		backgroundNode.getSonNodes().add(floorNode);
         
         backgroundNode.getSonNodes().add(createWallNode(wallModel, sceneryDimension, 0, 0, sceneryDimension, altezzMuro));
         backgroundNode.getSonNodes().add(createWallNode(wallModel, 0, sceneryDimension, sceneryDimension, 0, altezzMuro));
@@ -100,10 +104,9 @@ public class Scenery {
         clonedModel.setMaterialComponent(material);
         clonedModel.setRootGeometry(mesh);
 		
-		MyNode wall1Node=new MyNode(clonedModel);
-//        wall1Node.getRelativeTransform().setMatrix(SFMatrix3f.getScale(1,1,1));
-        wall1Node.setScale(sx+SPESS_MURO, h, sz+SPESS_MURO);
-        wall1Node.setPosition(x, 0, z);
-        return wall1Node;
+		MyNode wallNode=new MyNode(clonedModel);
+        wallNode.setScale(sx+SPESS_MURO, h, sz+SPESS_MURO);
+        wallNode.setPosition(x, 0, z);
+        return wallNode;
 	}
 }

@@ -181,7 +181,7 @@ public class GraphicsView extends GLSurfaceView{
         private ShadingProgram program;
         
         private SFCamera setupCam(){
-        	float distAvatarCam = 3*AVAT_BODY;	// = AVATAR_BODY = 0.25f
+        	float distAvatarCam = 1.6f;
         	SFVertex3f focus = new SFVertex3f(0, 0, (-1f-AVAT_BODY-distAvatarCam));
 			SFVertex3f dir = new SFVertex3f(0, 0, 1);
 			SFVertex3f left = new SFVertex3f(1, 0, 0);

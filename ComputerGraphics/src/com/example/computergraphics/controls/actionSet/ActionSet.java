@@ -16,10 +16,10 @@ public class ActionSet{
 	public static final float VELOCITY_RUN = 0.05f;
 	public static final float VELOCITY_WALK = VELOCITY_RUN/2;
 	public static final float SCALE_MIN = 0.5f;
-	public static final float SCALE_DEF = 1.0f;
-	public static final float SCALE_MAX = 2.0f;
+	public static final float SCALE_DEF = 1.5f;
+	public static final float SCALE_MAX = 3.0f;
 	public static final float ROT_X_MIN = 0.0f;
-	public static final float ROT_X_DEF = 0.0f;
+	public static final float ROT_X_DEF = 0.2f;
 	public static final float ROT_X_MAX = 0.8f;
 	public static final int FLING_EVENT_NULL = 0;
 	public static final int FLING_EVENT_CAMERA = 1;
