@@ -1,10 +1,9 @@
 package com.example.computergraphics.controls;
 
-import com.example.computergraphics.controls.actionSet.ActionSet;
-
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
+
+import com.example.computergraphics.controls.actionSet.ActionSet;
 
 public class AlternativeController implements IController {
 	
@@ -36,7 +35,7 @@ public class AlternativeController implements IController {
     
 	@Override
 	public boolean onDown(MotionEvent e) {
-		//actionSet.stopMoving();
+		actionSet.stopFlinging();
 		return true; }
 
 	@Override
@@ -55,7 +54,7 @@ public class AlternativeController implements IController {
 	public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
 			float xFactor = distanceX/viewWidth/CAMERA_SESIBILITY;
 			float yFactor = distanceY/viewHeight/CAMERA_SESIBILITY;
-			Log.d("Gestures", "         - rotation: "+xFactor+" "+yFactor);
+//			Log.d("Gestures", "         - rotation: "+xFactor+" "+yFactor);
 			actionSet.rotationCamera(xFactor, yFactor);
 			if(actionSet.isMoving()){
 				actionSet.moveAvatarWith(0, lastVelocityY);
@@ -65,7 +64,11 @@ public class AlternativeController implements IController {
 
 	@Override
 	public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-		actionSet.startFlingCamera((int)-velocityX, 0);
+		if(actionSet.isMoving()){
+			actionSet.startFlingCamera((int)-velocityX, 0, 0, lastVelocityY);
+		}else{
+			actionSet.startFlingCamera((int)-velocityX, 0);
+		}
 		return true;
 	}
 
@@ -98,7 +101,7 @@ public class AlternativeController implements IController {
 	public boolean onDoubleTapEvent(MotionEvent e) {
 		if(e.getAction()==MotionEvent.ACTION_DOWN) doubleTapCounter=0;
 		doubleTapCounter++;
-		Log.d("Gestures", "                 - count: "+doubleTapCounter);
+//		Log.d("Gestures", "                 - count: "+doubleTapCounter);
         if(doubleTapCounter>MIN_DTC_FOR_SCROLL && e.getAction()!=MotionEvent.ACTION_UP){
 			float zoomFactor = e.getY()/previousY;
 			previousY = e.getY();
@@ -109,9 +112,9 @@ public class AlternativeController implements IController {
 		return true;
 	}
 
-    /* *******************************************************************************/
+    /* ***************************************************************************** */
     /* *************************  OnScaleGestureListener   ************************* */
-    /* *******************************************************************************/
+    /* ***************************************************************************** */
 	
 	/* In teoria secondo le istruzioni qui non deve fare niente, qindi return false.
 	 * Se volessi fare anche qui lo zoom, basta mettere return true.
@@ -121,7 +124,7 @@ public class AlternativeController implements IController {
     
 	@Override
 	public boolean onScale(ScaleGestureDetector detector) {
-		Log.d("Gestures", "        - zoom:     "+(detector.getScaleFactor()));
+//		Log.d("Gestures", "        - zoom:     "+(detector.getScaleFactor()));
 		actionSet.zoomCamera((float)detector.getScaleFactor());
 		return true;
 	}

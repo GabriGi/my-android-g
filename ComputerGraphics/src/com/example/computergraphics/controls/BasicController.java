@@ -1,10 +1,9 @@
 package com.example.computergraphics.controls;
 
-import com.example.computergraphics.controls.actionSet.ActionSet;
-
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
+
+import com.example.computergraphics.controls.actionSet.ActionSet;
 
 public class BasicController implements IController {
 
@@ -62,7 +61,6 @@ public class BasicController implements IController {
 			float posY =(viewHeight-(viewHeight>>3)-e2.getY())/(viewHeight);
 			if(Math.signum(posY)>0) posY*=8/7;
 			else posY*=8;
-			Log.d("task", ""+posY);
 			actionSet.moveAvatarWith((e2.getX()-(viewWidth>>1))/(viewWidth>>1), posY);
 		}
 		return true;
@@ -88,7 +86,6 @@ public class BasicController implements IController {
 			float posY =(viewHeight-(viewHeight>>3)-e.getY())/(viewHeight);
 			if(Math.signum(posY)>0) posY*=8/7;
 			else posY*=8;
-			Log.d("task", ""+posY);
 			actionSet.moveAvatarTo((e.getX()-(viewWidth>>1))/(viewWidth>>1), posY, 
 								   ActionSet.VELOCITY_WALK);
 		}
@@ -105,7 +102,7 @@ public class BasicController implements IController {
 	public boolean onDoubleTapEvent(MotionEvent e) {
 		if(e.getAction()==MotionEvent.ACTION_DOWN) doubleTapCounter=0;
 		doubleTapCounter++;
-		Log.d("Gestures", "                 - count: "+doubleTapCounter);
+//		Log.d("Gestures", "                 - count: "+doubleTapCounter);
 		if(mode==CENTERED_MODE){
 			actionSet.moveAvatarTo((e.getX()-(viewWidth>>1))/(viewWidth>>1), 
 								   ((viewHeight>>1)-e.getY())/(viewHeight>>1), 
@@ -119,9 +116,9 @@ public class BasicController implements IController {
 		return true;
 	}
 
-    /* *******************************************************************************/
+    /* ***************************************************************************** */
     /* *************************  OnScaleGestureListener   ************************* */
-    /* *******************************************************************************/
+    /* ***************************************************************************** */
 
 	private float previousX, previousY;
 	
@@ -136,14 +133,14 @@ public class BasicController implements IController {
 	public boolean onScale(ScaleGestureDetector detector) {
 		actionSet.stopMoving();
 		
-		Log.d("Gestures", "        - rotation: "+(Math.abs(detector.getScaleFactor()-1)));
+//		Log.d("Gestures", "        - rotation: "+(Math.abs(detector.getScaleFactor()-1)));
 		float xFactor = (float) ((detector.getFocusX() - previousX) / (viewWidth>>1));
 		float yFactor = (float) ((detector.getFocusY() - previousY) / (viewHeight>>1));
 		previousX = detector.getFocusX();
 		previousY = detector.getFocusY();
 		actionSet.rotationCamera(xFactor, yFactor);
 		
-		Log.d("Gestures", "        - zoom:     "+(Math.abs(detector.getScaleFactor()-1)));
+//		Log.d("Gestures", "        - zoom:     "+(Math.abs(detector.getScaleFactor()-1)));
 		actionSet.zoomCamera((float)detector.getScaleFactor());
 		
 		return true;

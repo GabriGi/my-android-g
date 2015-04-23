@@ -18,7 +18,7 @@ public class ActionSet{
 	public static final float SCALE_MIN = 0.5f;
 	public static final float SCALE_DEF = 1.0f;
 	public static final float SCALE_MAX = 2.0f;
-	public static final float ROT_X_MIN = -0.8f;
+	public static final float ROT_X_MIN = 0.0f;
 	public static final float ROT_X_DEF = 0.0f;
 	public static final float ROT_X_MAX = 0.8f;
 	public static final int FLING_EVENT_NULL = 0;
@@ -31,7 +31,7 @@ public class ActionSet{
 	
 	private RotateCameraTimeTask rotateCameraTask;
 	private Scroller myScroller;
-	private float prevScrollerX, prevScrollerY;
+	private float prevScrollerX, prevScrollerY, avatarVelocityU, avatarVelocityV;
 	private int flingEvent = FLING_EVENT_NULL;
 	
 	private float roomDimension;
@@ -82,7 +82,6 @@ public class ActionSet{
 	}
 	
 	public void stopMoving() {
-		myScroller.forceFinished(true);
 		if(moveAvatarTask!=null) moveAvatarTask.cancel();
 		if(rotateCameraTask!=null) rotateCameraTask.cancel();
 		timer.purge();
@@ -91,6 +90,10 @@ public class ActionSet{
 	public void stopMovingAndJumping() {
 		if(jumpAvatarTask!=null) jumpAvatarTask.cancel();
 		stopMoving();
+	}
+	
+	public void stopFlinging(){
+		myScroller.forceFinished(true);
 	}
 	
 	public void restoreDefaultValues() {
@@ -106,7 +109,10 @@ public class ActionSet{
 		float destX = destU*roomDimension;
 		float destY = 0;
 		float destZ = destV*roomDimension*2;
-		SFVertex3f dest = cam.getWorldRotation(SFMatrix3f.getRotationY(rotY)).Mult(new SFVertex3f(destX, destY, destZ));
+		SFVertex3f dest = new SFVertex3f(destX, destY, destZ);
+		SFMatrix3f rotation = SFMatrix3f.getRotationY(rotY);
+		rotation = rotation.MultMatrix(SFMatrix3f.getRotationX(-rotX));
+		dest = cam.getWorldRotation(rotation).Mult(dest);
 		return dest;
 	}
 	
@@ -115,19 +121,21 @@ public class ActionSet{
 	 * prendendo come parametri le due componenti (u e v) dello schermo (con valori compresi tra -1 e 1)
 	 */
 	public void moveAvatarTo(float destU, float destV, float velocity){
-		SFVertex3f start = new SFVertex3f(); avatar.getPosition(start);
-		SFVertex3f space = getXYZFromUV(destU, destV); 
-		SFVertex3f dest = new SFVertex3f(start.getV()); dest.add3f(space);
-
-		if(velocity>VELOCITY_RUN) velocity = VELOCITY_RUN;
-		float velX = (float)(velocity/Math.sqrt(1+(space.getZ()/space.getX())*(space.getZ()/space.getX())));
-		float velZ = (float)(velocity/Math.sqrt(1+(space.getX()/space.getZ())*(space.getX()/space.getZ())));
-		if(space.getX()<0) velX=0-velX;
-		if(space.getZ()<0) velZ=0-velZ;
-		
-		stopMoving();
-		moveAvatarTask = new MoveAvatarTimeTask(avatar, dest, velX, velZ, all);
-		timer.schedule(moveAvatarTask, 0, TIMER_PERIOD);
+		if(velocity!=0 && (destU!=0 || destV!=0)){
+			SFVertex3f start = new SFVertex3f(); avatar.getPosition(start);
+			SFVertex3f space = getXYZFromUV(destU, destV); 
+			SFVertex3f dest = new SFVertex3f(start.getV()); dest.add3f(space);
+	
+			if(velocity>VELOCITY_RUN) velocity = VELOCITY_RUN;
+			float velX = (float)(velocity/Math.sqrt(1+(space.getZ()/space.getX())*(space.getZ()/space.getX())));
+			float velZ = (float)(velocity/Math.sqrt(1+(space.getX()/space.getZ())*(space.getX()/space.getZ())));
+			if(space.getX()<0) velX=0-velX;
+			if(space.getZ()<0) velZ=0-velZ;
+			
+			stopMoving();
+			moveAvatarTask = new MoveAvatarTimeTask(avatar, dest, velX, velZ, all);
+			timer.schedule(moveAvatarTask, 0, TIMER_PERIOD);
+		}
 	}
 	
 	/**
@@ -185,10 +193,21 @@ public class ActionSet{
 	 * Usa {@link #flingCamera()} per impostare la posizione durante l'animazione.
 	 */
 	public void startFlingCamera(int velocityU, int velocityV){
+		startFlingCamera(velocityU, velocityV, 0, 0);
+    }
+	
+	/**
+	 * Inizia la rotazione della telecamera settando uno scroller, spostando quindi la visuale (assi X e Y).
+	 * Usa {@link #flingCamera()} per impostare la posizione durante l'animazione.
+	 * Questa versione sposta anche l'Avatar dopo aver aggiornato la telecamera
+	 */
+	public void startFlingCamera(int velocityU, int velocityV, float avatarVelocityU, float avatarVelocityV){
 		flingEvent = FLING_EVENT_CAMERA;
 		prevScrollerX = 0;
 		prevScrollerY = 0;
         myScroller.startScroll(0, 0, (int)(0.628*velocityV), (int)(0.628*velocityU), 2000);
+        this.avatarVelocityU = avatarVelocityU;
+        this.avatarVelocityV = avatarVelocityV;
     }
 	
 	/**
@@ -199,6 +218,7 @@ public class ActionSet{
 			rotationCamera(myScroller.getCurrY()/1000f - prevScrollerY, myScroller.getCurrX()/1000f - prevScrollerX);
 			prevScrollerY = myScroller.getCurrY()/1000f;
 			prevScrollerX = myScroller.getCurrX()/1000f;
+	        moveAvatarWith(avatarVelocityU, avatarVelocityV);
 			return true;
 		}else{
 			flingEvent = FLING_EVENT_NULL;
@@ -208,7 +228,7 @@ public class ActionSet{
 	
 	public void rotateCameraContinuously(float velocityU){
 		stopMoving();
-		rotateCameraTask = new RotateCameraTimeTask(velocityU/32);
+		rotateCameraTask = new RotateCameraTimeTask(velocityU/16);
 		timer.schedule(rotateCameraTask, 0, TIMER_PERIOD);
 	}
 	

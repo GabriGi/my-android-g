@@ -1,10 +1,9 @@
 package com.example.computergraphics.controls;
 
-import com.example.computergraphics.controls.actionSet.ActionSet;
-
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
+
+import com.example.computergraphics.controls.actionSet.ActionSet;
 
 public class DifferentController implements IController {
 
@@ -46,7 +45,7 @@ public class DifferentController implements IController {
 	public void onLongPress(MotionEvent e) {
 		actionSet.stopMoving();
 		float xFactor = (e.getX()-(viewWidth>>1))/(viewWidth>>1);
-		Log.d("Gestures", "         - rotation: "+xFactor);
+//		Log.d("Gestures", "         - rotation: "+xFactor);
 		actionSet.rotateCameraContinuously(xFactor);
 	}
 
@@ -55,7 +54,8 @@ public class DifferentController implements IController {
 		actionSet.stopMoving();
 		float xFactor = (e.getX()-(viewWidth>>1))/viewWidth*10000;
 		float yFactor = (e.getY()-(viewHeight>>1))/viewHeight*5000;
-		Log.d("Gestures", "         - rotation: "+xFactor+" "+yFactor);
+//		Log.d("Gestures", "         - rotation: "+xFactor+" "+yFactor);
+		actionSet.stopFlinging();
 		actionSet.startFlingCamera((int)xFactor, (int)yFactor);
 		return true;
 	}
@@ -96,16 +96,16 @@ public class DifferentController implements IController {
 		return true;
 	}
 
-    /* *******************************************************************************/
+    /* ***************************************************************************** */
     /* *************************  OnScaleGestureListener   ************************* */
-    /* *******************************************************************************/
+    /* ***************************************************************************** */
 
 	@Override
 	public boolean onScaleBegin(ScaleGestureDetector detector) { return true; }
     
 	@Override
 	public boolean onScale(ScaleGestureDetector detector) {
-		Log.d("Gestures", "        - zoom:     "+(detector.getScaleFactor()));
+//		Log.d("Gestures", "        - zoom:     "+(detector.getScaleFactor()));
 		actionSet.zoomCamera((float)detector.getScaleFactor());
 		return true;
 	}

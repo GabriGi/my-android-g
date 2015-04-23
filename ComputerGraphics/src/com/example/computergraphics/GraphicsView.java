@@ -114,7 +114,6 @@ public class GraphicsView extends GLSurfaceView{
     	if(sceneryNumberSelected<sceneryList.size()){
     		if(actionSet!=null) actionSet.stopMoving();
 			this.sceneryNumber = sceneryNumberSelected;
-			Log.d("task", "Change scenary");
 			enableTouching = false;
 			onPause();
 			changingScenary = true;
@@ -436,21 +435,25 @@ public class GraphicsView extends GLSurfaceView{
 			rotY = actionSet.getRotY();
 			
 			float upL =heightRatio/scale;
-			SFVertex3f focus = SFMatrix3f.getRotationX(-rotX).Mult(startCam.getF());
-          	focus.add3f(new SFVertex3f(0, 3*AVAT_BODY, 0));
-          	if(focus.getY()<upL+2*AVAT_BODY) focus.setY(upL+2*AVAT_BODY);	//Per non tagliare gli ostacoli
-			//SFVertex3f dir = SFMatrix3f.getRotationX(rotX).Mult(startCam.getDir());
-          	
-			cam.set(SFMatrix3f.getRotationY(rotY).Mult(focus), 
-					SFMatrix3f.getRotationY(rotY).Mult(startCam.getDir()), 	//dir), 
-					SFMatrix3f.getRotationY(rotY).Mult(startCam.getLeft()), 
-					startCam.getUp(), 
-					widthRatio/scale, 
-					upL, 
-					startCam.getDistance());
-			//cam.setDir(SFMatrix3f.getRotationX(-rotX).Mult(cam.getDir()));
 			
-			//TODO Scaling e rotY si possono migliorare.
+			SFVertex3f focus = new SFVertex3f();
+			focus.set(startCam.getF());
+			focus.add3f(new SFVertex3f(0, 3*AVAT_BODY, 0));
+          	if(focus.getY()<upL+2*AVAT_BODY) focus.setY(upL+2*AVAT_BODY);	//Per non tagliare gli ostacoli
+	        focus = SFMatrix3f.getRotationX(-rotX).Mult(focus);
+          	focus = SFMatrix3f.getRotationY(rotY).Mult(focus);
+          	
+          	SFVertex3f dir  = SFMatrix3f.getRotationX(-rotX).Mult(startCam.getDir());
+	        SFVertex3f left = SFMatrix3f.getRotationX(-rotX).Mult(startCam.getLeft());
+	        SFVertex3f up   = SFMatrix3f.getRotationX(-rotX).Mult(startCam.getUp());
+
+			dir  = SFMatrix3f.getRotationY(rotY).Mult(dir);
+			left = SFMatrix3f.getRotationY(rotY).Mult(left);
+			up   = SFMatrix3f.getRotationY(rotY).Mult(up);
+	        
+			cam.set(focus, dir, left, up, 
+					widthRatio/scale, upL, 
+					startCam.getDistance());
             
         	cam.update();
             program.setupProjection(cam.extractTransform());
@@ -501,6 +504,7 @@ public class GraphicsView extends GLSurfaceView{
     }
 
 	public void showWinMessage() {
+		//TODO
 //		CharSequence text = "Complimenti! Hai vinto in "+(System.currentTimeMillis()-startTime);
 //    	toast.setText(text);
     	toast.show();
