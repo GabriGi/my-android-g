@@ -36,7 +36,7 @@ public class ShadingProgram implements SFInitiable{
 	
 	@Override
 	public void init() {
-        Log.e("ShadingProgram","Compile With Data Data");
+        Log.i("ShadingProgram","Compile With Data Data");
         shader.compileShaderWithInfos(System.out);
 		shader.compileData();
 	}
